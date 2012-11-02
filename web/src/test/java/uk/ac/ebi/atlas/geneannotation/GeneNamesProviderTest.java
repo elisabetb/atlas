@@ -19,8 +19,8 @@ public class GeneNamesProviderTest {
     public void initializeSubject() {
         map.put("e1", "g1");
 
-        subject = new GeneNamesProvider();
-        subject.setGeneNames(map);
+        subject = new GeneNamesProvider(null);
+//        subject.setGeneNames(map);
     }
 
     @Test

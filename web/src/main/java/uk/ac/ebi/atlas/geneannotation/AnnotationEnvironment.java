@@ -3,15 +3,13 @@ package uk.ac.ebi.atlas.geneannotation;
 import com.sleepycat.bind.tuple.TupleBinding;
 import com.sleepycat.collections.StoredMap;
 import com.sleepycat.collections.TransactionRunner;
-import com.sleepycat.je.Database;
-import com.sleepycat.je.DatabaseConfig;
-import com.sleepycat.je.Environment;
-import com.sleepycat.je.EnvironmentConfig;
+import com.sleepycat.je.*;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 
-//@Named("annotationEnvironment")
 public class AnnotationEnvironment {
+    private static final Logger logger = Logger.getLogger(AnnotationEnvironment.class);
 
     private static final String GENES_DB = "genes.db";
     private Environment environment;
@@ -19,6 +17,8 @@ public class AnnotationEnvironment {
     private Database geneNameDatabase;
 
     private String environmentLocation;
+
+    private boolean isInitialised = false;
 
     public AnnotationEnvironment(String environmentLocation) {
         this.environmentLocation = environmentLocation;
@@ -37,16 +37,37 @@ public class AnnotationEnvironment {
         envConfig.setTransactional(true);
         File envHome = new File(environmentLocation);
         if (!envHome.exists()) {
-            envHome.mkdirs();
+            if (!envHome.mkdirs()) {
+                isInitialised = false;
+                logger.error("Cannot create directories for BDB environment on " + environmentLocation);
+            }
         }
-        environment = new Environment(envHome, envConfig);
+        try {
+            environment = new Environment(envHome, envConfig);
+            isInitialised = true;
+        } catch (DatabaseException | IllegalArgumentException e) {
+            logger.error("Cannot open BDB environment on " + environmentLocation, e);
+            isInitialised = false;
+        }
     }
 
     public void setupGeneNameDatabase() {
+
+        if (!isInitialised) return;
+
         DatabaseConfig dbConfig = new DatabaseConfig();
         dbConfig.setAllowCreate(true);
 
-        geneNameDatabase = environment.openDatabase(null, GENES_DB, dbConfig);
+        try {
+            geneNameDatabase = environment.openDatabase(null, GENES_DB, dbConfig);
+        } catch (DatabaseNotFoundException | DatabaseExistsException | IllegalArgumentException | IllegalStateException e) {
+            logger.error("Cannot open BDB environment on " + environmentLocation, e);
+            isInitialised = false;
+        }
+    }
+
+    public boolean isInitialised() {
+        return isInitialised;
     }
 
     public StoredMap<String, String> geneNames() {
@@ -72,11 +93,19 @@ public class AnnotationEnvironment {
     }
 
     public void close() {
-        if (geneNameDatabase != null) {
+        if (isInitialised) {
             geneNameDatabase.close();
-        }
-        if (environment != null) {
             environment.close();
+        }
+    }
+
+    public static void main(String[] args) {
+        AnnotationEnvironment environment1 = new AnnotationEnvironment("/Users/nsklyar/Data/bdb/gene");
+        environment1.setup();
+        int size = environment1.geneNames().size();
+        System.out.println("size = " + size);
+        while (true) {
+
         }
     }
 }

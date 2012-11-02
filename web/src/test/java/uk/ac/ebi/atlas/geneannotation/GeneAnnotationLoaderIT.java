@@ -42,7 +42,7 @@ public class GeneAnnotationLoaderIT {
         annotationEnvironment.setup();
 
 
-        subject = new GeneAnnotationLoader(annotationEnvironment, builder);
+//        subject = new GeneAnnotationLoader(annotationEnvironment, builder);
 
     }
 

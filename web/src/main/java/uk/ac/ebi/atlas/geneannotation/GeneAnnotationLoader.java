@@ -1,7 +1,6 @@
 package uk.ac.ebi.atlas.geneannotation;
 
 import com.sleepycat.collections.StoredMap;
-import com.sleepycat.collections.TransactionRunner;
 import com.sleepycat.collections.TransactionWorker;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
@@ -18,17 +17,18 @@ public class GeneAnnotationLoader {
 
     private static final Logger logger = Logger.getLogger(GeneAnnotationLoader.class);
 
-    private TransactionRunner transactionRunner;
+//    private TransactionRunner transactionRunner;
 
     private BioMartGeneNameStream.Builder geneNameStreamBuilder;
 
-    private AnnotationEnvironment annotationEnvironment;
+//    private AnnotationEnvironment annotationEnvironment;
+    private BDBEnvironmentHandler environmentHandler;
 
     @Inject
-    public GeneAnnotationLoader(AnnotationEnvironment annotationEnvironment, BioMartGeneNameStream.Builder geneNameStreamBuilder) {
-        this.annotationEnvironment = annotationEnvironment;
+    public GeneAnnotationLoader(BDBEnvironmentHandler environmentHandler, BioMartGeneNameStream.Builder geneNameStreamBuilder) {
+        this.environmentHandler = environmentHandler;
         this.geneNameStreamBuilder = geneNameStreamBuilder;
-        transactionRunner = annotationEnvironment.getTransactionRunner();
+//        transactionRunner = annotationEnvironment.getTransactionRunner();
     }
 
 
@@ -38,7 +38,7 @@ public class GeneAnnotationLoader {
         String[] line;
 
         while ((line = annotationsInputStream.readNext()) != null) {
-            transactionRunner.run(transactionWorker.setLine(line));
+            getAnnotationEnvironment().getTransactionRunner().run(transactionWorker.setLine(line));
 
         }
     }
@@ -46,7 +46,7 @@ public class GeneAnnotationLoader {
     public void loadGeneNames() {
 
         GeneAnnotationTransactionWorker<String> transactionWorker = new GeneNameTransactionWorker
-                (annotationEnvironment.geneNames());
+                (getAnnotationEnvironment().geneNames());
 
         try (ObjectInputStream<String[]> annotationsInputStream = geneNameStreamBuilder.create()) {
             loadAnnotations(annotationsInputStream, transactionWorker);
@@ -55,6 +55,14 @@ public class GeneAnnotationLoader {
         }
     }
 
+    private AnnotationEnvironment getAnnotationEnvironment() {
+        AnnotationEnvironment annotationEnvironment = environmentHandler.getAnnotationEnvironment();
+        if (!annotationEnvironment.isInitialised()) {
+            throw new IllegalStateException("Cannot access to BDB for gene loading");
+        }
+
+        return annotationEnvironment;
+    }
     static class GeneNameTransactionWorker extends GeneAnnotationTransactionWorker<String> {
 
         protected GeneNameTransactionWorker(StoredMap<String, String> map) {
