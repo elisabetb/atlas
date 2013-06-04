@@ -39,7 +39,17 @@ import java.util.List;
 @Scope("request")
 public class GeneSetPageController extends BioEntityPageController {
 
+    @Override
+    List<String> getPagePropertyTypes() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
+    @Override
+    BioEntityPropertiesService getBioEntityPropertiesService(String identifier) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+/*
     private ReactomeBiomartClient reactomeBiomartClient;
 
     private SolrQueryService solrServer;
@@ -79,6 +89,6 @@ public class GeneSetPageController extends BioEntityPageController {
     String getEntityNamePropertyType() {
         throw new UnsupportedOperationException();
     }
-
+*/
 
 }

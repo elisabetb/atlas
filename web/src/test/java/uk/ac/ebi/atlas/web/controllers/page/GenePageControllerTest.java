@@ -66,7 +66,7 @@ public class GenePageControllerTest {
     private Model modelMock;
 
     @Mock
-    private GenePropertyService genePropertyServiceMock;
+    private GenePropertiesService genePropertyServiceMock;
 
     @Mock
     private DifferentialGeneProfileService differentialGeneProfileServiceMock;
@@ -101,9 +101,9 @@ public class GenePageControllerTest {
         subject = new GenePageController();
 
         subject.setBioEntityCardProperties(bioEntityCardProperties);
-        subject.setGenePropertyService(genePropertyServiceMock);
         subject.setDifferentialGeneProfileService(differentialGeneProfileServiceMock);
         subject.setGenePagePropertyTypes(PROPERTY_TYPES);
+        subject.setGenePropertiesService(genePropertyServiceMock);
     }
 
     @Test

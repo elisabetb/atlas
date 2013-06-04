@@ -42,7 +42,7 @@ import java.util.SortedSet;
 
 @Named("proteinPropertyService")
 @Scope("request")
-public class ProteinPropertyService implements BioEntityPropertyServiceInterface {
+public class ProteinPropertiesService implements BioEntityPropertiesService {
 
     private static final String PROPERTY_TYPE_DESCRIPTION = "description";
 
@@ -59,7 +59,7 @@ public class ProteinPropertyService implements BioEntityPropertyServiceInterface
     private SortedSet<String> entityNames;
 
     @Inject
-    public ProteinPropertyService(SolrClient solrClient, UniProtClient uniProtClient, BioEntityCardProperties bioEntityCardProperties) {
+    public ProteinPropertiesService(SolrClient solrClient, UniProtClient uniProtClient, BioEntityCardProperties bioEntityCardProperties) {
         this.solrClient = solrClient;
         this.uniProtClient = uniProtClient;
         this.bioEntityCardProperties = bioEntityCardProperties;
@@ -74,6 +74,7 @@ public class ProteinPropertyService implements BioEntityPropertyServiceInterface
         if (entityNames.isEmpty()) {
             entityNames.add(identifier);
         }
+        addReactomePropertyValues();
     }
 
     @Override
@@ -84,9 +85,6 @@ public class ProteinPropertyService implements BioEntityPropertyServiceInterface
     //used in bioEntity.jsp
     @Override
     public List<PropertyLink> getPropertyLinks(String propertyType) {
-        if ("reactome".equals(propertyType)){
-            addReactomePropertyValues();
-        }
         List<PropertyLink> propertyLinks = Lists.newArrayList();
         for(String propertyValue: propertyValuesByType.get(propertyType) ){
 
@@ -111,6 +109,8 @@ public class ProteinPropertyService implements BioEntityPropertyServiceInterface
         return CollectionUtils.isNotEmpty(properties) ? properties.iterator().next() : "";
     }
 
+    //ToDo: check what this method is doing, it is re-putting reactomeIds for every uniprotId or maybe
+    //ToDo: there is the assumption that uniprotId must be one only?
     void addReactomePropertyValues() {
         Collection<String> uniprotIds = propertyValuesByType.get("uniprot");
         if (CollectionUtils.isNotEmpty(uniprotIds)) {

@@ -55,7 +55,7 @@
         <div id="infoBody" class="bioEntityCard">
             <table id="bioEntityCardTable">
                 <c:forEach var="propertyType" items="${propertyNames.keySet()}">
-                    <c:set var="propertyLinks" value="${genePropertyService.getPropertyLinks(propertyType)}"/>
+                    <c:set var="propertyLinks" value="${bioentityPropertiesService.getPropertyLinks(propertyType)}"/>
                     <c:if test="${propertyLinks.size() > 0}">
                         <tr>
                             <td class="bioEntityCardPropertyType">${propertyNames.get(propertyType)}</td>

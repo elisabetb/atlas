@@ -41,7 +41,7 @@ import java.util.SortedSet;
 
 @Named("genePropertyService")
 @Scope("request")
-public class GenePropertyService implements BioEntityPropertyServiceInterface {
+public class GenePropertiesService implements BioEntityPropertiesService {
 
     private static final String PROPERTY_TYPE_DESCRIPTION = "description";
 
@@ -56,7 +56,7 @@ public class GenePropertyService implements BioEntityPropertyServiceInterface {
     private SortedSet<String> entityNames;
 
     @Inject
-    public GenePropertyService(SolrClient solrClient, BioEntityCardProperties bioEntityCardProperties) {
+    public GenePropertiesService(SolrClient solrClient, BioEntityCardProperties bioEntityCardProperties) {
         this.solrClient = solrClient;
         this.bioEntityCardProperties = bioEntityCardProperties;
     }

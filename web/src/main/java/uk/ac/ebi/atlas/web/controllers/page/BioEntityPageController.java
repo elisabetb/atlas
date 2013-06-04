@@ -33,8 +33,6 @@ import java.util.Map;
 
 public abstract class BioEntityPageController {
 
-    private GenePropertyService genePropertyService;
-
     private BioEntityCardProperties bioEntityCardProperties;
 
     @Inject
@@ -42,30 +40,20 @@ public abstract class BioEntityPageController {
         this.bioEntityCardProperties = bioEntityCardProperties;
     }
 
-    @Inject
-    public void setGenePropertyService(GenePropertyService genePropertyService) {
-        this.genePropertyService = genePropertyService;
-    }
-
     public String showGenePage(String identifier, Model model) {
 
-        initModel(identifier, model);
-
         model.addAttribute("entityIdentifier", identifier);
+
+        BioEntityPropertiesService bioEntityPropertiesService = getBioEntityPropertiesService(identifier);
+
+        model.addAttribute("species", bioEntityPropertiesService.getSpecies());
+        model.addAttribute("names", bioEntityPropertiesService.getEntityNames());
+        model.addAttribute("description", bioEntityPropertiesService.getBioEntityDescription());
+        model.addAttribute("bioentityPropertiesService", bioEntityPropertiesService);
 
         model.addAttribute("propertyNames", buildPropertyNamesByTypeMap());
 
         return "bioEntity";
-    }
-
-    protected void initModel(String identifier, Model model) {
-        String entityNamePropertyType = getEntityNamePropertyType();
-
-        genePropertyService.init(identifier, entityNamePropertyType, getPagePropertyTypes());
-
-        model.addAttribute("species", genePropertyService.getSpecies());
-        model.addAttribute("names", genePropertyService.getEntityNames());
-        model.addAttribute("description", genePropertyService.getBioEntityDescription());
     }
 
     protected Map<String, String> buildPropertyNamesByTypeMap() {
@@ -78,6 +66,6 @@ public abstract class BioEntityPageController {
 
     abstract List<String> getPagePropertyTypes();
 
-    abstract String getEntityNamePropertyType();
+    abstract BioEntityPropertiesService getBioEntityPropertiesService(String identifier);
 
 }

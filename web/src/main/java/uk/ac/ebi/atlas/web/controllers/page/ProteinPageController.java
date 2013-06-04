@@ -30,20 +30,27 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Arrays;
+import javax.inject.Inject;
 import java.util.List;
 
 @Controller
 @Scope("request")
 public class ProteinPageController extends BioEntityPageController {
 
-    public static final String GENE_NAME_PROPERTY_TYPE = "uniprot";
+    public static final String ENTITY_NAME_PROPERTY_TYPE = "uniprot";
 
     private String proteinPagePropertyTypes;
+
+    private ProteinPropertiesService proteinPropertiesService;
 
     @Value("#{configuration['index.types.proteinpage']}")
     void setProteinPagePropertyTypes(String proteinPagePropertyTypes) {
         this.proteinPagePropertyTypes = proteinPagePropertyTypes;
+    }
+
+    @Inject
+    void setProteinPropertiesService(ProteinPropertiesService proteinPropertiesService) {
+        this.proteinPropertiesService = proteinPropertiesService;
     }
 
     @RequestMapping(value = "/proteins/{identifier:.*}")
@@ -57,8 +64,9 @@ public class ProteinPageController extends BioEntityPageController {
     }
 
     @Override
-    String getEntityNamePropertyType() {
-        return GENE_NAME_PROPERTY_TYPE;
+    BioEntityPropertiesService getBioEntityPropertiesService(String identifier) {
+        proteinPropertiesService.init(identifier, ENTITY_NAME_PROPERTY_TYPE, getPagePropertyTypes());
+        return proteinPropertiesService;
     }
 
 }
