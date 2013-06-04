@@ -23,7 +23,6 @@
 package uk.ac.ebi.atlas.web.controllers.page;
 
 import com.google.common.collect.Maps;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.ui.Model;
 import uk.ac.ebi.atlas.web.BioEntityCardProperties;
 
@@ -34,7 +33,7 @@ import java.util.Map;
 
 public abstract class BioEntityPageController {
 
-    private BioEntityPropertyService bioEntityPropertyService;
+    private GenePropertyService genePropertyService;
 
     private BioEntityCardProperties bioEntityCardProperties;
 
@@ -44,21 +43,29 @@ public abstract class BioEntityPageController {
     }
 
     @Inject
-    public void setBioEntityPropertyService(BioEntityPropertyService bioEntityPropertyService) {
-        this.bioEntityPropertyService = bioEntityPropertyService;
+    public void setGenePropertyService(GenePropertyService genePropertyService) {
+        this.genePropertyService = genePropertyService;
     }
 
     public String showGenePage(String identifier, Model model) {
 
-        String entityNamePropertyType = getEntityNamePropertyType();
-
-        bioEntityPropertyService.init(identifier, entityNamePropertyType, getPagePropertyTypes());
+        initModel(identifier, model);
 
         model.addAttribute("entityIdentifier", identifier);
 
         model.addAttribute("propertyNames", buildPropertyNamesByTypeMap());
 
         return "bioEntity";
+    }
+
+    protected void initModel(String identifier, Model model) {
+        String entityNamePropertyType = getEntityNamePropertyType();
+
+        genePropertyService.init(identifier, entityNamePropertyType, getPagePropertyTypes());
+
+        model.addAttribute("species", genePropertyService.getSpecies());
+        model.addAttribute("names", genePropertyService.getEntityNames());
+        model.addAttribute("description", genePropertyService.getBioEntityDescription());
     }
 
     protected Map<String, String> buildPropertyNamesByTypeMap() {

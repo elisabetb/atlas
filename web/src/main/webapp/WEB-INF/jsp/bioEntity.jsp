@@ -43,19 +43,19 @@
             <img id="bioentity-info-image" title="Bio-Entity information" style="position: absolute; left: 0.5em; "
                  src="resources/images/bioentity_info_transparent_bkg.png"/>
             <span class="bioEntityCardBioentityName">
-                <c:forEach var="entityName" varStatus="loopStatus" items="${bioEntityPropertyService.getEntityNames()}">
+                <c:forEach var="entityName" varStatus="loopStatus" items="${names}">
                     ${entityName}<c:if test="${not loopStatus.last}">, </c:if>
                 </c:forEach>
             </span>
-            <c:set var="species" value="${bioEntityPropertyService.getSpecies()}"/>
+            <c:set var="species" value="${species}"/>
             <span class="bioEntityCardSpecies">${fn:toUpperCase(fn:substring(species, 0, 1))}${fn:substring(species, 1,fn:length(species))}</span>
-            <span class="bioEntityCardDescription">${bioEntityPropertyService.getBioEntityDescription()}</span>
+            <span class="bioEntityCardDescription">${description}</span>
         </ul>
 
         <div id="infoBody" class="bioEntityCard">
             <table id="bioEntityCardTable">
                 <c:forEach var="propertyType" items="${propertyNames.keySet()}">
-                    <c:set var="propertyLinks" value="${bioEntityPropertyService.getPropertyLinks(propertyType)}"/>
+                    <c:set var="propertyLinks" value="${genePropertyService.getPropertyLinks(propertyType)}"/>
                     <c:if test="${propertyLinks.size() > 0}">
                         <tr>
                             <td class="bioEntityCardPropertyType">${propertyNames.get(propertyType)}</td>

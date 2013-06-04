@@ -22,7 +22,9 @@
 
 package uk.ac.ebi.atlas.web.controllers.page;
 
-import com.google.common.collect.*;
+import com.google.common.collect.Lists;
+import com.google.common.collect.SortedSetMultimap;
+import com.google.common.collect.TreeMultimap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +39,7 @@ import java.util.Arrays;
 import java.util.Properties;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -64,7 +66,7 @@ public class GenePageControllerTest {
     private Model modelMock;
 
     @Mock
-    private BioEntityPropertyService bioEntityPropertyServiceMock;
+    private GenePropertyService genePropertyServiceMock;
 
     @Mock
     private DifferentialGeneProfileService differentialGeneProfileServiceMock;
@@ -93,13 +95,13 @@ public class GenePageControllerTest {
         when(solrClientMock.fetchGenePageProperties(IDENTIFIER, Arrays.asList(PROPERTY_TYPES))).thenReturn(genePageProperties);
         when(solrClientMock.findPropertyValuesForGeneId(IDENTIFIER, SYMBOL)).thenReturn(Lists.newArrayList(SYMBOL));
 
-        when(bioEntityPropertyServiceMock.getFirstValueOfProperty(SYMBOL)).thenReturn(SYMBOL);
-        when(bioEntityPropertyServiceMock.getFirstValueOfProperty(DESCRIPTION)).thenReturn(DESCRIPTION);
+        when(genePropertyServiceMock.getFirstValueOfProperty(SYMBOL)).thenReturn(SYMBOL);
+        when(genePropertyServiceMock.getFirstValueOfProperty(DESCRIPTION)).thenReturn(DESCRIPTION);
 
         subject = new GenePageController();
 
         subject.setBioEntityCardProperties(bioEntityCardProperties);
-        subject.setBioEntityPropertyService(bioEntityPropertyServiceMock);
+        subject.setGenePropertyService(genePropertyServiceMock);
         subject.setDifferentialGeneProfileService(differentialGeneProfileServiceMock);
         subject.setGenePagePropertyTypes(PROPERTY_TYPES);
     }

@@ -23,12 +23,9 @@
 package uk.ac.ebi.atlas.web.controllers.page;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import com.google.common.collect.SortedSetMultimap;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
 import org.springframework.context.annotation.Scope;
 import uk.ac.ebi.atlas.geneindex.SolrClient;
 import uk.ac.ebi.atlas.utils.UniProtClient;
@@ -43,9 +40,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.SortedSet;
 
-@Named("bioEntityPropertyService")
+@Named("proteinPropertyService")
 @Scope("request")
-public class BioEntityPropertyService {
+public class ProteinPropertyService implements BioEntityPropertyServiceInterface {
 
     private static final String PROPERTY_TYPE_DESCRIPTION = "description";
 
@@ -62,7 +59,7 @@ public class BioEntityPropertyService {
     private SortedSet<String> entityNames;
 
     @Inject
-    public BioEntityPropertyService(SolrClient solrClient, UniProtClient uniProtClient, BioEntityCardProperties bioEntityCardProperties) {
+    public ProteinPropertyService(SolrClient solrClient, UniProtClient uniProtClient, BioEntityCardProperties bioEntityCardProperties) {
         this.solrClient = solrClient;
         this.uniProtClient = uniProtClient;
         this.bioEntityCardProperties = bioEntityCardProperties;
@@ -79,11 +76,13 @@ public class BioEntityPropertyService {
         }
     }
 
+    @Override
     public String getSpecies(){
         return species;
     }
 
     //used in bioEntity.jsp
+    @Override
     public List<PropertyLink> getPropertyLinks(String propertyType) {
         if ("reactome".equals(propertyType)){
             addReactomePropertyValues();
@@ -96,11 +95,13 @@ public class BioEntityPropertyService {
         return propertyLinks;
     }
 
+    @Override
     public String getBioEntityDescription() {
         String description = getFirstValueOfProperty(PROPERTY_TYPE_DESCRIPTION);
         return StringUtils.substringBefore(description, "[");
     }
 
+    @Override
     public SortedSet<String> getEntityNames(){
         return entityNames;
     }
@@ -120,21 +121,10 @@ public class BioEntityPropertyService {
         }
     }
 
-    String transformOrthologToSymbol(String identifier) {
-        String species = solrClient.findSpeciesForGeneId(identifier);
-        species = StringUtils.capitalize(species);
-        List<String> valuesForGeneId = solrClient.findPropertyValuesForGeneId(identifier, "symbol");
-        if (!valuesForGeneId.isEmpty()) {
-            String symbol = valuesForGeneId.get(0);
-            return symbol + " (" + species + ")";
-        }
-        return identifier;
-    }
-
     PropertyLink createLink(String propertyType, String propertyValue, String species) {
         final String linkSpecies = species.replaceAll(" ", "_");
 
-        String linkText = getLinkText(propertyType, propertyValue);
+        String linkText =  propertyValue;
 
         String link = bioEntityCardProperties.getLinkTemplate(propertyType);
         if (link != null) {
@@ -149,14 +139,6 @@ public class BioEntityPropertyService {
             return new PropertyLink(linkText, link);
         }
         return new PropertyLink(linkText);
-    }
-
-    String getLinkText(String propertyType, String propertyValue) {
-        String displayName = propertyValue;
-        if (propertyType.equals("ortholog")) {
-            displayName = transformOrthologToSymbol(displayName);
-        }
-        return displayName;
     }
 
     String getEncodedString(String value) {

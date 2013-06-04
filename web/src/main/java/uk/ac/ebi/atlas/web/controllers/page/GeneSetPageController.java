@@ -22,34 +22,63 @@
 
 package uk.ac.ebi.atlas.web.controllers.page;
 
+import com.google.common.collect.Lists;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import uk.ac.ebi.atlas.geneindex.SolrQueryService;
+import uk.ac.ebi.atlas.utils.ReactomeBiomartClient;
 
-import java.util.Collections;
+import javax.inject.Inject;
 import java.util.List;
 
 @Controller
 @Scope("request")
 public class GeneSetPageController extends BioEntityPageController {
 
-    public static final String GENE_SET_NAME_PROPERTY_TYPE = "T0_BE_SPECIFIED";
+
+    private ReactomeBiomartClient reactomeBiomartClient;
+
+    private SolrQueryService solrServer;
+
+    private String geneSetPagePropertyTypes;
+
+    @Inject
+    public GeneSetPageController(ReactomeBiomartClient reactomeBiomartClient, SolrQueryService solrServer) {
+        this.reactomeBiomartClient = reactomeBiomartClient;
+        this.solrServer = solrServer;
+    }
+
+    @Value("#{configuration['index.types.genesetpage']}")
+    void setGeneSetPagePropertyTypes(String geneSetPagePropertyTypes) {
+        this.geneSetPagePropertyTypes = geneSetPagePropertyTypes;
+    }
 
     @RequestMapping(value = "/genesets/{identifier:.*}")
     public String showGenePage(@PathVariable String identifier, Model model) {
         return super.showGenePage(identifier, model);
+
+    }
+
+    @Override
+    protected void initModel(String identifier, Model model) {
+        model.addAttribute("species", solrServer.getSpeciesForPropertyValue(identifier));
+        model.addAttribute("names", Lists.newArrayList(identifier));
+        model.addAttribute("description", reactomeBiomartClient.fetchPathwayName(identifier));
     }
 
     @Override
     List<String> getPagePropertyTypes() {
-        return Collections.emptyList();
+        return Lists.newArrayList(geneSetPagePropertyTypes.split(","));
     }
 
     @Override
     String getEntityNamePropertyType() {
-        return GENE_SET_NAME_PROPERTY_TYPE;
+        throw new UnsupportedOperationException();
     }
+
 
 }
