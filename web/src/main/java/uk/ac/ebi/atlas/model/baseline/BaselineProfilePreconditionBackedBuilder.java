@@ -61,7 +61,7 @@ public class BaselineProfilePreconditionBackedBuilder {
                 .setFilterFactors(requestContext.getSelectedFilterFactors());
         baselineProfilePrecondition.setAllQueryFactors(requestContext.getAllQueryFactors())
                 .setSelectedQueryFactors(requestContext.getSelectedQueryFactors())
-                .setSpecific(requestContext.isSpecific());
+                .setSpecific(requestContext.isSpecific()).setGeneSetMatch(requestContext.isGeneSetMatch());
     }
 
     public BaselineProfilePreconditionBackedBuilder forGeneIdAndName(String geneId, String geneName) {

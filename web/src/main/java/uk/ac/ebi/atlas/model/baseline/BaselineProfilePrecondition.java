@@ -40,11 +40,16 @@ public class BaselineProfilePrecondition implements Predicate<BaselineProfile>, 
 
     private Set<Factor> allQueryFactors;
 
+    private boolean isGeneSetMatch;
+
     public BaselineProfilePrecondition() {
     }
 
     @Override
     public boolean apply(BaselineProfile baselineProfile) {
+
+        //We don't do any filtering on gene profile level for gene set
+        if(isGeneSetMatch) return true;
 
         if (baselineProfile.isEmpty()){
             return false;
@@ -84,4 +89,9 @@ public class BaselineProfilePrecondition implements Predicate<BaselineProfile>, 
         this.allQueryFactors = allQueryFactors;
         return this;
     }
+
+    BaselineProfilePrecondition setGeneSetMatch(boolean geneSetMatch) {
+           isGeneSetMatch = geneSetMatch;
+           return this;
+       }
 }

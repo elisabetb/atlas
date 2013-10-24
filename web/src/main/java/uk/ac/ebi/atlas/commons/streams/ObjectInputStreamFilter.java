@@ -46,9 +46,9 @@ public abstract class ObjectInputStreamFilter<T> implements ObjectInputStream<T>
 
         T object;
         while ((object = inputStream.readNext()) != null) {
-            if (getAcceptanceCriteria().apply(object)) {
+//            if (getAcceptanceCriteria().apply(object)) {
                 return object;
-            }
+//            }
         }
         return null;
     }
