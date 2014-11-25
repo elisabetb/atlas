@@ -155,10 +155,10 @@ public class BaselineExperimentAssayGroupSearchServiceIT {
         BaselineExperimentAssayGroup[] resultsArray = results.toArray(new BaselineExperimentAssayGroup[results.size()]);
 
         BaselineExperimentAssayGroup eMtab599 = resultsArray[3];
-        assertThat(eMtab599.getDefaultFactorsForSpecificAssayGroupsWithCondition(), contains(new Factor("ORGANISM_PART", "thymus", OntologyTerm.create("UBERON:0002370"))));
+        assertThat(eMtab599.getDefaultFactorsForSpecificAssayGroupsWithCondition(), contains(new Factor("ORGANISM_PART", "thymus", new OntologyTerm("UBERON:0002370"))));
 
         BaselineExperimentAssayGroup eMtab1733 = resultsArray[2];
-        assertThat(eMtab1733.getDefaultFactorsForSpecificAssayGroupsWithCondition(), contains(new Factor("ORGANISM_PART", "adipose tissue", OntologyTerm.create("UBERON:0001013"))));
+        assertThat(eMtab1733.getDefaultFactorsForSpecificAssayGroupsWithCondition(), contains(new Factor("ORGANISM_PART", "adipose tissue", new OntologyTerm("UBERON:0001013"))));
 
     }
 
@@ -176,7 +176,7 @@ public class BaselineExperimentAssayGroupSearchServiceIT {
 
         assertThat(experimentAccessions, contains("E-MTAB-1733"));
 
-        assertThat(eMtab1733.getDefaultFactorsForSpecificAssayGroupsWithCondition(), contains(new Factor("ORGANISM_PART", "heart", OntologyTerm.create("UBERON:0000948"))));
+        assertThat(eMtab1733.getDefaultFactorsForSpecificAssayGroupsWithCondition(), contains(new Factor("ORGANISM_PART", "heart", new OntologyTerm("UBERON:0000948"))));
     }
 
     @Test
@@ -266,10 +266,10 @@ public class BaselineExperimentAssayGroupSearchServiceIT {
         BaselineExperimentAssayGroup[] resultsArray = results.toArray(new BaselineExperimentAssayGroup[results.size()]);
 
         BaselineExperimentAssayGroup eMtab599 = resultsArray[0];
-        assertThat(eMtab599.getDefaultFactorsForSpecificAssayGroupsWithCondition(), contains(new Factor("ORGANISM_PART", "heart", OntologyTerm.create("UBERON:0000948"))));
+        assertThat(eMtab599.getDefaultFactorsForSpecificAssayGroupsWithCondition(), contains(new Factor("ORGANISM_PART", "heart", new OntologyTerm("UBERON:0000948"))));
 
         BaselineExperimentAssayGroup eMtab1733 = resultsArray[1];
-        assertThat(eMtab1733.getDefaultFactorsForSpecificAssayGroupsWithCondition(), contains(new Factor("ORGANISM_PART", "heart", OntologyTerm.create("UBERON:0000948"))));
+        assertThat(eMtab1733.getDefaultFactorsForSpecificAssayGroupsWithCondition(), contains(new Factor("ORGANISM_PART", "heart", new OntologyTerm("UBERON:0000948"))));
     }
 
     @Test
@@ -287,7 +287,7 @@ public class BaselineExperimentAssayGroupSearchServiceIT {
         BaselineExperimentAssayGroup[] resultsArray = results.toArray(new BaselineExperimentAssayGroup[results.size()]);
 
         BaselineExperimentAssayGroup eMtab599 = resultsArray[0];
-        assertThat(eMtab599.getDefaultFactorsForSpecificAssayGroupsWithCondition(), contains(new Factor("ORGANISM_PART", "heart", OntologyTerm.create("UBERON:0000948"))));
+        assertThat(eMtab599.getDefaultFactorsForSpecificAssayGroupsWithCondition(), contains(new Factor("ORGANISM_PART", "heart", new OntologyTerm("UBERON:0000948"))));
 
     }
 

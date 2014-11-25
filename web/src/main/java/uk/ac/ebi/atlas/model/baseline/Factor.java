@@ -24,10 +24,13 @@ package uk.ac.ebi.atlas.model.baseline;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableSet;
 import uk.ac.ebi.atlas.model.OntologyTerm;
+import uk.ac.ebi.atlas.utils.OntologyTermUtils;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -42,21 +45,28 @@ public class Factor implements Comparable<Factor>, Serializable {
 
     private final String value;
 
-    private final Optional<OntologyTerm> valueOntologyTerm;
+    private final Set<OntologyTerm> valueOntologyTerms;
 
     public Factor(String header, String value) {
-        this(header, value, Optional.<OntologyTerm>absent());
+        this(header, value, new ImmutableSet.Builder<OntologyTerm>().build());
     }
 
+    // TODO Think this over!
     public Factor(String header, String value, OntologyTerm valueOntologyTerm) {
-        this(header, value, Optional.of(valueOntologyTerm));
-    }
-
-    public Factor(String header, String value, Optional<OntologyTerm> valueOntologyTerm) {
         this.header = header;
         this.type = normalize(checkNotNull(header));
         this.value = checkNotNull(value);
-        this.valueOntologyTerm = valueOntologyTerm;
+
+        ImmutableSet.Builder<OntologyTerm> ontologyTermBuilder = new ImmutableSet.Builder<>();
+        ontologyTermBuilder.add(valueOntologyTerm);
+        this.valueOntologyTerms = ontologyTermBuilder.build();
+    }
+
+    public Factor(String header, String value, Set<OntologyTerm> valueOntologyTerms) {
+        this.header = header;
+        this.type = normalize(checkNotNull(header));
+        this.value = checkNotNull(value);
+        this.valueOntologyTerms = valueOntologyTerms;
     }
 
     public static String normalize(String type) {
@@ -78,11 +88,11 @@ public class Factor implements Comparable<Factor>, Serializable {
     }
 
     public @Nullable String getValueOntologyTermId() {
-        return valueOntologyTerm.isPresent() ? valueOntologyTerm.get().id() : null;
+        return valueOntologyTerms.isEmpty() ? null : OntologyTermUtils.joinIds(valueOntologyTerms);
     }
 
     public @Nullable String getValueOntologyTermUri() {
-        return valueOntologyTerm.isPresent() ? valueOntologyTerm.get().uri() : null;
+        return valueOntologyTerms.isEmpty() ? null : OntologyTermUtils.joinURIs(valueOntologyTerms);
     }
 
     @Override
@@ -104,7 +114,7 @@ public class Factor implements Comparable<Factor>, Serializable {
         return Objects.toStringHelper(this)
                 .add("type", type)
                 .add("value", value)
-                .add("valueOntologyTermId", valueOntologyTerm)
+                .add("valueOntologyTerms", valueOntologyTerms)
                 .toString();
     }
 
@@ -125,7 +135,7 @@ public class Factor implements Comparable<Factor>, Serializable {
         return result;
     }
 
-    public Optional<OntologyTerm> getValueOntologyTerm() {
-        return valueOntologyTerm;
+    public Set<OntologyTerm> getValueOntologyTerms() {
+        return valueOntologyTerms;
     }
 }
