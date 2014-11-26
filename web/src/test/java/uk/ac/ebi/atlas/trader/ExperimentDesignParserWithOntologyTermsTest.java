@@ -151,7 +151,8 @@ public class ExperimentDesignParserWithOntologyTermsTest {
 
         SampleCharacteristic sampleCharacteristic = experimentDesign.getSampleCharacteristic(ASSAY_ACCESSION_1, CHARACTERISTIC_3);
         Set<OntologyTerm> ontologyTermOptional = sampleCharacteristic.valueOntologyTerms();
-        assertThat(sampleCharacteristic, is(ASSAY_1_SAMPLE_CHARACTERISTIC_3));
+        assertThat(sampleCharacteristic.header().equals(ASSAY_1_SAMPLE_CHARACTERISTIC_3.header()), is (true));
+        assertThat(sampleCharacteristic.value().equals(ASSAY_1_SAMPLE_CHARACTERISTIC_3.value()), is (true));
         assertThat(ontologyTermOptional.isEmpty(), is(false));
         assertThat(OntologyTermUtils.joinIds(ontologyTermOptional), is(SPECIES_1_ONTOLOGY_ID));
         assertThat(OntologyTermUtils.joinSources(ontologyTermOptional), is(HTTP_OBO));
