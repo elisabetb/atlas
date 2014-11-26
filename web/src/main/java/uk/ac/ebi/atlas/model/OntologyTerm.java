@@ -47,7 +47,7 @@ public class OntologyTerm {
     }
 
     public String uri() {
-        return (source() == null) ? id() : addTrailingSlashIfAbsent(source()) + id();
+        return (source() == null || source().isEmpty()) ? id() : addTrailingSlashIfAbsent(source()) + id();
     }
 
     String addTrailingSlashIfAbsent(String s) {

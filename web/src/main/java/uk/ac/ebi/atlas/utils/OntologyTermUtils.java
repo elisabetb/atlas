@@ -11,9 +11,11 @@ public class OntologyTermUtils {
     public static String joinSources(Set<OntologyTerm> ontologyTerms) {
         StringBuilder sb = new StringBuilder();
         for (OntologyTerm ontologyTerm : ontologyTerms) {
-            sb.append(ontologyTerm.source() + ONTOLOGY_TERM_DELIMITER);
+            sb.append(ontologyTerm.source() == null ? "" : ontologyTerm.source() + ONTOLOGY_TERM_DELIMITER);
         }
-        sb.deleteCharAt(sb.length() - 1);
+        if (sb.length() > 0) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
 
         return sb.toString();
     }
@@ -21,9 +23,11 @@ public class OntologyTermUtils {
     public static String joinIds(Set<OntologyTerm> ontologyTerms) {
         StringBuilder sb = new StringBuilder();
         for (OntologyTerm ontologyTerm : ontologyTerms) {
-            sb.append(ontologyTerm.id() + ONTOLOGY_TERM_DELIMITER);
+            sb.append(ontologyTerm == null ? "" : ontologyTerm.id() + ONTOLOGY_TERM_DELIMITER);
         }
-        sb.deleteCharAt(sb.length() - 1);
+        if (sb.length() > 0) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
 
         return sb.toString();
     }
@@ -33,7 +37,9 @@ public class OntologyTermUtils {
         for (OntologyTerm ontologyTerm : ontologyTerms) {
             sb.append(ontologyTerm.uri() + ONTOLOGY_TERM_DELIMITER);
         }
-        sb.deleteCharAt(sb.length() - 1);
+        if (sb.length() > 0) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
 
         return sb.toString();
     }

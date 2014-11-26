@@ -57,7 +57,7 @@ public abstract class MageTabParser<T extends AbstractSDRFNode> {
     private static final Set<String> FACTORS_NEEDING_DOSE = Sets.newHashSet("compound", "irradiate");
 
     private static final String DOSE = "dose";
-    private static final String ONTOLOGY_TERM_DELIMITER = "|";
+    private static final String ONTOLOGY_TERM_DELIMITER = "\\|";
 
     private MageTabLimpopoUtils mageTabLimpopoUtils;
 
@@ -216,12 +216,26 @@ public abstract class MageTabParser<T extends AbstractSDRFNode> {
     }
 
     private Set<OntologyTerm> parseOntologyTerms(String accessionNumberField, String sourceRefField) {
+        ImmutableSet.Builder<OntologyTerm> ontologyTermsBuilder = new ImmutableSet.Builder<>();
+
+        if (accessionNumberField == null) {
+            return ontologyTermsBuilder.build();
+        }
+
         String[] accessionNumbers = accessionNumberField.split(ONTOLOGY_TERM_DELIMITER);
         String[] sourceRefs = sourceRefField.split(ONTOLOGY_TERM_DELIMITER);
 
-        ImmutableSet.Builder<OntologyTerm> ontologyTermsBuilder = new ImmutableSet.Builder<>();
+//        String[] sourceRefs = {};
+//        if (sourceRefField != null) {
+//            sourceRefs = sourceRefField.split(ONTOLOGY_TERM_DELIMITER);
+//        }
+//
+//        if (accessionNumbers.length != sourceRefs.length)
+
         for (int i = 0 ; i < accessionNumbers.length ; i++) {
-            ontologyTermsBuilder.add(new OntologyTerm(accessionNumbers[i], sourceRefs[i]));
+            if (!accessionNumbers[i].isEmpty()) {
+                ontologyTermsBuilder.add(new OntologyTerm(accessionNumbers[i], sourceRefs[i]));
+            }
         }
         return ontologyTermsBuilder.build();
     }
