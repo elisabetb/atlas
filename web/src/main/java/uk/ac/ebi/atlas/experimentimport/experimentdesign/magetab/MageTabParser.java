@@ -224,13 +224,6 @@ public abstract class MageTabParser<T extends AbstractSDRFNode> {
         String[] accessionNumbers = accessionNumberField.split(ONTOLOGY_TERM_DELIMITER);
         String[] sourceRefs = sourceRefField.split(ONTOLOGY_TERM_DELIMITER);
 
-//        String[] sourceRefs = {};
-//        if (sourceRefField != null) {
-//            sourceRefs = sourceRefField.split(ONTOLOGY_TERM_DELIMITER);
-//        }
-//
-//        if (accessionNumbers.length != sourceRefs.length)
-
         for (int i = 0 ; i < accessionNumbers.length ; i++) {
             if (!accessionNumbers[i].isEmpty()) {
                 ontologyTermsBuilder.add(new OntologyTerm(accessionNumbers[i], sourceRefs[i]));
