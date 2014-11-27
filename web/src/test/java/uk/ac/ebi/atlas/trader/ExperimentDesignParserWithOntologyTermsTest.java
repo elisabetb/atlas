@@ -198,7 +198,7 @@ public class ExperimentDesignParserWithOntologyTermsTest {
     }
 
     @Test
-    public void testGetSpeciesForAssays(){
+    public void testGetSpeciesForAssays() {
         ExperimentDesign experimentDesign = subject.parse(EXPERIMENT_ACCESSION);
         Set<String> species = experimentDesign.getSpeciesForAssays(Sets.newHashSet(ASSAY_ACCESSION_1, ASSAY_ACCESSION_2));
         assertThat(species, Matchers.containsInAnyOrder(SPECIES_1, SPECIES_2));

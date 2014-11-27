@@ -48,4 +48,22 @@ public class OntologyTerm {
         return (s.charAt(s.length() - 1) == '/' ? s : s + "/");
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (o instanceof OntologyTerm) {
+            OntologyTerm that = (OntologyTerm) o;
+            return (this.source == that.source && this.id == that.id);
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id.hashCode() ^ this.source.hashCode();
+    }
 }

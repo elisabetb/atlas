@@ -98,7 +98,7 @@ public class ExperimentDesignParser {
                 String sampleValue = line[sampleHeaderIndexes.get(sampleHeader)];
 
                 Integer sampleValueOntologyTermIndex = sampleValueOntologyTermHeaderIndexes.get(sampleHeader);
-                OntologyTerm[] sampleValueOntologyTerms = createOntologyTermOptional(line, sampleValueOntologyTermIndex);
+                OntologyTerm[] sampleValueOntologyTerms = createOntologyTerms(line, sampleValueOntologyTermIndex);
                 SampleCharacteristic sampleCharacteristic = SampleCharacteristic.create(sampleHeader, sampleValue, sampleValueOntologyTerms);
 
                 experimentDesign.putSampleCharacteristic(runOrAssay, sampleHeader, sampleCharacteristic);
@@ -108,7 +108,7 @@ public class ExperimentDesignParser {
                 String factorValue = line[factorHeaderIndexes.get(factorHeader)];
 
                 Integer factorValueOntologyTermIndex = factorValueOntologyTermHeaderIndexes.get(factorHeader);
-                OntologyTerm[] factorValueOntologyTerms = createOntologyTermOptional(line, factorValueOntologyTermIndex);
+                OntologyTerm[] factorValueOntologyTerms = createOntologyTerms(line, factorValueOntologyTermIndex);
 
                 experimentDesign.putFactor(runOrAssay, factorHeader, factorValue, factorValueOntologyTerms);
             }
@@ -117,7 +117,7 @@ public class ExperimentDesignParser {
         return experimentDesign;
     }
 
-    private OntologyTerm[] createOntologyTermOptional(String[] line, Integer ontologyTermIndex) {
+    private OntologyTerm[] createOntologyTerms(String[] line, Integer ontologyTermIndex) {
         if (ontologyTermIndex == null || line[ontologyTermIndex].isEmpty()) {
             return new OntologyTerm[0];
         }

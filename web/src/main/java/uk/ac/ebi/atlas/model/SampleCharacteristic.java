@@ -26,12 +26,10 @@ public abstract class SampleCharacteristic {
     public abstract String value();
     public abstract Set<OntologyTerm> valueOntologyTerms();
 
-    // TODO find usages and replace this call directly to OntologyTermUtils (?)
     public @Nullable String getValueOntologyTermId() {
         return valueOntologyTerms().isEmpty() ? null : OntologyTermUtils.joinIds(valueOntologyTerms());
     }
 
-    // TODO find usages and replace this call directly to OntologyTermUtils (?)
     public @Nullable String getValueOntologyTermUri() {
         return valueOntologyTerms().isEmpty() ? null : OntologyTermUtils.joinURIs(valueOntologyTerms());
     }
