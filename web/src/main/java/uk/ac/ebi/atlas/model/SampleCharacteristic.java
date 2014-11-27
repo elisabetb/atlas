@@ -1,7 +1,6 @@
 package uk.ac.ebi.atlas.model;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import uk.ac.ebi.atlas.utils.OntologyTermUtils;
 
@@ -15,20 +14,11 @@ public abstract class SampleCharacteristic {
         return create(header, value, new ImmutableSet.Builder<OntologyTerm>().build());
     }
 
-    // TODO Think this over, too!
-    public static SampleCharacteristic create(String header, String value, OntologyTerm ontologyTerm) {
-
-        ImmutableSet.Builder<OntologyTerm> ontologyTermBuilder = new ImmutableSet.Builder<>();
-        ontologyTermBuilder.add(ontologyTerm);
-        return create(header, value, ontologyTermBuilder.build());
+    public static SampleCharacteristic create(String header, String value, OntologyTerm ...  ontologyTerms) {
+        return create(header, value, new ImmutableSet.Builder<OntologyTerm>().add(ontologyTerms).build());
     }
 
-//    public static SampleCharacteristic create(String header, String value, Set<OntologyTerm> ontologyTerms) {
-//        Optional<OntologyTerm> ontologyTermOptional = (ontologyTerm == null) ? Optional.<OntologyTerm>absent() : Optional.of(ontologyTerm);
-//        return create(header, value, ontologyTermOptional);
-//    }
-
-    public static SampleCharacteristic create(String header, String value, Set<OntologyTerm> ontologyTerms) {
+    private static SampleCharacteristic create(String header, String value, Set<OntologyTerm> ontologyTerms) {
         return new AutoValue_SampleCharacteristic(header, value, ontologyTerms);
     }
 

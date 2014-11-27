@@ -22,7 +22,6 @@
 
 package uk.ac.ebi.atlas.experimentimport.experimentdesign.magetab;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
@@ -104,10 +103,6 @@ public class RnaSeqExperimentMageTabParserIT {
 
         Set<OntologyTerm> ontologyTermOptional = sampleCharacteristic.valueOntologyTerms();
 
-        // TODO Pass before remove
-        // assertThat(ontologyTermOptional.isPresent(), is(true));
-        // assertThat(ontologyTermOptional.get().id(), is("EFO_0000616"));
-        // assertThat(ontologyTermOptional.get().source(), is("EFO"));
         assertThat(ontologyTermOptional.isEmpty(), is(false));
         assertThat(OntologyTermUtils.joinIds(ontologyTermOptional), is("EFO_0000616"));
         assertThat(OntologyTermUtils.joinSources(ontologyTermOptional), is("EFO"));
@@ -154,10 +149,6 @@ public class RnaSeqExperimentMageTabParserIT {
 
         Factor organismPart = err030880.iterator().next();
         Set<OntologyTerm> valueOntologyTerm = organismPart.getValueOntologyTerms();
-        // TODO
-        // assertThat(valueOntologyTerm.isPresent(), is(true));
-        // assertThat(valueOntologyTerm.get().id(), is("UBERON:0001013"));
-        // assertThat(valueOntologyTerm.get().source(), is("UBERON"));
         assertThat(valueOntologyTerm.isEmpty(), is(false));
         assertThat(OntologyTermUtils.joinIds(valueOntologyTerm), is("UBERON:0001013"));
         assertThat(OntologyTermUtils.joinSources(valueOntologyTerm), is("UBERON"));

@@ -1,7 +1,5 @@
 package uk.ac.ebi.atlas.model;
 
-import com.google.common.base.Strings;
-
 import javax.annotation.Nullable;
 
 public class OntologyTerm {
@@ -32,10 +30,6 @@ public class OntologyTerm {
 
         return new String[] {uri.substring(0, finalSlash + 1), uri.substring(finalSlash + 1)};
     }
-
-//    public static OntologyTerm createOptional(String id, String source) {
-//        return Strings.isNullOrEmpty(id) ? Optional.<OntologyTerm>absent() : Optional.of(create(id, source));
-//    }
 
     public String id() {
         return id;

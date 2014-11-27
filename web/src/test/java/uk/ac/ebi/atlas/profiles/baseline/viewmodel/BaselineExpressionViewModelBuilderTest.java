@@ -46,7 +46,6 @@ public class BaselineExpressionViewModelBuilderTest {
         profile.add("ORGANISM_PART", new BaselineExpression(NT, new FactorSet(ADIPOSE)));
         profile.add("ORGANISM_PART", new BaselineExpression(0.3, new FactorSet(ADRENAL)));
 
-
         BaselineExpressionViewModel[] expressions = subject.buildExpressions(profile, orderedFactors, minExpressionLevel, maxExpressionLevel);
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();

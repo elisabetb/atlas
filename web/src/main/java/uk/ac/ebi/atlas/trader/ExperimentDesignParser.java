@@ -22,9 +22,7 @@
 
 package uk.ac.ebi.atlas.trader;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableSet;
-import org.apache.commons.lang3.StringUtils;
+import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import uk.ac.ebi.atlas.commons.readers.TsvReader;
@@ -100,7 +98,7 @@ public class ExperimentDesignParser {
                 String sampleValue = line[sampleHeaderIndexes.get(sampleHeader)];
 
                 Integer sampleValueOntologyTermIndex = sampleValueOntologyTermHeaderIndexes.get(sampleHeader);
-                Set<OntologyTerm> sampleValueOntologyTerms = createOntologyTermOptional(line, sampleValueOntologyTermIndex);
+                OntologyTerm[] sampleValueOntologyTerms = createOntologyTermOptional(line, sampleValueOntologyTermIndex);
                 SampleCharacteristic sampleCharacteristic = SampleCharacteristic.create(sampleHeader, sampleValue, sampleValueOntologyTerms);
 
                 experimentDesign.putSampleCharacteristic(runOrAssay, sampleHeader, sampleCharacteristic);
@@ -110,7 +108,7 @@ public class ExperimentDesignParser {
                 String factorValue = line[factorHeaderIndexes.get(factorHeader)];
 
                 Integer factorValueOntologyTermIndex = factorValueOntologyTermHeaderIndexes.get(factorHeader);
-                Set<OntologyTerm> factorValueOntologyTerms = createOntologyTermOptional(line, factorValueOntologyTermIndex);
+                OntologyTerm[] factorValueOntologyTerms = createOntologyTermOptional(line, factorValueOntologyTermIndex);
 
                 experimentDesign.putFactor(runOrAssay, factorHeader, factorValue, factorValueOntologyTerms);
             }
@@ -119,21 +117,18 @@ public class ExperimentDesignParser {
         return experimentDesign;
     }
 
-    private Set<OntologyTerm> createOntologyTermOptional(String[] line, Integer ontologyTermIndex) {
-        if (ontologyTermIndex == null) {
-            return new ImmutableSet.Builder<OntologyTerm>().build();
+    private OntologyTerm[] createOntologyTermOptional(String[] line, Integer ontologyTermIndex) {
+        if (ontologyTermIndex == null || line[ontologyTermIndex].isEmpty()) {
+            return new OntologyTerm[0];
         }
 
-        ImmutableSet.Builder<OntologyTerm> ontologyTermBuilder = new ImmutableSet.Builder<>();
+        ImmutableList.Builder<OntologyTerm> ontologyTermBuilder = new ImmutableList.Builder<>();
+
         String uriField = line[ontologyTermIndex];
-        if (StringUtils.isEmpty(uriField)) {
-            return ontologyTermBuilder.build();
-        }
-
         for (String uri : uriField.split(OntologyTermUtils.ONTOLOGY_TERM_DELIMITER)) {
             ontologyTermBuilder.add(OntologyTerm.createFromUri(uri));
         }
-        return ontologyTermBuilder.build();
+        return ontologyTermBuilder.build().toArray(new OntologyTerm[0]);
     }
 
     protected Map<String, Integer> extractHeaderIndexes(String[] columnHeaders, Pattern columnHeaderPattern) {

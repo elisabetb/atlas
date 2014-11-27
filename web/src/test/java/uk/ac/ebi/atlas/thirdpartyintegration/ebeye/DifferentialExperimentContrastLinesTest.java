@@ -1,6 +1,5 @@
 package uk.ac.ebi.atlas.thirdpartyintegration.ebeye;
 
-import com.google.common.base.Optional;
 import org.junit.Test;
 import uk.ac.ebi.atlas.model.AssayGroup;
 import uk.ac.ebi.atlas.model.ExperimentDesign;

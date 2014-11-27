@@ -57,7 +57,6 @@ public class AssayGroupFactorViewModelBuilderTest {
                 "]";
 
         assertThat(json, is(StringUtils.trimAllWhitespace(expected)));
-
     }
 
 }

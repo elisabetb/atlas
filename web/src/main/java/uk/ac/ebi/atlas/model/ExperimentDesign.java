@@ -22,7 +22,6 @@
 
 package uk.ac.ebi.atlas.model;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.*;
 import uk.ac.ebi.atlas.model.baseline.Factor;
 import uk.ac.ebi.atlas.model.baseline.impl.FactorSet;
@@ -80,20 +79,10 @@ public class ExperimentDesign implements Serializable {
     }
 
     public void putFactor(String runOrAssay, String factorHeader, String factorValue) {
-        putFactor(runOrAssay, factorHeader, factorValue, new ImmutableSet.Builder<OntologyTerm>().build());
+        putFactor(runOrAssay, factorHeader, factorValue, new OntologyTerm[0]);
     }
 
-    // TODO This is sort of ugly... refactor into one method or do it better
-    public void putFactor(String runOrAssay, String factorHeader, String factorValue, OntologyTerm factorOntologyTerm) {
-        Factor factor = new Factor(factorHeader, factorValue, factorOntologyTerm);
-        if(!factorSetMap.containsKey(runOrAssay)){
-            factorSetMap.put(runOrAssay, new FactorSet());
-        }
-        factorSetMap.get(runOrAssay).add(factor);
-        factorHeaders.add(factorHeader);
-    }
-
-    public void putFactor(String runOrAssay, String factorHeader, String factorValue, Set<OntologyTerm> factorOntologyTerms) {
+    public void putFactor(String runOrAssay, String factorHeader, String factorValue, OntologyTerm ... factorOntologyTerms) {
         Factor factor = new Factor(factorHeader, factorValue, factorOntologyTerms);
         if(!factorSetMap.containsKey(runOrAssay)){
             factorSetMap.put(runOrAssay, new FactorSet());

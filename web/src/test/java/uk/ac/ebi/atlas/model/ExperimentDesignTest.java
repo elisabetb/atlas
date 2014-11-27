@@ -1,7 +1,7 @@
 package uk.ac.ebi.atlas.model;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSetMultimap;
+import com.google.common.collect.SetMultimap;
 import org.junit.Test;
 import uk.ac.ebi.atlas.model.baseline.Factor;
 
@@ -39,8 +39,6 @@ public class ExperimentDesignTest {
 
     private static final String SAMPLE_VALUE1 = "SAMPLE_VALUE1";
     private static final String SAMPLE_VALUE2 = "SAMPLE_VALUE2";
-    private static final String SAMPLE_VALUE3 = "SAMPLE_VALUE3";
-    private static final String SAMPLE_VALUE4 = "SAMPLE_VALUE4";
 
     private static final String HTTP_OBO = "http://purl.obolibrary.org/obo/";
     private static final String SAMPLE_ONTOLOGY_ID1 = "S:1";
@@ -70,7 +68,7 @@ public class ExperimentDesignTest {
 
         assertThat(subject.getFactorValue(ASSAY1, FACTOR_HEADER), is(FACTOR_VALUE));
 
-        ImmutableSetMultimap<String, String> allOntologyTermIdsByAssayAccession = subject.getAllOntologyTermIdsByAssayAccession();
+        SetMultimap<String, String> allOntologyTermIdsByAssayAccession = subject.getAllOntologyTermIdsByAssayAccession();
         assertThat(allOntologyTermIdsByAssayAccession.keys().elementSet(), containsInAnyOrder(ASSAY1, ASSAY2));
         assertThat(allOntologyTermIdsByAssayAccession.get(ASSAY1), containsInAnyOrder(FACTOR_ONTOLOGY_TERM_ID1, FACTOR_ONTOLOGY_TERM_ID2));
         assertThat(allOntologyTermIdsByAssayAccession.get(ASSAY2), containsInAnyOrder(FACTOR_ONTOLOGY_TERM_ID1, FACTOR_ONTOLOGY_TERM_ID2, FACTOR_ONTOLOGY_TERM_ID3));

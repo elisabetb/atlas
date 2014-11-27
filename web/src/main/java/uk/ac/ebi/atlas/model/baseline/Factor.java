@@ -23,50 +23,32 @@
 package uk.ac.ebi.atlas.model.baseline;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import uk.ac.ebi.atlas.model.OntologyTerm;
 import uk.ac.ebi.atlas.utils.OntologyTermUtils;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class Factor implements Comparable<Factor>, Serializable {
 
     private final String header;
-
     private final String type;
-
     private final String value;
-
     private final Set<OntologyTerm> valueOntologyTerms;
 
     public Factor(String header, String value) {
-        this(header, value, new ImmutableSet.Builder<OntologyTerm>().build());
+        this(header, value, new OntologyTerm[0]);
     }
 
-    // TODO Think this over!
-    public Factor(String header, String value, OntologyTerm valueOntologyTerm) {
+    public Factor(String header, String value, OntologyTerm ... valueOntologyTerms) {
         this.header = header;
         this.type = normalize(checkNotNull(header));
         this.value = checkNotNull(value);
-
-        ImmutableSet.Builder<OntologyTerm> ontologyTermBuilder = new ImmutableSet.Builder<>();
-        ontologyTermBuilder.add(valueOntologyTerm);
-        this.valueOntologyTerms = ontologyTermBuilder.build();
-    }
-
-    public Factor(String header, String value, Set<OntologyTerm> valueOntologyTerms) {
-        this.header = header;
-        this.type = normalize(checkNotNull(header));
-        this.value = checkNotNull(value);
-        this.valueOntologyTerms = valueOntologyTerms;
+        this.valueOntologyTerms = new ImmutableSet.Builder<OntologyTerm>().add(valueOntologyTerms).build();
     }
 
     public static String normalize(String type) {
@@ -114,7 +96,7 @@ public class Factor implements Comparable<Factor>, Serializable {
         return Objects.toStringHelper(this)
                 .add("type", type)
                 .add("value", value)
-                .add("valueOntologyTerms", valueOntologyTerms)
+                .add("valueOntologyTerms", Arrays.asList(valueOntologyTerms))
                 .toString();
     }
 
@@ -137,5 +119,9 @@ public class Factor implements Comparable<Factor>, Serializable {
 
     public Set<OntologyTerm> getValueOntologyTerms() {
         return valueOntologyTerms;
+    }
+
+    public OntologyTerm[] getValueOntologyTermsAsArray() {
+        return valueOntologyTerms.toArray(new OntologyTerm[0]);
     }
 }

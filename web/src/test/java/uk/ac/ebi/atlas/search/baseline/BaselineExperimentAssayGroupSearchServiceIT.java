@@ -159,7 +159,6 @@ public class BaselineExperimentAssayGroupSearchServiceIT {
 
         BaselineExperimentAssayGroup eMtab1733 = resultsArray[2];
         assertThat(eMtab1733.getDefaultFactorsForSpecificAssayGroupsWithCondition(), contains(new Factor("ORGANISM_PART", "adipose tissue", new OntologyTerm("UBERON:0001013"))));
-
     }
 
     @Test
@@ -248,7 +247,6 @@ public class BaselineExperimentAssayGroupSearchServiceIT {
 
         assertThat(baselineExperimentAssayGroups, hasSize(1));
         assertThat(searchResult.getFilterFactors().size(), is(0));
-
     }
 
     @Test

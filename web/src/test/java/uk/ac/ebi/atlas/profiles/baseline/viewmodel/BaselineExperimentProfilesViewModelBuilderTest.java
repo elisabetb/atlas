@@ -159,7 +159,6 @@ public class BaselineExperimentProfilesViewModelBuilderTest {
                 "}";
 
         assertThat(json, is(expected));
-
     }
 
 }

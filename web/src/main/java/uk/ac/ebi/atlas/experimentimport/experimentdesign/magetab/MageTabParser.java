@@ -23,7 +23,6 @@
 package uk.ac.ebi.atlas.experimentimport.experimentdesign.magetab;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -126,7 +125,7 @@ public abstract class MageTabParser<T extends AbstractSDRFNode> {
     private void addCharacteristicToExperimentDesign(ExperimentDesign experimentDesign, String runOrAssay, CharacteristicsAttribute characteristicsAttribute) {
         String header = characteristicsAttribute.type;
         String value = cleanValueAndUnitIfNeeded(characteristicsAttribute.getNodeName(), characteristicsAttribute.unit);
-        Set<OntologyTerm> characteristicOntologyTerms = parseOntologyTerms(characteristicsAttribute.termAccessionNumber, characteristicsAttribute.termSourceREF);
+        OntologyTerm[] characteristicOntologyTerms = parseOntologyTerms(characteristicsAttribute.termAccessionNumber, characteristicsAttribute.termSourceREF);
 
         SampleCharacteristic sampleCharacteristic = SampleCharacteristic.create(header, value, characteristicOntologyTerms);
         experimentDesign.putSampleCharacteristic(runOrAssay, header, sampleCharacteristic);
@@ -215,11 +214,11 @@ public abstract class MageTabParser<T extends AbstractSDRFNode> {
         return value;
     }
 
-    private Set<OntologyTerm> parseOntologyTerms(String accessionNumberField, String sourceRefField) {
+    private OntologyTerm[] parseOntologyTerms(String accessionNumberField, String sourceRefField) {
         ImmutableSet.Builder<OntologyTerm> ontologyTermsBuilder = new ImmutableSet.Builder<>();
 
         if (accessionNumberField == null) {
-            return ontologyTermsBuilder.build();
+            return ontologyTermsBuilder.build().toArray(new OntologyTerm[0]);
         }
 
         String[] accessionNumbers = accessionNumberField.split(ONTOLOGY_TERM_DELIMITER);
@@ -237,7 +236,7 @@ public abstract class MageTabParser<T extends AbstractSDRFNode> {
                 ontologyTermsBuilder.add(new OntologyTerm(accessionNumbers[i], sourceRefs[i]));
             }
         }
-        return ontologyTermsBuilder.build();
+        return ontologyTermsBuilder.build().toArray(new OntologyTerm[0]);
     }
 
     protected abstract List<FactorValueAttribute> getFactorAttributes(NamedSdrfNode<T> sdrfNodeWrapper);
