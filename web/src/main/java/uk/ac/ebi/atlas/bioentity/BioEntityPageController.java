@@ -29,6 +29,9 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.collect.SortedSetMultimap;
 import org.springframework.ui.Model;
+import uk.ac.ebi.atlas.bioentity.go.GoPoTerm;
+import uk.ac.ebi.atlas.bioentity.go.GoTermTrader;
+import uk.ac.ebi.atlas.bioentity.go.PoTermTrader;
 import uk.ac.ebi.atlas.bioentity.properties.BioEntityCardProperties;
 import uk.ac.ebi.atlas.bioentity.properties.BioEntityPropertyDao;
 import uk.ac.ebi.atlas.bioentity.properties.BioEntityPropertyService;
@@ -73,6 +76,10 @@ public abstract class BioEntityPageController {
 
     private ExperimentTrader experimentTrader;
 
+    private GoTermTrader goTermTrader;
+
+    private PoTermTrader poTermTrader;
+
     private DiffAnalyticsSearchService diffAnalyticsSearchService;
 
     private BaselineExperimentAssayGroupSearchService baselineExperimentAssayGroupSearchService;
@@ -97,6 +104,16 @@ public abstract class BioEntityPageController {
     @Inject
     public void setExperimentTrader(ExperimentTrader experimentTrader) {
         this.experimentTrader = experimentTrader;
+    }
+
+    @Inject
+    public void setGoTermTrader(GoTermTrader goTermTrader) {
+        this.goTermTrader = goTermTrader;
+    }
+
+    @Inject
+    public void setPoTermTrader(PoTermTrader poTermTrader) {
+        this.poTermTrader = poTermTrader;
     }
 
     @Inject
@@ -237,7 +254,17 @@ public abstract class BioEntityPageController {
         if (entityNames.isEmpty()) {
             entityNames.add(identifier);
         }
-        bioEntityPropertyService.init(species, propertyValuesByType, entityNames, identifier);
+
+        ImmutableSet.Builder <GoPoTerm> builder = new ImmutableSet.Builder<>();
+        for (String accession : propertyValuesByType.get("go")) {
+            builder.add(goTermTrader.getTerm(accession));
+        }
+        for (String accession : propertyValuesByType.get("po")) {
+            builder.add(poTermTrader.getTerm(accession));
+        }
+        ImmutableSet<GoPoTerm> goPoTerms = builder.build();
+
+        bioEntityPropertyService.init(species, propertyValuesByType, goPoTerms, entityNames, identifier);
     }
 
     protected boolean widgetHasBaselineProfiles(String experimentAccession, String species, Set<String> identifiers) throws GenesNotFoundException {

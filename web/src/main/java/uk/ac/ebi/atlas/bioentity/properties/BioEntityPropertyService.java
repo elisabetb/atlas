@@ -23,11 +23,15 @@
 package uk.ac.ebi.atlas.bioentity.properties;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.SortedSetMultimap;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Scope;
+import uk.ac.ebi.atlas.bioentity.go.GoPoTerm;
+import uk.ac.ebi.atlas.bioentity.go.GoTermTrader;
 import uk.ac.ebi.atlas.dao.ArrayDesignDao;
 import uk.ac.ebi.atlas.utils.UniProtClient;
 
@@ -44,13 +48,14 @@ public class BioEntityPropertyService {
 
     public static final String PROPERTY_TYPE_DESCRIPTION = "description";
 
+    private BioEntityPropertyDao bioEntityPropertyDao;
+    private UniProtClient uniProtClient;
+    private ArrayDesignDao arrayDesignDao;
     private final BioEntityPropertyLinkBuilder linkBuilder;
 
-    private BioEntityPropertyDao bioEntityPropertyDao;
-
-    private UniProtClient uniProtClient;
-
     private SortedSetMultimap<String, String> propertyValuesByType;
+
+    private Set<GoPoTerm> goPoTerms;
 
     private String species;
 
@@ -58,7 +63,6 @@ public class BioEntityPropertyService {
 
     private String identifier;
 
-    private ArrayDesignDao arrayDesignDao;
 
     @Inject
     public BioEntityPropertyService(BioEntityPropertyDao bioEntityPropertyDao, UniProtClient uniProtClient, BioEntityPropertyLinkBuilder linkBuilder, ArrayDesignDao arrayDesignDao) {
@@ -69,16 +73,21 @@ public class BioEntityPropertyService {
     }
 
     public void init(String species, SortedSetMultimap<String, String> propertyValuesByType, SortedSet<String> entityNames, String identifier) {
+        ImmutableSet.Builder<GoPoTerm> builder = new ImmutableSet.Builder<>();
+        init(species, propertyValuesByType, builder.build(), entityNames, identifier);
+    }
+
+    public void init(String species, SortedSetMultimap<String, String> propertyValuesByType, Set<GoPoTerm> goPoTerms, SortedSet<String> entityNames, String identifier) {
         this.species = species;
         this.propertyValuesByType = propertyValuesByType;
         this.entityNames = entityNames;
         this.identifier = identifier;
+        this.goPoTerms = goPoTerms;
 
         // this is to add mirbase sequence for ENSEMBL mirnas
         if (propertyValuesByType.containsKey("mirbase_id") && !propertyValuesByType.containsKey("mirbase_sequence")) {
             addMirBaseSequence();
         }
-
     }
 
     public String getSpecies() {
@@ -138,6 +147,16 @@ public class BioEntityPropertyService {
             }
         }
     }
+//
+//    private void mapGoAccessionsByDepth() {
+//        ImmutableMultimap.Builder<Integer, String> builder = new ImmutableMultimap.Builder<>();
+//
+//        for (String goAccession : propertyValuesByType.get("go")) {
+//            builder.put(goTermTrader.getDepth(goAccession), goAccession);
+//        }
+//
+//        goAccessionsByDepth = builder.build();
+//    }
 
 }
 
