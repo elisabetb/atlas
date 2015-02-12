@@ -131,11 +131,13 @@ public class BioEntityPropertyService {
     private List<PropertyLink> fetchRelevantGoLinks(int includeAtLeast) {
         List<PropertyLink> propertyLinks = Lists.newArrayList();
 
-        for (int i = Collections.max(depthToGoTerms.keySet()) ; i >= 1 && propertyLinks.size() < includeAtLeast; i--) {
-            for (GoPoTerm goPoTerm : depthToGoTerms.get(i)) {
-                Optional<PropertyLink> link = linkBuilder.createLink(identifier, "go", goPoTerm.accession(), species);
-                if (link.isPresent()) {
-                    propertyLinks.add(link.get());
+        if (!depthToGoTerms.isEmpty()) {
+            for (int i = Collections.max(depthToGoTerms.keySet()) ; i >= 1 && propertyLinks.size() < includeAtLeast; i--) {
+                for (GoPoTerm goPoTerm : depthToGoTerms.get(i)) {
+                    Optional<PropertyLink> link = linkBuilder.createLink(identifier, "go", goPoTerm.accession(), species);
+                    if (link.isPresent()) {
+                        propertyLinks.add(link.get());
+                    }
                 }
             }
         }
@@ -146,11 +148,13 @@ public class BioEntityPropertyService {
     private List<PropertyLink> fetchGoLinksOrderedByDepth() {
         List<PropertyLink> propertyLinks = Lists.newArrayList();
 
-        for (int i = Collections.max(depthToGoTerms.keySet()) ; i >= 1 ; i--) {
-            for (GoPoTerm goPoTerm : depthToGoTerms.get(i)) {
-                Optional<PropertyLink> link = linkBuilder.createLink(identifier, "go", goPoTerm.accession(), species);
-                if (link.isPresent()) {
-                    propertyLinks.add(link.get());
+        if (!depthToGoTerms.isEmpty()) {
+            for (int i = Collections.max(depthToGoTerms.keySet()) ; i >= 1 ; i--) {
+                for (GoPoTerm goPoTerm : depthToGoTerms.get(i)) {
+                    Optional<PropertyLink> link = linkBuilder.createLink(identifier, "go", goPoTerm.accession(), species);
+                    if (link.isPresent()) {
+                        propertyLinks.add(link.get());
+                    }
                 }
             }
         }
@@ -162,13 +166,15 @@ public class BioEntityPropertyService {
     private List<PropertyLink> fetchRelevantPoLinks(int maxLinkCount) {
         List<PropertyLink> propertyLinks = Lists.newArrayList();
 
-        for (GoPoTerm goPoTerm : depthToPoTerms.values()) {
-            Optional<PropertyLink> link = linkBuilder.createLink(identifier, "po", goPoTerm.accession(), species);
-            if (link.isPresent()) {
-                propertyLinks.add(link.get());
-            }
-            if (propertyLinks.size() >= maxLinkCount) {
-                break;
+        if (!depthToPoTerms.isEmpty()) {
+            for (GoPoTerm goPoTerm : depthToPoTerms.values()) {
+                Optional<PropertyLink> link = linkBuilder.createLink(identifier, "po", goPoTerm.accession(), species);
+                if (link.isPresent()) {
+                    propertyLinks.add(link.get());
+                }
+                if (propertyLinks.size() >= maxLinkCount) {
+                    break;
+                }
             }
         }
 
@@ -178,11 +184,13 @@ public class BioEntityPropertyService {
     private List<PropertyLink> fetchPoLinksOrderedByDepth() {
         List<PropertyLink> propertyLinks = Lists.newArrayList();
 
-        for (int i = Collections.max(depthToPoTerms.keySet()) ; i >= 1 ; i--) {
-            for (GoPoTerm goPoTerm : depthToPoTerms.get(i)) {
-                Optional<PropertyLink> link = linkBuilder.createLink(identifier, "po", goPoTerm.accession(), species);
-                if (link.isPresent()) {
-                    propertyLinks.add(link.get());
+            if (!depthToPoTerms.isEmpty()) {
+            for (int i = Collections.max(depthToPoTerms.keySet()) ; i >= 1 ; i--) {
+                for (GoPoTerm goPoTerm : depthToPoTerms.get(i)) {
+                    Optional<PropertyLink> link = linkBuilder.createLink(identifier, "po", goPoTerm.accession(), species);
+                    if (link.isPresent()) {
+                        propertyLinks.add(link.get());
+                    }
                 }
             }
         }
