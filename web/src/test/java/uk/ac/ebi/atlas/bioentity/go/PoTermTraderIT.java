@@ -29,4 +29,8 @@ public class PoTermTraderIT {
         assertThat(subject.getTermName("PO:0030087"), is("non-vascular leaf initial cell"));
     }
 
+    @Test
+    public void termsWithoutDepthColumnHaveDepth1() {
+        assertThat(subject.getDepth("PO:0030087"), is(1));
+    }
 }

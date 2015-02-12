@@ -34,4 +34,8 @@ public class GoTermTraderIT {
         assertThat(subject.getTermName("GO:0003674"), is("molecular function"));
     }
 
+    @Test
+    public void repeatedTermHasMinimumDepth() {
+        assertThat(subject.getDepth("GO:0000022"), is(6));
+    }
 }
