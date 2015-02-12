@@ -23,24 +23,17 @@
 package uk.ac.ebi.atlas.bioentity.properties;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.SortedSetMultimap;
+import com.google.common.collect.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Scope;
 import uk.ac.ebi.atlas.bioentity.go.GoPoTerm;
-import uk.ac.ebi.atlas.bioentity.go.GoTermTrader;
 import uk.ac.ebi.atlas.dao.ArrayDesignDao;
 import uk.ac.ebi.atlas.utils.UniProtClient;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
 
 @Named("bioEntityPropertyService")
 @Scope("request")
@@ -55,7 +48,8 @@ public class BioEntityPropertyService {
 
     private SortedSetMultimap<String, String> propertyValuesByType;
 
-    private Set<GoPoTerm> goPoTerms;
+    private Multimap<Integer, GoPoTerm> depthToGoTerms;
+    private Multimap<Integer, GoPoTerm> depthToPoTerms;
 
     private String species;
 
@@ -73,16 +67,17 @@ public class BioEntityPropertyService {
     }
 
     public void init(String species, SortedSetMultimap<String, String> propertyValuesByType, SortedSet<String> entityNames, String identifier) {
-        ImmutableSet.Builder<GoPoTerm> builder = new ImmutableSet.Builder<>();
-        init(species, propertyValuesByType, builder.build(), entityNames, identifier);
+        ImmutableMultimap.Builder<Integer, GoPoTerm> builder = new ImmutableMultimap.Builder<>();
+        init(species, propertyValuesByType, builder.build(), builder.build(), entityNames, identifier);
     }
 
-    public void init(String species, SortedSetMultimap<String, String> propertyValuesByType, Set<GoPoTerm> goPoTerms, SortedSet<String> entityNames, String identifier) {
+    public void init(String species, SortedSetMultimap<String, String> propertyValuesByType, Multimap<Integer, GoPoTerm> goTerms, Multimap<Integer, GoPoTerm> poTerms, SortedSet<String> entityNames, String identifier) {
         this.species = species;
         this.propertyValuesByType = propertyValuesByType;
         this.entityNames = entityNames;
         this.identifier = identifier;
-        this.goPoTerms = goPoTerms;
+        this.depthToGoTerms = goTerms;
+        this.depthToPoTerms = poTerms;
 
         // this is to add mirbase sequence for ENSEMBL mirnas
         if (propertyValuesByType.containsKey("mirbase_id") && !propertyValuesByType.containsKey("mirbase_sequence")) {
@@ -108,6 +103,90 @@ public class BioEntityPropertyService {
                 propertyLinks.add(link.get());
             }
         }
+        return propertyLinks;
+    }
+
+    public List<PropertyLink> fetchRelevantGoPoLinks(String ontology, int includeAtLeast) {
+        switch (ontology) {
+            case "go":
+                return fetchRelevantGoLinks(includeAtLeast);
+            case "po":
+                return fetchRelevantPoLinks(includeAtLeast);
+            default:
+                return new ImmutableList.Builder<PropertyLink>().build();
+        }
+    }
+
+    public List<PropertyLink> fetchGoPoLinksOrderedByDepth(String ontology) {
+        switch (ontology) {
+            case "go":
+                return fetchGoLinksOrderedByDepth();
+            case "po":
+                return fetchPoLinksOrderedByDepth();
+            default:
+                return new ImmutableList.Builder<PropertyLink>().build();
+        }
+    }
+
+    private List<PropertyLink> fetchRelevantGoLinks(int includeAtLeast) {
+        List<PropertyLink> propertyLinks = Lists.newArrayList();
+
+        for (int i = Collections.max(depthToGoTerms.keySet()) ; i >= 1 && propertyLinks.size() < includeAtLeast; i--) {
+            for (GoPoTerm goPoTerm : depthToGoTerms.get(i)) {
+                Optional<PropertyLink> link = linkBuilder.createLink(identifier, "go", goPoTerm.accession(), species);
+                if (link.isPresent()) {
+                    propertyLinks.add(link.get());
+                }
+            }
+        }
+
+        return propertyLinks;
+    }
+
+    private List<PropertyLink> fetchGoLinksOrderedByDepth() {
+        List<PropertyLink> propertyLinks = Lists.newArrayList();
+
+        for (int i = Collections.max(depthToGoTerms.keySet()) ; i >= 1 ; i--) {
+            for (GoPoTerm goPoTerm : depthToGoTerms.get(i)) {
+                Optional<PropertyLink> link = linkBuilder.createLink(identifier, "go", goPoTerm.accession(), species);
+                if (link.isPresent()) {
+                    propertyLinks.add(link.get());
+                }
+            }
+        }
+
+        return propertyLinks;
+    }
+
+    // We don’t have depth information so far for PO. Once we do, remove this comment and apply the same logic as in GO
+    private List<PropertyLink> fetchRelevantPoLinks(int maxLinkCount) {
+        List<PropertyLink> propertyLinks = Lists.newArrayList();
+
+        for (GoPoTerm goPoTerm : depthToPoTerms.values()) {
+            Optional<PropertyLink> link = linkBuilder.createLink(identifier, "po", goPoTerm.accession(), species);
+            if (link.isPresent()) {
+                propertyLinks.add(link.get());
+            }
+            if (propertyLinks.size() >= maxLinkCount) {
+                break;
+            }
+        }
+
+        return propertyLinks;
+    }
+
+    private List<PropertyLink> fetchPoLinksOrderedByDepth() {
+        List<PropertyLink> propertyLinks = Lists.newArrayList();
+
+        for (int i = Collections.max(depthToPoTerms.keySet()) ; i >= 1 ; i--) {
+            for (GoPoTerm goPoTerm : depthToPoTerms.get(i)) {
+                Optional<PropertyLink> link = linkBuilder.createLink(identifier, "po", goPoTerm.accession(), species);
+                if (link.isPresent()) {
+                    propertyLinks.add(link.get());
+                }
+            }
+        }
+
         return propertyLinks;
     }
 
@@ -147,16 +226,5 @@ public class BioEntityPropertyService {
             }
         }
     }
-//
-//    private void mapGoAccessionsByDepth() {
-//        ImmutableMultimap.Builder<Integer, String> builder = new ImmutableMultimap.Builder<>();
-//
-//        for (String goAccession : propertyValuesByType.get("go")) {
-//            builder.put(goTermTrader.getDepth(goAccession), goAccession);
-//        }
-//
-//        goAccessionsByDepth = builder.build();
-//    }
-
 }
 

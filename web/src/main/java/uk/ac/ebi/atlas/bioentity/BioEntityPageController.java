@@ -24,10 +24,7 @@ package uk.ac.ebi.atlas.bioentity;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.common.collect.SortedSetMultimap;
+import com.google.common.collect.*;
 import org.springframework.ui.Model;
 import uk.ac.ebi.atlas.bioentity.go.GoPoTerm;
 import uk.ac.ebi.atlas.bioentity.go.GoTermTrader;
@@ -255,16 +252,10 @@ public abstract class BioEntityPageController {
             entityNames.add(identifier);
         }
 
-        ImmutableSet.Builder <GoPoTerm> builder = new ImmutableSet.Builder<>();
-        for (String accession : propertyValuesByType.get("go")) {
-            builder.add(goTermTrader.getTerm(accession));
-        }
-        for (String accession : propertyValuesByType.get("po")) {
-            builder.add(poTermTrader.getTerm(accession));
-        }
-        ImmutableSet<GoPoTerm> goPoTerms = builder.build();
+        ImmutableSetMultimap<Integer, GoPoTerm> goTerms = mapGoTermsByDepth(propertyValuesByType.get("go"));
+        ImmutableSetMultimap<Integer, GoPoTerm> poTerms = mapPoTermsByDepth(propertyValuesByType.get("po"));
 
-        bioEntityPropertyService.init(species, propertyValuesByType, goPoTerms, entityNames, identifier);
+        bioEntityPropertyService.init(species, propertyValuesByType, goTerms, poTerms, entityNames, identifier);
     }
 
     protected boolean widgetHasBaselineProfiles(String experimentAccession, String species, Set<String> identifiers) throws GenesNotFoundException {
@@ -286,4 +277,25 @@ public abstract class BioEntityPageController {
         return (baselineProfiles.size() > 0);
     }
 
+
+    protected ImmutableSetMultimap<Integer, GoPoTerm> mapGoTermsByDepth(Set<String> accessions) {
+        ImmutableSetMultimap.Builder<Integer, GoPoTerm> builder = new ImmutableSetMultimap.Builder<>();
+
+        for (String accession : accessions) {
+            builder.put(goTermTrader.getDepth(accession), goTermTrader.getTerm(accession));
+        }
+
+        return builder.build();
+    }
+
+
+    protected ImmutableSetMultimap<Integer, GoPoTerm> mapPoTermsByDepth(Set<String> accessions) {
+        ImmutableSetMultimap.Builder<Integer, GoPoTerm> builder = new ImmutableSetMultimap.Builder<>();
+
+        for (String accession : accessions) {
+            builder.put(poTermTrader.getDepth(accession), poTermTrader.getTerm(accession));
+        }
+
+        return builder.build();
+    }
 }
