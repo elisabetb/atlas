@@ -42,6 +42,15 @@ public class BaselineExperiment extends Experiment {
                        String description, String displayName,
                        Set<String> organisms, String kingdom, Map<String, String> speciesMapping,
                        boolean hasExtraInfoFile, Set<String> pubMedIds,
+                       ExperimentDesign experimentDesign, AssayGroups assayGroups) {
+        this(accession, lastUpdate, experimentalFactors, description, displayName, organisms, kingdom, speciesMapping,
+                hasExtraInfoFile, pubMedIds, experimentDesign,  assayGroups, "", "");
+    }
+
+    BaselineExperiment(String accession, Date lastUpdate, ExperimentalFactors experimentalFactors,
+                       String description, String displayName,
+                       Set<String> organisms, String kingdom, Map<String, String> speciesMapping,
+                       boolean hasExtraInfoFile, Set<String> pubMedIds,
                        ExperimentDesign experimentDesign, AssayGroups assayGroups, String dataProviderURL, String dataProviderDescription) {
         this(ExperimentType.RNASEQ_MRNA_BASELINE, accession, lastUpdate, experimentalFactors,
                 description, displayName, organisms, kingdom, speciesMapping,
@@ -53,6 +62,15 @@ public class BaselineExperiment extends Experiment {
                        String description, String displayName,
                        Set<String> organisms, String kingdom, Map<String, String> speciesMapping,
                        boolean hasExtraInfoFile, Set<String> pubMedIds,
+                       ExperimentDesign experimentDesign, AssayGroups assayGroups) {
+        this(experimentType, accession, lastUpdate, experimentalFactors, description, displayName, organisms, kingdom, speciesMapping,
+                hasExtraInfoFile, pubMedIds, experimentDesign, assayGroups, "", "");
+    }
+
+    BaselineExperiment(ExperimentType experimentType, String accession, Date lastUpdate, ExperimentalFactors experimentalFactors,
+            String description, String displayName,
+            Set < String > organisms, String kingdom, Map < String, String > speciesMapping,
+        boolean hasExtraInfoFile, Set<String> pubMedIds,
                        ExperimentDesign experimentDesign, AssayGroups assayGroups, String dataProviderURL, String dataProviderDescription) {
 
         super(experimentType, accession, lastUpdate, displayName, description,
