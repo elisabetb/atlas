@@ -111,7 +111,7 @@
                     <c:set var="speciesColorCode" value="red"/>
                 </c:when>
                 <c:when test="${specie == 'Pongo pygmaeus'}">
-                    <c:set var="speciesIconCode" value="X"/>
+                    <c:set var="speciesIconCode" value=""/>
                     <c:set var="speciesColorCode" value="red"/>
                 </c:when>
                 <c:when test="${specie == 'Rattus norvegicus'}">
