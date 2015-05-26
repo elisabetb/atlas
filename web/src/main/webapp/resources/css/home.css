@@ -31,3 +31,8 @@
 #species-nav .specie_item span.red:before {color:#d9534f;} /*animal*/
 #species-nav .specie_item span.green:before {color:#5cb85c;}/*plants*/
 #species-nav .specie_item span.blue:before {color:#5bc0de;}/*other*/
+/*FEED NEWS*/
+.bloc_blog  ul {padding: 0 9px;}
+.bloc_blog ul li {list-style: none;}
+.bloc_blog .rssRow div  {color:#777; font-size: 90%;}
+.bloc_blog h3 { margin: 9px 0; clear: both; line-height:1.2;}
