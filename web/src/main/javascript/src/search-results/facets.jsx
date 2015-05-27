@@ -50,9 +50,9 @@ var Facets = React.createClass({
         }.bind(this));
 
         return (
-            <ul>
+            <div className="filter_container hidden-xs"><h3>Filter your results</h3>
                         {facets}
-            </ul>
+            </div>
         );
     }
 });
@@ -87,12 +87,12 @@ var Facet = React.createClass({
         }.bind(this));
 
         return (
-            <li className="atlasAnalyticsSearchFacet">
-                <span>{this.props.facetName}</span>
-                <ul>
+            <div className="facet_item atlasAnalyticsSearchFacet">
+                <h4>{this.props.facetName}</h4>
+                <ul >
                             {facetItems}
                 </ul>
-            </li>
+            </div>
         );
     }
 });
