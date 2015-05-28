@@ -10,6 +10,9 @@
 #search_result_pg #atlasAnalyticsSearchFacetContainer .filter_container {padding:9px;}
 #search_result_pg #atlasAnalyticsSearchFacetContainer .filter_container h3 {padding-left:0;}
 #search_result_pg #atlasAnalyticsSearchFacetContainer .filter_container .facet_item {padding:0 0 9px 0;}
+#search_result_pg #atlasAnalyticsSearchFacetContainer .filter_container .facet_item ul li span {display:inline-block;/*IMPORTANT TO KEEP FOR SPAN make first-letter work*/ }
+#search_result_pg #atlasAnalyticsSearchFacetContainer .filter_container .facet_item ul li span:first-letter  {text-transform: capitalize;}
+#search_result_pg #atlasAnalyticsSearchFacetContainer .filter_container .facet_item:nth-child(3) ul li span {font-style: italic;} /*target species facet*/
 #search_result_pg #atlasAnalyticsSearchFacetContainer .filter_container .facet_item h4 {font-weight: bold;font-size: 144%;text-transform: capitalize; padding-left:0;  margin-bottom: 9px;}
 #search_result_pg #atlasAnalyticsSearchFacetContainer .filter_container ul li  {padding:1px 0; }
 /*Responsive*/
@@ -17,7 +20,7 @@
     .hidden-xs {display: none!important;} /*remove column like filter for small devices*/
 }
 /*TABLE*/
-#search_result_pg #atlasAnalyticsSearchDiffResultsContainer {border:0px hotpink solid;}
+#search_result_pg #atlasAnalyticsSearchDiffResultsContainer {border:0px green solid;}
 #search_result_pg #atlasAnalyticsSearchDiffResultsContainer table { border:0px hotpink solid;}
 #search_result_pg #atlasAnalyticsSearchDiffResultsContainer table th {font-size: 90%; border-top: 0px red solid;border-left: 0px red solid; border-right: 0px red solid; border-bottom: 2px solid #ddd;vertical-align: bottom;}
 #search_result_pg #atlasAnalyticsSearchDiffResultsContainer table tr:nth-child(even) {background-color: #f9f9f9;}
