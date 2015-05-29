@@ -28,54 +28,79 @@
 
 <c:set var="thisPage" value="${requestScope['javax.servlet.forward.request_uri']}"/>
 
-<div id="help-placeholder" style="display: none"></div>
+<div id="search_result_pg">
 
-<section class="grid_23 gxaExtraPadding">
+<div id="help-placeholder" style="display: none; "></div>
+
+<!-- Search box -->
+<section class="grid_24" style="margin-bottom:18px;">
     <%@ include file="includes/search-form.jsp" %>
 </section>
+<!-- /Search box -->
 
 <c:if test="${not empty searchDescription}" >
-    <section class="grid_23 gxaExtraPadding">
-        <section class="grid_12 alpha gxaExtraPadding">
-            <c:if test="${hasBaselineResults}">
-                <a href="${pageContext.request.contextPath}/search?geneQuery=${geneQuery.asUrlQueryParameter()}">Baseline</a>
-            </c:if>
-            <c:if test="${!hasBaselineResults}">
-                Baseline (no results)
-            </c:if>
-        </section>
 
-        <section class="grid_11 gxaExtraPadding">
-            <c:if test="${hasDifferentialResults}">
-                <div style="font-weight: bold">
-                    Differential
-                </div>
-            </c:if>
-            <c:if test="${!hasDifferentialResults}">
-                Differential (no results)
-            </c:if>
-        </section>
-    </section>
 
-    <section class="grid_17 alpha gxaExtraPadding">
-        <h5 class="strapline">
-            Differential results for <span class="searchterm">${searchDescription}</span>
-        </h5>
+    <!-- Simple page header -->
+    <div class="container">
+        <div class="page-header">
+            <h2 class="strapline">Search result for <span class="searchterm">"${searchDescription}"</span></h2>
+        </div>
+    <!--  <h:ebiGlobalSearch ebiSearchTerm="${applicationProperties.urlParamEncode(globalSearchTerm)}"/>-->
+    </div>
+    <!-- /Simple page header -->
 
-    </section>
-    <h:ebiGlobalSearch ebiSearchTerm="${applicationProperties.urlParamEncode(globalSearchTerm)}"/>
+
 </c:if>
 
 
-<section class="grid_23 gxaExtraPadding">
+<section class="grid_24">
 
-    <c:if test="${!hasDifferentialResults}">
-        No differential results
-    </c:if>
 
-    <div id="atlasAnalyticsSearchFacetContainer"></div>
-    <div id="atlasAnalyticsSearchDiffResultsContainer"></div>
+
+    <div class="grid_6 alpha" id="atlasAnalyticsSearchFacetContainer"></div>
+
+    <div class="grid_18 omega">
+
+        <div class="container">
+
+            <ul class="nav nav-tabs">
+                <c:if test="${hasBaselineResults}"><li title="Baseline experiments"><a data-toggle="tab" href="#baseline" >Baseline experiments</a></li></c:if>
+                <c:if test="${!hasBaselineResults}"><li title="Baseline experiments" class="disabled" >Baseline experiments</li></c:if>
+                <c:if test="${hasDifferentialResults}"><li title="Differential experiments" class="active"><a data-toggle="tab" href="#differential">Differential experiments</a></li></c:if>
+                <c:if test="${!hasDifferentialResults}"> <li title="Differential experiments" class="disabled">Differential experiments</li></c:if>
+            </ul>
+
+            <div class="tab-content">
+                <div id="baseline" class="tab-pane fade ">
+                    <c:if test="${!hasBaselineResults}"><p>No baseline results<p></c:if>
+                    <c:if test="${hasBaselineResults}">
+                    <h3>List of baseline experiments</h3>
+                    <p class="searchterm_det">Showing XX to XX of XX results</p>
+                    <div id="atlasAnalyticsSearchHeatmapsContainer"></div>
+                    </c:if>
+
+                </div>
+                <div id="differential" class="tab-pane fade in active">
+                    <c:if test="${!hasDifferentialResults}"><p>No differential results<p></c:if>
+                    <c:if test="${hasDifferentialResults}">
+                    <h3>List of differential experiments</h3>
+                    <p class="searchterm_det">Showing XX to XX of XX results</p> <a href="">b</a>
+                    <div  id="atlasAnalyticsSearchDiffResultsContainer" ></div>
+                    </c:if>
+                </div>
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+
 </section>
+
+</div><!-- /search_facet -->
 
 <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/facets.css" />
 
@@ -93,3 +118,10 @@
     </script>
 </c:if>
 
+<!-- absolute Link to bootstrap script - temp - make it relative-->
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<!-- Script to solve conflict between Bootstrap and Jquery https://github.com/twbs/bootstrap/issues/6094 -->
+<script>
+var btn = $.fn.button.noConflict() // reverts $.fn.button to jqueryui btn
+$.fn.btn = btn // assigns bootstrap button functionality to $.fn.btn
+</script>
