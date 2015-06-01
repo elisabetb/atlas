@@ -85,7 +85,7 @@
                     <c:if test="${!hasDifferentialResults}"><p>No differential results<p></c:if>
                     <c:if test="${hasDifferentialResults}">
                     <h3>List of differential experiments</h3>
-                    <p class="searchterm_det">Showing XX to XX of XX results</p> <a href="">b</a>
+                    <p class="searchterm_det">Showing XX to XX of XX results</p> <a href="${pageContext.request.contextPath}/search?geneQuery=${geneQuery.asUrlQueryParameter()}">base</a>
                     <div  id="atlasAnalyticsSearchDiffResultsContainer" ></div>
                     </c:if>
                 </div>
