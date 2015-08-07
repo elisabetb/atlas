@@ -122,7 +122,7 @@
         <constructor-arg ref="dataSourceOracle"/>
     </bean>
 
-    <!-- enables transactions where @Transaction annotations encounted -->
+    <!-- enables transactions where @Transaction annotations encountered -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

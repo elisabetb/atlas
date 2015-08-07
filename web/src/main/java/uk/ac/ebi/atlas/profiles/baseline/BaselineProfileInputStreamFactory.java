@@ -1,13 +1,15 @@
 package uk.ac.ebi.atlas.profiles.baseline;
 
 import au.com.bytecode.opencsv.CSVReader;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import uk.ac.ebi.atlas.model.baseline.BaselineExpression;
 import uk.ac.ebi.atlas.model.baseline.BaselineProfile;
 import uk.ac.ebi.atlas.model.baseline.Factor;
 import uk.ac.ebi.atlas.profiles.ExpressionProfileInputStream;
-import uk.ac.ebi.atlas.profiles.KryoReader;
+import uk.ac.ebi.atlas.profiles.BaselineExpressionsKryoReader;
 import uk.ac.ebi.atlas.utils.CsvReaderFactory;
 import uk.ac.ebi.atlas.utils.KryoReaderFactory;
 
@@ -16,14 +18,14 @@ import javax.inject.Named;
 import java.text.MessageFormat;
 import java.util.Set;
 
-@Named
+@Named("baselineProfileInputStreamFactory")
 @Scope("prototype")
 public class BaselineProfileInputStreamFactory {
 
     @Value("#{configuration['experiment.magetab.path.template']}")
     protected String baselineExperimentDataFileUrlTemplate;
 
-    @Value("#{configuration['experiment.serialized_expression.path.template']}")
+    @Value("#{configuration['experiment.kryo_expressions.path.template']}")
     protected String baselineExperimentSerializedDataFileUrlTemplate;
 
     private ExpressionsRowDeserializerBaselineBuilder expressionsRowDeserializerBaselineBuilder;
@@ -46,7 +48,6 @@ public class BaselineProfileInputStreamFactory {
         this.kryoReaderFactory = kryoReaderFactory;
     }
 
-    // TODO Try first with kryoReader, and if it fails (e.g. data isn’t serialized yet) use csvReader
     public ExpressionProfileInputStream<BaselineProfile, BaselineExpression> createBaselineProfileInputStream(String experimentAccession, String queryFactorType, double cutOff, Set<Factor> filterFactors) {
         IsBaselineExpressionAboveCutoffAndForFilterFactors baselineExpressionFilter = new IsBaselineExpressionAboveCutoffAndForFilterFactors();
         baselineExpressionFilter.setCutoff(cutOff);
@@ -54,18 +55,16 @@ public class BaselineProfileInputStreamFactory {
 
         BaselineProfileReusableBuilder baselineProfileReusableBuilder = new BaselineProfileReusableBuilder(baselineExpressionFilter, queryFactorType);
 
-        String tsvFileURL = MessageFormat.format(baselineExperimentDataFileUrlTemplate, experimentAccession);
-        CSVReader csvReader = csvReaderFactory.createTsvReader(tsvFileURL);
-
         String serializedFileURL = MessageFormat.format(baselineExperimentSerializedDataFileUrlTemplate, experimentAccession);
-        // try {
-            // KryoReader kryoReader = kryoReaderFactory.createKryoReader(serializedFileURL);
-            //return new BaselineProfilesKryoInputStream(kryoReader, experimentAccession, expressionsRowRawDeserializerBaselineBuilder, baselineProfileReusableBuilder);
-            // return new BaselineProfilesTsvInputStream(csvReader, experimentAccession, expressionsRowDeserializerBaselineBuilder, baselineProfileReusableBuilder);
-        // } catch (IllegalArgumentException e) {
-            // TSV file fallback if the serialized file doesn’t exist (or any other problem)
+        try {
+            BaselineExpressionsKryoReader baselineExpressionsKryoReader = kryoReaderFactory.createBaselineExpressionsKryoReader(serializedFileURL);
+            return new BaselineProfilesKryoInputStream(baselineExpressionsKryoReader, experimentAccession, expressionsRowRawDeserializerBaselineBuilder, baselineProfileReusableBuilder);
+        }
+        catch (IllegalArgumentException e) {
+            String tsvFileURL = MessageFormat.format(baselineExperimentDataFileUrlTemplate, experimentAccession);
+            CSVReader csvReader = csvReaderFactory.createTsvReader(tsvFileURL);
             return new BaselineProfilesTsvInputStream(csvReader, experimentAccession, expressionsRowDeserializerBaselineBuilder, baselineProfileReusableBuilder);
-        // }
+        }
     }
 
     public ExpressionProfileInputStream<BaselineProfile, BaselineExpression> create(BaselineProfileStreamOptions options) {

@@ -28,17 +28,18 @@ import org.apache.velocity.util.StringUtils;
 import uk.ac.ebi.atlas.model.OntologyTerm;
 
 import javax.annotation.Nullable;
-import java.io.Serializable;
 import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class Factor implements Comparable<Factor>, Serializable {
+public class Factor implements Comparable<Factor> {
 
-    private final String header;
-    private final String type;
-    private final String value;
-    private final Set<OntologyTerm> valueOntologyTerms;
+    private String header;
+    private String type;
+    private String value;
+    private Set<OntologyTerm> valueOntologyTerms;
+
+    public Factor() {}
 
     public Factor(String header, String value) {
         this(header, value, new OntologyTerm[0]);
@@ -134,6 +135,7 @@ public class Factor implements Comparable<Factor>, Serializable {
         return valueOntologyTerms;
     }
 
+    // Used by heatmap-widget.jsp
     public @Nullable String getValueOntologyTermId() {
         if (valueOntologyTerms.isEmpty()) {
             return null;
@@ -149,7 +151,5 @@ public class Factor implements Comparable<Factor>, Serializable {
         }
 
         return sb.toString();
-
     }
-
 }

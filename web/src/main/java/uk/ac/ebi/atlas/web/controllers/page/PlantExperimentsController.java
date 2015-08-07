@@ -126,7 +126,7 @@ public class PlantExperimentsController {
                     }
                 }
             } catch (RuntimeException e) {
-                // we don't want the entire application to crash just because one magetab file may be offline because a curator is modifying it
+                // we don't want the entire application to crash just because one condensedSdrf file may be offline because a curator is modifying it
                 LOGGER.error(e.getMessage(), e);
             }
 
@@ -141,7 +141,7 @@ public class PlantExperimentsController {
             experimentDisplayNames.put(experimentAccession, displayName + " (" + numberOfAssays + " assays)");
         }
 
-        numDifferentialExperimentsBySpecies = new TreeMap<String, Integer>();
+        numDifferentialExperimentsBySpecies = new TreeMap<>();
         long start = System.currentTimeMillis();
         populateExperimentAccessionToSpecies(ExperimentType.MICROARRAY_1COLOUR_MRNA_DIFFERENTIAL);
         populateExperimentAccessionToSpecies(ExperimentType.MICROARRAY_2COLOUR_MRNA_DIFFERENTIAL);
@@ -178,7 +178,7 @@ public class PlantExperimentsController {
                     }
                 }
             } catch (RuntimeException e) {
-                // we don't want the entire application to crash just because one magetab file may be offline because a curator is modifying it
+                // we don't want the entire application to crash just because one condensedSdrf file may be offline because a curator is modifying it
                 LOGGER.error(e.getMessage(), e);
             }
         }

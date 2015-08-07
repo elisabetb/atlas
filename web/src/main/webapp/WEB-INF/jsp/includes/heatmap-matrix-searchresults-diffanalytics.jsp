@@ -126,8 +126,8 @@
 <%@ include file="react.jsp" %>
 
 <script language="JavaScript" type="text/javascript" src="${base}/resources/js/heatmapModuleDeprecated.js"></script>
-<script src="${pageContext.request.contextPath}/resources/jsx/contrastTooltip.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/contrastTooltipModule.js"></script>
+<script src="${pageContext.request.contextPath}/resources/widget/latest/jsx/contrastTooltip.js"></script>
+<script src="${pageContext.request.contextPath}/resources/widget/latest/js/contrastTooltipModule.js"></script>
 
 <script type="text/javascript">
     (function ($, heatmapModuleDeprecated, contrastTooltipModule) { //self invoking wrapper function that prevents $ namespace conflicts

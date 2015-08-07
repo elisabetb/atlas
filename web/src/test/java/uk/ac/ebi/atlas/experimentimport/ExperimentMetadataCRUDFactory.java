@@ -2,8 +2,9 @@ package uk.ac.ebi.atlas.experimentimport;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
+import uk.ac.ebi.atlas.experimentimport.analyticsindex.AnalyticsIndexerManager;
 import uk.ac.ebi.atlas.experimentimport.experimentdesign.ExperimentDesignFileWriterBuilder;
-import uk.ac.ebi.atlas.experimentimport.experimentdesign.magetab.MageTabParserFactory;
+import uk.ac.ebi.atlas.experimentimport.experimentdesign.condensedSdrf.CondensedSdrfParser;
 import uk.ac.ebi.atlas.model.baseline.ProteomicsBaselineExperiment;
 import uk.ac.ebi.atlas.solr.admin.index.conditions.ConditionsIndexTrader;
 import uk.ac.ebi.atlas.trader.ConfigurationTrader;
@@ -31,10 +32,13 @@ public class ExperimentMetadataCRUDFactory {
     MicroarrayExperimentsCache microarrayExperimentsCache;
 
     @Inject
+    PublicExperimentTypesCache publicExperimentTypesCache;
+
+    @Inject
     ExperimentDTOBuilder experimentDTOBuilder;
 
     @Inject
-    MageTabParserFactory mageTabParserFactory;
+    CondensedSdrfParser condensedSdrfParser;
 
     @Inject
     ProteomicsBaselineExperimentsCacheLoaderFactory loaderFactory;
@@ -45,12 +49,18 @@ public class ExperimentMetadataCRUDFactory {
     @Inject
     EFOParentsLookupService efoParentsLookupService;
 
+    @Inject
+    AnalyticsIndexerManager analyticsIndexerManager;
+
     public ExperimentMetadataCRUD create(ExperimentDesignFileWriterBuilder experimentDesignFileWriterBuilder, ExperimentDAO experimentDao, ConditionsIndexTrader conditionsIndexTrader) {
         ProteomicsBaselineExperimentsCacheLoader loader = loaderFactory.create(experimentDao);
         LoadingCache<String, ProteomicsBaselineExperiment> loadingCache = CacheBuilder.newBuilder().maximumSize(1).build(loader);
         ProteomicsBaselineExperimentsCache proteomicsBaselineExperimentsCache = new ProteomicsBaselineExperimentsCache(loadingCache);
-        ExperimentTrader experimentTrader = new ExperimentTrader(experimentDao, baselineExperimentsCache, rnaSeqDiffExperimentsCache, microarrayExperimentsCache, proteomicsBaselineExperimentsCache);
-        return new ExperimentMetadataCRUD(experimentDao, experimentDesignFileWriterBuilder,
-                experimentTrader, experimentDTOBuilder, mageTabParserFactory, conditionsIndexTrader, efoParentsLookupService);
+        ExperimentTrader experimentTrader = new ExperimentTrader(experimentDao, baselineExperimentsCache, rnaSeqDiffExperimentsCache, microarrayExperimentsCache, proteomicsBaselineExperimentsCache, publicExperimentTypesCache);
+        return new ExperimentMetadataCRUD(
+                experimentDao, experimentDesignFileWriterBuilder,
+                experimentTrader, experimentDTOBuilder, condensedSdrfParser,
+                conditionsIndexTrader, efoParentsLookupService,
+                analyticsIndexerManager);
     }
 }

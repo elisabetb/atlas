@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.atlas.experimentimport.analytics.AnalyticsDao;
 import uk.ac.ebi.atlas.experimentimport.analytics.AnalyticsLoader;
 import uk.ac.ebi.atlas.experimentimport.analytics.AnalyticsLoaderFactory;
-import uk.ac.ebi.atlas.experimentimport.expressiondataserializer.ExpressionSerializerFactory;
 import uk.ac.ebi.atlas.experimentimport.expressiondataserializer.ExpressionSerializerService;
 import uk.ac.ebi.atlas.model.ExperimentConfiguration;
 import uk.ac.ebi.atlas.trader.ConfigurationTrader;
@@ -26,7 +25,6 @@ public class ExperimentCRUD {
     private AnalyticsDao analyticsDao;
     private ConfigurationTrader configurationTrader;
     private ExpressionSerializerService expressionSerializerService;
-
 
     // requires no-arg constructor for @Transactional proxying, hence setter injection of dependencies
     public ExperimentCRUD() {
@@ -79,7 +77,7 @@ public class ExperimentCRUD {
 
         // TODO If baseline experiment serialize on import here
         // if (configuration.getExperimentType() == ExperimentType.RNASEQ_MRNA_BASELINE || ExperimentType.{a serializable experiment type}...) {
-        //     serializeExpressionData(experimentAccession, experimentType);
+        //     kryoSerializeExpressionData(experimentAccession, experimentType);
         // }
 
         return experimentMetadataCRUD.importExperiment(experimentAccession, configuration, isPrivate, accessKey);
@@ -117,6 +115,11 @@ public class ExperimentCRUD {
     }
 
     public void serializeExpressionData(String experimentAccession) {
-        expressionSerializerService.serializeExpressionData(experimentAccession);
+        expressionSerializerService.kryoSerializeExpressionData(experimentAccession);
     }
+
+    public void deserializeExpressionData(String experimentAccession) {
+        expressionSerializerService.kryoDeserializeExpressionData(experimentAccession);
+    }
+
 }

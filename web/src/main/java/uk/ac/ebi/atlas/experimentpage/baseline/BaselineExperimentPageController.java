@@ -25,6 +25,9 @@ package uk.ac.ebi.atlas.experimentpage.baseline;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -33,7 +36,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import uk.ac.ebi.atlas.experimentpage.context.BaselineRequestContext;
 import uk.ac.ebi.atlas.experimentpage.context.BaselineRequestContextBuilder;
 import uk.ac.ebi.atlas.experimentpage.context.GenesNotFoundException;
-import uk.ac.ebi.atlas.model.AssayGroup;
+import uk.ac.ebi.atlas.model.AnatomogramType;
 import uk.ac.ebi.atlas.model.baseline.*;
 import uk.ac.ebi.atlas.profiles.baseline.BaselineProfileStreamOptionsWrapperAsGeneSets;
 import uk.ac.ebi.atlas.profiles.baseline.viewmodel.AssayGroupFactorViewModel;
@@ -48,6 +51,7 @@ import uk.ac.ebi.atlas.web.FilterFactorsConverter;
 import uk.ac.ebi.atlas.web.controllers.ExperimentDispatcher;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public abstract class BaselineExperimentPageController extends BaselineExperimentController {
@@ -90,7 +94,7 @@ public abstract class BaselineExperimentPageController extends BaselineExperimen
         this.tracksUtil = tracksUtil;
     }
 
-    @InitBinder
+    @InitBinder("preferences")
     protected void initBinder(WebDataBinder binder) {
         binder.addValidators(new BaselineRequestPreferencesValidator());
     }
@@ -114,11 +118,14 @@ public abstract class BaselineExperimentPageController extends BaselineExperimen
 
         Set<Factor> selectedFilterFactors = requestContext.getSelectedFilterFactors();
 
+        Set<Factor> orderedFactors;
         Set<AssayGroupFactor> filteredAssayGroupFactors;
         if(experimentalFactors.getAllFactorsOrderedByXML() != null && !experimentalFactors.getAllFactorsOrderedByXML().isEmpty()) {
             filteredAssayGroupFactors = experimentalFactors.getComplementAssayGroupFactorsByXML(selectedFilterFactors);
+            orderedFactors = experimentalFactors.getComplementFactorsByXML(selectedFilterFactors);
         } else {
             filteredAssayGroupFactors = experimentalFactors.getComplementAssayGroupFactors(selectedFilterFactors);
+            orderedFactors = experimentalFactors.getComplementFactors(selectedFilterFactors);
         }
 
         // this is currently required for the request requestPreferences filter drop-down multi-selection box
@@ -157,11 +164,12 @@ public abstract class BaselineExperimentPageController extends BaselineExperimen
                     model.addAttribute("profilesAsGeneSets", profilesAsGeneSets);
                 }
 
-                addJsonForHeatMap(baselineProfiles, profilesAsGeneSets, filteredAssayGroupFactors, experimentalFactors.getComplementFactors(selectedFilterFactors), model);
+                addJsonForHeatMap(baselineProfiles, profilesAsGeneSets, filteredAssayGroupFactors, orderedFactors, model);
 
                 if ("ORGANISM_PART".equals(requestContext.getQueryFactorType())) {
                     ImmutableSet<String> allSvgPathIds = extractOntologyTerm(filteredAssayGroupFactors);
                     addAnatomogram(allSvgPathIds, model, species);
+                    setToggleImageButton(model, species);
 
                 } else {
                     model.addAttribute("hasAnatomogram", false);
@@ -190,29 +198,50 @@ public abstract class BaselineExperimentPageController extends BaselineExperimen
         return builder.build();
     }
 
-
     private void addAnatomogram(ImmutableSet<String> allSvgPathIds, Model model, String species) {
         //ToDo: check if this can be externalized in the view with a cutom EL or tag function
-        String maleAnatomogramFileName = applicationProperties.getAnatomogramFileName(species, true);
+        String maleAnatomogramFileName = applicationProperties.getAnatomogramFileName(species, AnatomogramType.MALE);
         model.addAttribute("maleAnatomogramFile", maleAnatomogramFileName);
 
-        String femaleAnatomogramFileName = applicationProperties.getAnatomogramFileName(species, false);
+        String femaleAnatomogramFileName = applicationProperties.getAnatomogramFileName(species, AnatomogramType.FEMALE);
         model.addAttribute("femaleAnatomogramFile", femaleAnatomogramFileName);
 
-        model.addAttribute("hasAnatomogram", maleAnatomogramFileName != null || femaleAnatomogramFileName != null);
+        String brainAnatomogramFileName = applicationProperties.getAnatomogramFileName(species, AnatomogramType.BRAIN);
+        model.addAttribute("brainAnatomogramFile", brainAnatomogramFileName);
+
+        model.addAttribute("hasAnatomogram", maleAnatomogramFileName != null || femaleAnatomogramFileName != null || brainAnatomogramFileName != null);
 
         String jsonAllSvgPathIds = new Gson().toJson(allSvgPathIds);
         model.addAttribute("allSvgPathIds", jsonAllSvgPathIds);
     }
 
+    private void setToggleImageButton(Model model, String species) {
+        if(species.equals("oryza sativa") || species.equals("oryza sativa japonica group")){
+            model.addAttribute("toggleButtonMaleImage", "/resources/images/plant_switch_buttons_1.png");
+        }
+        else {
+            model.addAttribute("toggleButtonMaleImage", "/resources/images/male_selected.png");
+            model.addAttribute("toggleButtonFemaleImage", "/resources/images/female_unselected.png");
+            model.addAttribute("toggleButtonBrainImage", "/resources/images/brain_unselected.png");
+        }
+    }
 
-    private void addJsonForHeatMap(BaselineProfilesList baselineProfiles, BaselineProfilesList geneSetProfiles, Set<AssayGroupFactor> filteredAssayGroupFactors, SortedSet<Factor> orderedFactors, Model model) {
+    private void addJsonForHeatMap(BaselineProfilesList baselineProfiles, BaselineProfilesList geneSetProfiles,
+                                   Set<AssayGroupFactor> filteredAssayGroupFactors, Set<Factor> orderedFactors, Model model) {
         if (baselineProfiles.isEmpty()) {
             return;
         }
         Gson gson = new Gson();
 
         ImmutableList<AssayGroupFactorViewModel> assayGroupFactorViewModels = assayGroupFactorViewModelBuilder.build(filteredAssayGroupFactors);
+
+        JsonObject jsonObject = new JsonObject();
+        Type type = new TypeToken<ImmutableList<AssayGroupFactorViewModel>>() {}.getType();
+        JsonElement jsonElement = gson.toJsonTree(assayGroupFactorViewModels, type);
+        jsonObject.add("primary", jsonElement);
+
+        model.addAttribute("jsonMultipleColumnHeaders", jsonObject);
+
         String jsonAssayGroupFactors = gson.toJson(assayGroupFactorViewModels);
         model.addAttribute("jsonColumnHeaders", jsonAssayGroupFactors);
 

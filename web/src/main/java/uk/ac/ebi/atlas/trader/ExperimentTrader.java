@@ -24,16 +24,15 @@ package uk.ac.ebi.atlas.trader;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Scope;
 import uk.ac.ebi.atlas.experimentimport.ExperimentDAO;
 import uk.ac.ebi.atlas.experimentimport.ExperimentDTO;
 import uk.ac.ebi.atlas.model.Experiment;
 import uk.ac.ebi.atlas.model.ExperimentType;
-import uk.ac.ebi.atlas.trader.cache.BaselineExperimentsCache;
-import uk.ac.ebi.atlas.trader.cache.MicroarrayExperimentsCache;
-import uk.ac.ebi.atlas.trader.cache.ProteomicsBaselineExperimentsCache;
-import uk.ac.ebi.atlas.trader.cache.RnaSeqDiffExperimentsCache;
+import uk.ac.ebi.atlas.trader.cache.*;
+import uk.ac.ebi.atlas.web.controllers.ResourceNotFoundException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -48,6 +47,7 @@ public class ExperimentTrader {
     private MicroarrayExperimentsCache microarrayExperimentsCache;
     private ExperimentDAO experimentDAO;
     private ProteomicsBaselineExperimentsCache proteomicsBaselineExperimentsCache;
+    private PublicExperimentTypesCache publicExperimentTypesCache;
 
 
     @Inject
@@ -55,27 +55,31 @@ public class ExperimentTrader {
                             BaselineExperimentsCache baselineExperimentsCache,
                             RnaSeqDiffExperimentsCache rnaSeqDiffExperimentsCache,
                             MicroarrayExperimentsCache microarrayExperimentsCache,
-                            ProteomicsBaselineExperimentsCache proteomicsBaselineExperimentsCache) {
+                            ProteomicsBaselineExperimentsCache proteomicsBaselineExperimentsCache,
+                            PublicExperimentTypesCache publicExperimentTypesCache) {
 
         this.experimentDAO = experimentDAO;
         this.baselineExperimentsCache = baselineExperimentsCache;
         this.rnaSeqDiffExperimentsCache = rnaSeqDiffExperimentsCache;
         this.microarrayExperimentsCache = microarrayExperimentsCache;
         this.proteomicsBaselineExperimentsCache = proteomicsBaselineExperimentsCache;
+        this.publicExperimentTypesCache = publicExperimentTypesCache;
     }
 
 
     public Experiment getPublicExperiment(String experimentAccession) {
-        //TODO: this is a bottleneck because it goes back to the database each time - to improve perf,
-        //we need to lookup the experiment type from a cache and then get the experiment from the appropriate cache
-        ExperimentDTO experimentDTO = experimentDAO.findPublicExperiment(experimentAccession);
+        ExperimentType experimentType;
+        try {
+            experimentType = publicExperimentTypesCache.getExperimentType(experimentAccession);
+        } catch (UncheckedExecutionException | NullPointerException e) {
+            throw new ResourceNotFoundException("Experiment: " + experimentAccession + " not found");
+        }
 
-        return getExperimentFromCache(experimentAccession, experimentDTO.getExperimentType());
+        return getExperimentFromCache(experimentAccession, experimentType);
     }
 
 
     public Experiment getExperiment(String experimentAccession, String accessKey) {
-
         if (StringUtils.isBlank(accessKey)){
             return getPublicExperiment(experimentAccession);
         }
@@ -105,6 +109,7 @@ public class ExperimentTrader {
             default:
                 throw new IllegalStateException("invalid enum value: " + type);
         }
+        publicExperimentTypesCache.evictExperiment(experimentAccession);
 
     }
 
@@ -113,6 +118,8 @@ public class ExperimentTrader {
         baselineExperimentsCache.evictAll();
         rnaSeqDiffExperimentsCache.evictAll();
         microarrayExperimentsCache.evictAll();
+        proteomicsBaselineExperimentsCache.evictAll();
+        publicExperimentTypesCache.evictAll();
     }
 
 

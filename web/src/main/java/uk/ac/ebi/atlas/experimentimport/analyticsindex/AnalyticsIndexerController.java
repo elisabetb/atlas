@@ -22,16 +22,19 @@
 
 package uk.ac.ebi.atlas.experimentimport.analyticsindex;
 
+import com.google.common.base.Strings;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
+import uk.ac.ebi.atlas.model.ExperimentType;
 import uk.ac.ebi.atlas.web.controllers.ResourceNotFoundException;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Arrays;
 
 @Controller
 @Scope("request")
@@ -40,22 +43,51 @@ public class AnalyticsIndexerController {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticsIndexerController.class);
 
-    private AnalyticsIndexerService analyticsIndexerService;
+    private AnalyticsIndexerManager analyticsIndexerManager;
+    private AnalyticsIndexerMonitor analyticsIndexerMonitor;
 
     @Inject
-    public AnalyticsIndexerController(AnalyticsIndexerService analyticsIndexerService) {
-        this.analyticsIndexerService = analyticsIndexerService;
+    public AnalyticsIndexerController(AnalyticsIndexerManager analyticsIndexerManager, AnalyticsIndexerMonitor analyticsIndexerMonitor) {
+        this.analyticsIndexerManager = analyticsIndexerManager;
+        this.analyticsIndexerMonitor = analyticsIndexerMonitor;
+    }
+
+    @RequestMapping("/analyticsIndex/buildIndex")
+    @ResponseBody
+    public String analyticsIndexBuild(@RequestParam(value = "type", required = false, defaultValue = "") String experimentType,
+                                      @RequestParam(value = "threads", required = false, defaultValue =  AnalyticsIndexerManager.DEFAULT_THREADS_8) int numThreads,
+                                      @RequestParam(value = "batchSize", required = false, defaultValue = AnalyticsIndexerManager.DEFAULT_BATCH_SIZE_1024) int batchSize,
+                                      @RequestParam(value = "timeout", required = false, defaultValue = AnalyticsIndexerManager.DEFAULT_TIMEOUT_IN_HOURS_24) int timeout) {
+
+        try {
+            if (!Strings.isNullOrEmpty(experimentType)) {
+                if (ExperimentType.get(experimentType) == null) {
+                    throw new IllegalArgumentException("Unknown experiment type " + experimentType);
+                }
+                analyticsIndexerManager.indexPublicExperiments(ExperimentType.get(experimentType), numThreads, batchSize, timeout);
+            } else {
+                analyticsIndexerManager.indexAllPublicExperiments(numThreads, batchSize, timeout);
+            }
+        } catch (InterruptedException e) {
+            return Arrays.deepToString(e.getStackTrace());
+        }
+
+        return analyticsIndexerMonitor.toString();
+    }
+
+    @RequestMapping("/analyticsIndex/buildIndex/status")
+    @ResponseBody
+    public String analyticsIndexBuildStatus() {
+        return analyticsIndexerMonitor.toString();
     }
 
     @RequestMapping("/analyticsIndex/indexExperiment")
     @ResponseBody
     public String indexExperiment(@RequestParam("accession") String experimentAccession) {
-        analyticsIndexerService.deleteExperimentFromIndex(experimentAccession);
-
         StopWatch stopWatch = new StopWatch(getClass().getSimpleName());
         stopWatch.start();
 
-        int count = analyticsIndexerService.index(experimentAccession);
+        int count = analyticsIndexerManager.addToAnalyticsIndex(experimentAccession);
 
         stopWatch.stop();
 
@@ -68,7 +100,7 @@ public class AnalyticsIndexerController {
         StopWatch stopWatch = new StopWatch(getClass().getSimpleName());
         stopWatch.start();
 
-        analyticsIndexerService.deleteExperimentFromIndex(experimentAccession);
+        analyticsIndexerManager.deleteFromAnalyticsIndex(experimentAccession);
 
         stopWatch.stop();
 

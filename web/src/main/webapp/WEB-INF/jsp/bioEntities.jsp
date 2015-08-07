@@ -278,11 +278,11 @@
                             <div class="gxaHeatmapLegendGradient" style="display: inline-block; padding-left: 20px">
                                 <h:heatmap-differential-legend geneProfiles="${bioentities}"/>
                             </div>
-                            <div style="display: inline-block; vertical-align: top">
+                            <div style="display: inline-block; vertical-align: top; padding-left: 10px">
                                 <a id="download-profiles-link"
-                                   title="Up to 50 of top genes displayed on page. Download results to see the rest."
+                                   title="Download all results"
                                    href="${pageContext.request.contextPath}${applicationProperties.buildDownloadURL(pageContext.request)}"
-                                   class="button-image" target="_blank">
+                                   class="gxaButtonImage" target="_blank">
                                     <img id="download-profiles" alt="Download query results" style="width:20px"
                                          src="${pageContext.request.contextPath}/resources/images/download_blue_small.png">
                                 </a>
@@ -305,14 +305,10 @@
 <div id="help-placeholder" style="display: none"></div>
 
 <c:if test="${showWidget}">
-    <script language="JavaScript" type="text/javascript" src="//www.ebi.ac.uk/Tools/biojs/biojs/Biojs.js"></script>
-    <script language="JavaScript" type="text/javascript" src="/gxa/resources/biojs/AtlasHeatmapReact.js"></script>
 
-    <%@ include file="includes/react.jsp" %>
-    <%@ include file="includes/heatmap-js.jsp" %>
-    <%@ include file="includes/anatomogram.jsp" %>
+    <script src="${pageContext.request.contextPath}/resources/js-bundles/vendor.bundle.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js-bundles/expression-atlas-heatmap.bundle.js"></script>
 
-    <script src="${pageContext.request.contextPath}/resources/jsx/heatmapContainer.js"></script>
 </c:if>
 
 <c:set var="hasBaselineResults" value="${showWidget || not empty firstBaselineCounts}"/>
@@ -336,7 +332,7 @@
 
         var openPanelIndex = ${param.openPanelIndex != null ? param.openPanelIndex : defaultPanelIndex};
 
-        $('head').append('<meta name="description" content="Baseline and differential expression for ${fullQueryDescription}" />');
+        $('head').append('<meta name="description" content="Baseline and differential expression for ${he.encode(fullQueryDescription)}" />');
 
         $("#bioentity-info-image").tooltip();
         $("#differential-info-image").tooltip();
@@ -369,8 +365,11 @@
 
         var widgetParameters = "${isGeneSet ? "" : "&propertyType=bioentity_identifier" }" + "${not empty species ? "&species=".concat(species) : ""}";
 
-        new Biojs.AtlasHeatmap({
-            gxaBaseUrl: '${pageContext.request.contextPath}',
+
+        var AtlasHeatmapBuilder = window.exposed;
+
+        AtlasHeatmapBuilder({
+            gxaBaseUrl: '${pageContext.request.contextPath}/',
             params: 'geneQuery=${geneQuery.asUrlQueryParameter()}' + widgetParameters,
             isMultiExperiment: true,
             target: "widgetBody",

@@ -25,7 +25,10 @@ package uk.ac.ebi.atlas.widget;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
-import com.google.gson.Gson;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -34,6 +37,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import uk.ac.ebi.atlas.model.AnatomogramType;
 import uk.ac.ebi.atlas.model.Experiment;
 import uk.ac.ebi.atlas.model.Species;
 import uk.ac.ebi.atlas.model.baseline.AssayGroupFactor;
@@ -60,6 +64,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
@@ -110,11 +115,7 @@ public final class HeatmapWidgetController {
         this.baselineAnalyticsSearchService = baselineAnalyticsSearchService;
     }
 
-    // similar to ExperimentDispatcher but for the widget, ie: loads baseline experiment into model and request
-    // /widgets/heatmap/protein is deprecated
-    //ToDo: (OMannion) remove /widgets/heatmap/protein (still being used by http://www.ebi.ac.uk/Tools/biojs/registry/Biojs.ExpressionAtlasBaselineSummary.html)
-    // in favour of /widgets/heatmap/referenceExperiment
-    @RequestMapping(value = {"/widgets/heatmap/protein", "/widgets/heatmap/referenceExperiment"})
+    @RequestMapping(value = {"/widgets/heatmap/referenceExperiment"})
     public String dispatchWidget(HttpServletRequest request,
                                  @RequestParam(value = "geneQuery", required = true) String bioEntityAccession,
                                  @RequestParam(value = "propertyType", required = false) String propertyType,
@@ -151,8 +152,8 @@ public final class HeatmapWidgetController {
         //TODO: hacky, fix this, see RnaSeqBaselineExperimentPageController
         request.setAttribute(ORIGINAL_GENEQUERY, bioEntityAccession);
 
-        // forward to /widgets/heatmap/protein?type=RNASEQ_MRNA_BASELINE in BaselineExperimentPageController
-        // eg: forward:/widgets/heatmap/protein?type=RNASEQ_MRNA_BASELINE&serializedFilterFactors=ORGANISM:Monodelphis domestica&disableGeneLinks=true
+        // forward to /widgets/heatmap/referenceExperiment?type=RNASEQ_MRNA_BASELINE in BaselineExperimentPageController
+        // eg: forward:/widgets/heatmap/referenceExperiment?type=RNASEQ_MRNA_BASELINE&serializedFilterFactors=ORGANISM:Monodelphis domestica&disableGeneLinks=true
         // existing request parameters to this method (ie: geneQuery, propertyType, rootContext) are also passed along by the forward,
         // plus type and serializedFilterFactors
         // the model attributes are also preserved by a forward
@@ -209,8 +210,6 @@ public final class HeatmapWidgetController {
         BaselineExperimentSearchResult searchResult = baselineAnalyticsSearchService.findExpressions(geneQuery, ensemblSpecies, defaultFactorQueryType);
 
         populateModelWithMultiExperimentResults(geneQuery, ensemblSpecies, searchResult, model);
-        model.addAttribute("hasAnatomogram", false);
-
 
         // set here instead of in JSP, because the JSP may be included elsewhere
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -223,6 +222,7 @@ public final class HeatmapWidgetController {
 
         ImmutableSet<String> allSvgPathIds = extractOntologyTerm(filteredAssayGroupFactors);
         addAnatomogram(allSvgPathIds, model, ensemblSpecies);
+        setToggleImageButton(model, ensemblSpecies);
 
         BaselineExperimentProfilesList experimentProfiles = searchResult.getExperimentProfiles();
         addJsonForHeatMap(experimentProfiles, filteredAssayGroupFactors, orderedFactors, model);
@@ -250,18 +250,31 @@ public final class HeatmapWidgetController {
     private void addAnatomogram(ImmutableSet<String> allSvgPathIds, Model model, String species) {
         //TODO: check if this can be externalized in the view with a cutom EL or tag function
         //or another code block because it's repeated with BaselineExperimentPageController
-        String maleAnatomogramFileName = applicationProperties.getAnatomogramFileName(species, true);
+        String maleAnatomogramFileName = applicationProperties.getAnatomogramFileName(species, AnatomogramType.MALE);
         model.addAttribute("maleAnatomogramFile", maleAnatomogramFileName);
 
-        String femaleAnatomogramFileName = applicationProperties.getAnatomogramFileName(species, false);
+        String femaleAnatomogramFileName = applicationProperties.getAnatomogramFileName(species, AnatomogramType.FEMALE);
         model.addAttribute("femaleAnatomogramFile", femaleAnatomogramFileName);
 
-        model.addAttribute("hasAnatomogram", maleAnatomogramFileName != null || femaleAnatomogramFileName != null);
+        String brainAnatomogramFileName = applicationProperties.getAnatomogramFileName(species, AnatomogramType.BRAIN);
+        model.addAttribute("brainAnatomogramFile", brainAnatomogramFileName);
+
+        model.addAttribute("hasAnatomogram", maleAnatomogramFileName != null || femaleAnatomogramFileName != null || brainAnatomogramFileName != null);
 
         String jsonAllSvgPathIds = new Gson().toJson(allSvgPathIds);
         model.addAttribute("allSvgPathIds", jsonAllSvgPathIds);
     }
 
+    private void setToggleImageButton(Model model, String species) {
+        if(species.equals("oryza sativa") || species.equals("oryza sativa japonica group")){
+            model.addAttribute("toggleButtonMaleImage", "/resources/images/plant_switch_buttons_1.png");
+        }
+        else {
+            model.addAttribute("toggleButtonMaleImage", "/resources/images/male_selected.png");
+            model.addAttribute("toggleButtonFemaleImage", "/resources/images/female_unselected.png");
+            model.addAttribute("toggleButtonBrainImage", "/resources/images/brain_unselected.png");
+        }
+    }
 
     private SortedSet<AssayGroupFactor> convert(SortedSet<Factor> orderedFactors) {
         ImmutableSortedSet.Builder<AssayGroupFactor> builder = ImmutableSortedSet.naturalOrder();
@@ -282,6 +295,14 @@ public final class HeatmapWidgetController {
         Gson gson = new Gson();
 
         ImmutableList<AssayGroupFactorViewModel> assayGroupFactorViewModels = assayGroupFactorViewModelBuilder.build(filteredAssayGroupFactors);
+
+        JsonObject jsonObject = new JsonObject();
+        Type type = new TypeToken<ImmutableList<AssayGroupFactorViewModel>>() {}.getType();
+        JsonElement jsonElement = gson.toJsonTree(assayGroupFactorViewModels, type);
+        jsonObject.add("primary", jsonElement);
+
+        model.addAttribute("jsonMultipleColumnHeaders", jsonObject);
+
         String jsonAssayGroupFactors = gson.toJson(assayGroupFactorViewModels);
         model.addAttribute("jsonColumnHeaders", jsonAssayGroupFactors);
 

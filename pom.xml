@@ -60,9 +60,7 @@
         <mail.smtp.password>324c3bac45dfb398</mail.smtp.password>
         <mail.smtp.auth>true</mail.smtp.auth>
 
-        <sonar.jdbc.url>
-            jdbc:h2:tcp://lime:9092/sonar
-        </sonar.jdbc.url>
+        <sonar.jdbc.url>jdbc:h2:tcp://lime:9092/sonar</sonar.jdbc.url>
         <sonar.jdbc.driver>org.h2.Driver</sonar.jdbc.driver>
         <sonar.jdbc.username>sonar</sonar.jdbc.username>
         <sonar.jdbc.password>sonar</sonar.jdbc.password>
@@ -225,9 +223,8 @@
                         <port>9090</port>
                         <!-- optional path to a context file -->
                         <contextFile/>
-                        <!-- optional system propoerties you want to add -->
-                        <systemProperties>
-                        </systemProperties>
+                        <!-- optional system properties you want to add -->
+                        <systemProperties/>
                         <!-- if you want to use test dependencies rather than only runtime -->
                         <useTestClasspath>false</useTestClasspath>
                         <!-- optional if you want to add some extra directories in the class loader -->
@@ -401,6 +398,12 @@
             <version>1.2.17</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
         <!-- Test -->
 
         <dependency>
@@ -480,7 +483,14 @@
         <dependency>
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc6</artifactId>
-            <version>11.2.0.3.0</version>
+            <version>11.2.0.3</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ucp</artifactId>
+            <version>11.2.0.3</version>
             <scope>provided</scope>
         </dependency>
 
@@ -542,6 +552,11 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>codelds</id>
+            <url>https://dev.lds.org/nexus/content/repositories/thirdparty/</url>
+        </repository>
+
     </repositories>
 
     <pluginRepositories>
@@ -775,7 +790,50 @@
                 <oracle.jdbc.password>atlas3dev</oracle.jdbc.password>
             </properties>
         </profile>
-
+        <profile>
+            <id>dev.using.production-oy-76</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <includes>
+                            <include>
+                                oracleContext.xml
+                            </include>
+                        </includes>
+                    </resource>
+                </resources>
+            </build>
+            <properties>
+                <solr.host>ves-oy-76:8983</solr.host>
+                <data.files.location>${user.home}/ATLAS3.TEST/integration-test-data</data.files.location>
+                <oracle.jdbc.url>jdbc:oracle:thin:@ora-oyvm-009.ebi.ac.uk:1531:ATLASPUB</oracle.jdbc.url>
+                <oracle.jdbc.username>atlasprd3</oracle.jdbc.username>
+                <oracle.jdbc.password>atla5p4d3</oracle.jdbc.password>
+            </properties>
+        </profile>
+        <profile>
+            <id>dev.using.production-pg-76</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <includes>
+                            <include>
+                                oracleContext.xml
+                            </include>
+                        </includes>
+                    </resource>
+                </resources>
+            </build>
+            <properties>
+                <solr.host>ves-pg-76:8983</solr.host>
+                <data.files.location>${user.home}/ATLAS3.TEST/integration-test-data</data.files.location>
+                <oracle.jdbc.url>jdbc:oracle:thin:@ora-pgvm-009.ebi.ac.uk:1531:ATLASPUB</oracle.jdbc.url>
+                <oracle.jdbc.username>atlasprd3</oracle.jdbc.username>
+                <oracle.jdbc.password>atla5p4d3</oracle.jdbc.password>
+            </properties>
+        </profile>
         <!-- execution profiles -->
 
     </profiles>

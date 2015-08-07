@@ -96,17 +96,20 @@
 
     <!-- compliance style end -->
 
-    <c:set var="mainTitle" value="${mainTitle}"/>  
+    <c:set var="mainTitle" value="${mainTitle}"/>
+
      <c:if test="${mainTitle != null}"> 
          <c:set var="completeTitle" value="${mainTitle.concat(' < Expression Atlas < EMBL-EBI ')}"/> 
         <title>${completeTitle}</title>
      </c:if>
-   <title><tiles:insertAttribute name="title" ignore="true"/> &lt; EMBL-EBI</title>
+    <c:if test="${mainTitle == null}"> 
+        <title><tiles:insertAttribute name="title" ignore="true"/> &lt; EMBL-EBI</title>
+    </c:if>
 
 
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/atlas.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/table-grid.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/heatmap-and-anatomogram.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/widget/latest/css/table-grid.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/widget/latest/css/heatmap-and-anatomogram.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/js/lib/chosen/chosen.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/js/lib/jquery-tagEditor/jquery.tag-editor.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/experiment-design-table.css">
@@ -115,15 +118,17 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/ae-autocomplete.css" media="screen">
 
     <script language="JavaScript" type="text/javascript" src="${pageContext.request.contextPath}/resources/js/lib/json2.js"></script>
+    <script language="JavaScript" type="text/javascript" src="${pageContext.request.contextPath}/resources/js/lib/he-0.5.0/he.js"></script>
     <script language="JavaScript" type="text/javascript" src="${pageContext.request.contextPath}/resources/js/lib/jquery-1.9.1.min.js"></script>
     <script language="JavaScript" type="text/javascript" src="${pageContext.request.contextPath}/resources/js/lib/jquery-migrate-1.2.0.min.js"></script>
+    <script language="JavaScript" type="text/javascript" src="${pageContext.request.contextPath}/resources/js/lib/jquery-url.min.js"></script>
     <!-- jQuery UI start -->
     <script language="JavaScript" type="text/javascript" src="${pageContext.request.contextPath}/resources/js/lib/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/js/lib/jquery-ui-1.11.4.custom/jquery-ui.css">
     <!-- jQuery UI end -->
     <script language="JavaScript" type="text/javascript" src="${pageContext.request.contextPath}/resources/js/lib/jquery-tagEditor/jquery.tag-editor.js"></script>
     <script language="JavaScript" type="text/javascript" src="${pageContext.request.contextPath}/resources/js/experiment-page-buttons-and-tooltips.js"></script>
-    <script language="JavaScript" type="text/javascript" src="${pageContext.request.contextPath}/resources/js/helpTooltipsModule.js"></script>
+    <script language="JavaScript" type="text/javascript" src="${pageContext.request.contextPath}/resources/widget/latest/js/helpTooltipsModule.js"></script>
     <script language="JavaScript" type="text/javascript" src="${pageContext.request.contextPath}/resources/js/geneQueryTagEditorModule.js"></script>
 
     <!-- fancybox start -->

@@ -34,8 +34,8 @@
 <head>
 
     <link rel="stylesheet" type="text/css" href="${base}/resources/css/atlas.css">
-    <link rel="stylesheet" type="text/css" href="${base}/resources/css/table-grid.css">
-    <link rel="stylesheet" type="text/css" href="${base}/resources/css/heatmap-and-anatomogram.css">
+    <link rel="stylesheet" type="text/css" href="${base}/resources/widget/latest/css/table-grid.css">
+    <link rel="stylesheet" type="text/css" href="${base}/resources/widget/latest/css/heatmap-and-anatomogram.css">
 
     <script language="JavaScript" type="text/javascript" src="${base}/resources/js/lib/json2.js"></script>
     <script language="JavaScript" type="text/javascript" src="${base}/resources/js/lib/jquery-1.9.1.min.js"></script>
@@ -46,8 +46,8 @@
     <!-- jQuery UI end -->
     <script language="JavaScript" type="text/javascript" src="${base}/resources/js/lib/jquery.svg.package-1.4.5/jquery.svg.js"></script>
     <script language="JavaScript" type="text/javascript" src="${base}/resources/js/experiment-page-buttons-and-tooltips.js"></script>
-    <script language="JavaScript" type="text/javascript" src="${base}/resources/js/helpTooltipsModule.js"></script>
-    <script language="JavaScript" type="text/javascript" src="${base}/resources/js/anatomogramModule.js"></script>
+    <script language="JavaScript" type="text/javascript" src="${base}/resources/widget/latest/js/helpTooltipsModule.js"></script>
+    <script language="JavaScript" type="text/javascript" src="${base}/resources/widget/latest/js/anatomogramModule.js"></script>
 
     <script src="//www.ebi.ac.uk/web_guidelines/js/libs/modernizr.minified.2.1.6.js"></script>
 

@@ -7,12 +7,6 @@
 
 <link type="text/css" rel="stylesheet" href="/gxa/resources/css/facets.css" />
 
-<script language="JavaScript" type="text/javascript" src="//www.ebi.ac.uk/Tools/biojs/biojs/Biojs.js"></script>
-<script language="JavaScript" type="text/javascript" src="/gxa/resources/biojs/AtlasHeatmapReact.js"></script>
-
-<%@ include file="../includes/react.jsp" %>
-<%@ include file="../includes/heatmap-js.jsp" %>
-<%@ include file="../includes/anatomogram.jsp" %>
 
 <section class="grid_23 gxaExtraPadding">
     <%@ include file="includes/search-form.jsp" %>
@@ -59,30 +53,17 @@
     <div id="atlasAnalyticsSearchHeatmapsContainer"></div>
 </section>
 
+<!-- /search_facet -->
 
-<script src="${pageContext.request.contextPath}/resources/js/lib/query-string.js"></script>
-<script src="${pageContext.request.contextPath}/resources/jsx/heatmaps.js"></script>
-<script src="${pageContext.request.contextPath}/resources/jsx/facets.js"></script>
-<script src="${pageContext.request.contextPath}/resources/jsx/heatmapsRouter.js"></script>
-
-
-<script src="${pageContext.request.contextPath}/resources/jsx/bioJSAtlasHeatmap.js"></script>
-<script src="${pageContext.request.contextPath}/resources/jsx/heatmapContainer.js"></script>
-
+<script src="${pageContext.request.contextPath}/resources/js-bundles/vendor.bundle.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js-bundles/faceted-search-results.bundle.js"></script>
 
 <script>
 
     var facetsData = ${empty jsonFacets ? 'null' : jsonFacets};
 
-    (function (HeatmapsRouter, facetsData) {
+    var baseline_page_js = window.exposed;
 
-        if (facetsData) {
-            HeatmapsRouter(
-                    document.getElementById('atlasAnalyticsSearchFacetContainer'),
-                    document.getElementById('atlasAnalyticsSearchHeatmapsContainer'),
-                    facetsData);
-        }
-
-    })(HeatmapsRouter, facetsData);
+    baseline_page_js.baseline(facetsData, 'atlasAnalyticsSearchFacetContainer', 'atlasAnalyticsSearchHeatmapsContainer');
 
 </script>

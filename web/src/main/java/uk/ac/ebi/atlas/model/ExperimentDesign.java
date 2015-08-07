@@ -22,6 +22,7 @@
 
 package uk.ac.ebi.atlas.model;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.*;
 import uk.ac.ebi.atlas.model.baseline.Factor;
 import uk.ac.ebi.atlas.model.baseline.impl.FactorSet;
@@ -35,7 +36,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  *  ExperimentDesign stores factors and characteristics per _assay_ and other information
  *  needed to render the experiment design page. On experiment import, it is created from
- *  the magetab sdrf and persisted into ExpDesign files. The ExpDesign files act as a cache of
+ *  the condensedSdrf sdrf and persisted into ExpDesign files. The ExpDesign files act as a cache of
  *  relevant information in the sdrf, because parsing the sdrf is an expensive operation.
  *
  *  ExperimentalFactors also has factor information, but per _assay group_.
@@ -241,7 +242,7 @@ public class ExperimentDesign implements Serializable {
         List<String> row = Lists.newArrayList(runOrAssay);
 
         String arrayDesign = getArrayDesign(runOrAssay);
-        if (arrayDesign != null) {
+        if (!Strings.isNullOrEmpty(arrayDesign)) {
             row.add(arrayDesign);
         }
 

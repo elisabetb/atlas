@@ -1,7 +1,6 @@
 package uk.ac.ebi.atlas.search.diffanalytics;
 
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.junit.Before;

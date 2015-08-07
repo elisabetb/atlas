@@ -23,27 +23,22 @@
 package uk.ac.ebi.atlas.experimentpage.baseline.genedistribution;
 
 import uk.ac.ebi.atlas.model.baseline.BaselineExpression;
+import uk.ac.ebi.atlas.profiles.BaselineExpressionsKryoReader;
 import uk.ac.ebi.atlas.profiles.KryoInputStream;
-import uk.ac.ebi.atlas.profiles.KryoReader;
 import uk.ac.ebi.atlas.profiles.baseline.ExpressionsRowDeserializerBaselineBuilder;
+import uk.ac.ebi.atlas.profiles.baseline.ExpressionsRowRawDeserializerBaselineBuilder;
 
 public class BaselineExpressionsKryoInputStream extends KryoInputStream<BaselineExpressions, BaselineExpression> {
 
-    public BaselineExpressionsKryoInputStream(KryoReader kryoReader, String experimentAccession, ExpressionsRowDeserializerBaselineBuilder baselineExpressionsQueueBuilder) {
-        super(kryoReader, experimentAccession, baselineExpressionsQueueBuilder);
+    public BaselineExpressionsKryoInputStream(BaselineExpressionsKryoReader baselineExpressionsKryoReader, String experimentAccession, ExpressionsRowRawDeserializerBaselineBuilder baselineExpressionsQueueBuilder) {
+        super(baselineExpressionsKryoReader, experimentAccession, baselineExpressionsQueueBuilder);
     }
 
     @Override
-    protected BaselineExpressions buildObjectFromValues(String geneId, String geneName, Double[][] expressionLevels) {
+    protected BaselineExpressions buildObjectFromValues(String geneId, String geneName, BaselineExpression[] expressions) {
 
         BaselineExpressions baselineExpressions = new BaselineExpressions();
-        //we need to reload because the first line can only be used to extract the gene ID
-        getExpressionsRowRawDeserializer().reload(expressionLevels);
-
-        BaselineExpression expression;
-
-        while ((expression = getExpressionsRowRawDeserializer().next()) != null) {
-
+        for (BaselineExpression expression : expressions) {
             baselineExpressions.addExpression(expression);
         }
 

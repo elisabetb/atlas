@@ -45,8 +45,6 @@
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/js/lib/chosen/chosen.css">
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/jquery.flot-override.css">
 
-<script language="JavaScript" type="text/javascript" src="${pageContext.request.contextPath}/resources/js/lib/jquery-hcsticky/jquery.hc-sticky.min.js"></script>
-
 <script language="JavaScript" type="text/javascript" src="${pageContext.request.contextPath}/resources/js/searchFormModule.js"></script>
 <script language="JavaScript" type="text/javascript" src="${pageContext.request.contextPath}/resources/js/geneDistribution.js"></script>
 
@@ -110,20 +108,15 @@
             geneQueryTagEditorModule.init('#geneQuery', '${species}');
             helpTooltipsModule.init('experiment', '${pageContext.request.contextPath}', $('[data-help-loc]').not('#heatmap-react [data-help-loc]'));
 
-            $('#anatomogram').hcSticky({responsive: true});
-            $('#ensembl-launcher').hcSticky({responsive: true});
-
             window.onload = function() {
-                var slices = window.location.search.split('&');
-                var geneQueryStr = slices[7];
-                if(geneQueryStr != undefined) {
-                    var gene = geneQueryStr.substring(geneQueryStr.lastIndexOf("=") + 1, geneQueryStr.length);
-                    if (gene != "") {
-                        $('#geneQuery').tagEditor('addTag', gene);
-                    }
+                var geneQueryStr = $.url('?geneQuery');
+                if(geneQueryStr) {
+                    var geneTerms = geneQueryStr.split("%09");
+                    geneTerms.forEach(function(geneTerm) {
+                        $('#geneQuery').tagEditor('addTag', decodeURIComponent(geneTerm.replace(/\+/g, "%20")));
+                    });
                 }
             };
-
         });
     })(jQuery);
 

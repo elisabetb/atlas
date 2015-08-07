@@ -1,6 +1,5 @@
 package uk.ac.ebi.atlas.experimentpage.baseline;
 
-import com.google.common.base.Joiner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

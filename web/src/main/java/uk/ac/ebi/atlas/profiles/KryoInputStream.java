@@ -25,6 +25,7 @@ package uk.ac.ebi.atlas.profiles;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.atlas.model.Expression;
+import uk.ac.ebi.atlas.model.baseline.BaselineExpression;
 
 import java.io.IOException;
 
@@ -32,14 +33,14 @@ public abstract class KryoInputStream<T, K extends Expression> implements Expres
 
     private static final Logger LOGGER = Logger.getLogger(KryoInputStream.class);
 
-    private KryoReader kryoReader;
+    private BaselineExpressionsKryoReader baselineExpressionsKryoReader;
 
-    private ExpressionsRowDeserializer<Double[], K> expressionsRowRawDeserializer;
+    private ExpressionsRowDeserializer<BaselineExpression, K> expressionsRowRawDeserializer;
 
-    protected KryoInputStream(KryoReader kryoReader, String experimentAccession, ExpressionsRowDeserializerBuilder expressionsRowDeserializerBuilder) {
-        this.kryoReader = kryoReader;
+    protected KryoInputStream(BaselineExpressionsKryoReader baselineExpressionsKryoReader, String experimentAccession, ExpressionsRowDeserializerBuilder expressionsRowDeserializerBuilder) {
+        this.baselineExpressionsKryoReader = baselineExpressionsKryoReader;
 
-        String[] firstLine = kryoReader.rewindAndreadFirstLine();
+        String[] firstLine = baselineExpressionsKryoReader.rewindAndReadAssays();
         String[] headersWithoutGeneIdColumn = removeGeneIDAndNameColumns(firstLine);
         expressionsRowRawDeserializer = expressionsRowDeserializerBuilder.forExperiment(experimentAccession).withHeaders(headersWithoutGeneIdColumn).build();
     }
@@ -49,39 +50,39 @@ public abstract class KryoInputStream<T, K extends Expression> implements Expres
         T geneProfile;
 
         do {
-            if (!kryoReader.readLine()) {
+            if (!baselineExpressionsKryoReader.readLine()) {
                 return null;
             }
-            geneProfile =  buildObjectFromValues(kryoReader.getGeneId(), kryoReader.getGeneName(), kryoReader.getExpressionLevels());
+            geneProfile =  buildObjectFromValues(baselineExpressionsKryoReader.getGeneId(), baselineExpressionsKryoReader.getGeneName(), baselineExpressionsKryoReader.getExpressions());
 
         } while (geneProfile == null);
 
         return geneProfile;
     }
 
-    protected T buildObjectFromValues(String geneId, String geneName, Double[][] expressionLevels) {
+    protected T buildObjectFromValues(String geneId, String geneName, BaselineExpression[] expressions) {
         addGeneInfoValueToBuilder(new String[]{geneId, geneName});
 
         //we need to reload because the first line can only be used to extract the gene ID
-        expressionsRowRawDeserializer.reload(expressionLevels);
+        expressionsRowRawDeserializer.reload(expressions);
 
         K expression;
 
         while ((expression = expressionsRowRawDeserializer.next()) != null) {
-            addExpressionToBuilder(expression);
+             addExpressionToBuilder(expression);
         }
 
         return createProfile();
     }
 
     // Used by BaselineExpressionsInputStream
-    protected ExpressionsRowDeserializer<Double[], K> getExpressionsRowRawDeserializer() {
-        return expressionsRowRawDeserializer;
+    protected ExpressionsRowDeserializer<BaselineExpression, K> getExpressionsRowRawDeserializer() {
+         return expressionsRowRawDeserializer;
     }
 
     @Override
     public void close() throws IOException {
-        kryoReader.close();
+        baselineExpressionsKryoReader.close();
     }
 
     protected String[] removeGeneIDAndNameColumns(String[] columns) {

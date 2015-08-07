@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import uk.ac.ebi.atlas.commons.readers.TsvReader;
-import uk.ac.ebi.atlas.commons.readers.TsvReaderBuilder;
+import uk.ac.ebi.atlas.commons.readers.FileTsvReaderBuilder;
 import uk.ac.ebi.atlas.model.ExperimentDesign;
 import uk.ac.ebi.atlas.model.OntologyTerm;
 import uk.ac.ebi.atlas.model.SampleCharacteristic;
@@ -54,16 +54,16 @@ public class ExperimentDesignParser {
     @Value("#{configuration['experiment.experiment-design.path.template']}")
     private String pathTemplate;
 
-    private TsvReaderBuilder tsvReaderBuilder;
+    private FileTsvReaderBuilder fileTsvReaderBuilder;
 
     @Inject
-    void setTsvReaderBuilder(TsvReaderBuilder tsvReaderBuilder) {
-        this.tsvReaderBuilder = tsvReaderBuilder;
+    void setFileTsvReaderBuilder(FileTsvReaderBuilder fileTsvReaderBuilder) {
+        this.fileTsvReaderBuilder = fileTsvReaderBuilder;
     }
 
     public ExperimentDesign parse(String experimentAccession) {
 
-        TsvReader tsvReader = tsvReaderBuilder.forTsvFilePathTemplate(pathTemplate)
+        TsvReader tsvReader = fileTsvReaderBuilder.forTsvFilePathTemplate(pathTemplate)
                                               .withExperimentAccession(experimentAccession)
                                               .build();
 
@@ -124,12 +124,13 @@ public class ExperimentDesignParser {
         }
 
         ImmutableList.Builder<OntologyTerm> ontologyTermBuilder = new ImmutableList.Builder<>();
-
         String uriField = line[ontologyTermIndex];
         for (String uri : uriField.split(ONTOLOGY_TERM_DELIMITER)) {
             ontologyTermBuilder.add(OntologyTerm.createFromUri(uri));
         }
-        return ontologyTermBuilder.build().toArray(new OntologyTerm[0]);
+        List<OntologyTerm> ontologyTermList = ontologyTermBuilder.build();
+
+        return ontologyTermList.toArray(new OntologyTerm[ontologyTermList.size()]);
     }
 
     protected Map<String, Integer> extractHeaderIndexes(String[] columnHeaders, Pattern columnHeaderPattern) {

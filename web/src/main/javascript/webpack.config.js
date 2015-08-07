@@ -1,37 +1,44 @@
-var webpack = require("webpack");
-var path = require("path");
+var webpack = require('webpack');
+var path = require('path');
 
 module.exports = {
     cache: true,
-    devtool: 'source-map',
 
     // define the bundles we want
     entry: {
-        "search-results-differential-page": "./src/search-results/differential-page.js"
-        ,"search-results-baseline-page": "./src/search-results/baseline-page.js"
-        //,"heatmap-page": "./src/heatmap/heatmap-page.jsx"
-        ,"webpack_example_with_plain_JS_scriptA-page": "./src/webpack_example/with_plain_JS/scriptA-page.js"
-        ,"webpack_example_with_JS_2_modules-page": "./src/webpack_example/with_plain_JS/moduleC-page.js"
-        ,"webpack_example_with_jQuery-page": "./src/webpack_example/with_plain_JS/jQueryModule-page.js"
-        ,"webpack_example_with_JSX-page": "./src/webpack_example/with_JSX/component-page.js"
-        ,"webpack_example_with_highcharts-page": "./src/webpack_example/highcharts/highcharts-page.js"
-        ,vendor: ["jquery", "react"]
+        "expression-atlas-heatmap": './heatmap',
+        "internal-atlas-heatmap": './heatmap/internal-atlas-index.js',
+        "faceted-search-results": './faceted-search-results',
+        "vendor": [ 'react', 'jquery', 'jquery-ui' ]
     },
 
     output: {
-        path: path.resolve(__dirname, "../webapp/resources/js-bundles")
-        ,filename: '[name]-bundle.js' // [name] is substituted for the entry name, eg: search-results-differential-page-bundle.js
+        path: path.resolve(__dirname, "../webapp/resources/js-bundles"),
+        filename: "[name].bundle.js" // [name] is substituted for the entry name, eg: search-results-differential-page-bundle.js
 
     },
 
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin(/* chunkName= */"vendor-bundle.js")
+        new webpack.optimize.CommonsChunkPlugin(/* chunkName= */"vendor", /* filename= */"vendor.bundle.js"),
+        new webpack.optimize.DedupePlugin(),
     ],
 
     module: {
         loaders: [
-            {test: /\.jsx$/, loader: 'jsx-loader'}
-            ,{test: /\-page.js$/, loader: 'expose?$page'}
+            {test: /\.jsx$/, loader: 'jsx-loader'},
+            {test: /\-page\.js$/, loader: 'expose?exposed'},
+            {test: /.+index\.js$/, loader: 'expose?exposed'},
+            {test: /\.css$/, loader: 'style-loader!css-loader'},
+            {test: /\.(jpe?g|png|gif|svg)$/i,
+                loaders: [
+                          'file?hash=sha512&digest=hex&name=[hash].[ext]',
+                          'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
+                ]
+            }
         ]
+    },
+
+    devServer: {
+        port: 9000
     }
 };

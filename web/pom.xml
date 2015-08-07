@@ -40,7 +40,7 @@
         <selenium.version>2.44.0</selenium.version>
         <tiles.version>2.2.2</tiles.version>
         <jasmine.js.src.location>src/main/webapp/resources/js</jasmine.js.src.location>
-        <solr.version>4.5.0</solr.version>
+        <solr.version>5.1.0</solr.version>
     </properties>
 
 
@@ -56,11 +56,11 @@
                     <escapeString>\</escapeString>
                     <webResources>
                         <resource>
-                            <directory>src/main/webapp/resources/biojs</directory>
+                            <directory>src/main/webapp/resources/js</directory>
                             <includes>
-                                <include>AtlasHeatmap.js</include>
+                                <include>AtlasHeatmapReact.js</include>
                             </includes>
-                            <targetPath>resources/biojs</targetPath>
+                            <targetPath>resources/js</targetPath>
                             <filtering>true</filtering>
                         </resource>
                     </webResources>
@@ -225,7 +225,7 @@
         </dependency>
 
 
-        <!--limpopo MAGET-Tab investigation-->
+        <!--limpopo MAGE-Tab investigation-->
         <dependency>
             <groupId>uk.ac.ebi.arrayexpress2</groupId>
             <artifactId>limpopo</artifactId>
@@ -416,7 +416,6 @@
         <!--
             Apache Tiles
         -->
-
         <dependency>
             <groupId>org.apache.tiles</groupId>
             <artifactId>tiles-extras</artifactId>
@@ -435,25 +434,15 @@
         <!--
             Java Mail
         -->
-
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
             <version>1.4.5</version>
         </dependency>
 
-<!--
-        <dependency>
-            <groupId>com.github.detro.ghostdriver</groupId>
-            <artifactId>phantomjsdriver</artifactId>
-            <version>1.0.3</version>
-            <scope>test</scope>
-        </dependency>
--->
         <!--
             For testing rest services
         -->
-
         <dependency>
             <groupId>com.jayway.restassured</groupId>
             <artifactId>rest-assured</artifactId>

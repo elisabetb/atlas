@@ -25,6 +25,7 @@ package uk.ac.ebi.atlas.experimentimport.analyticsindex.differential;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.SetMultimap;
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import uk.ac.ebi.atlas.experimentimport.EFOParentsLookupService;
 import uk.ac.ebi.atlas.experimentimport.analyticsindex.support.SpeciesGrouper;
@@ -35,6 +36,7 @@ import uk.ac.ebi.atlas.model.differential.DifferentialExperiment;
 import uk.ac.ebi.atlas.solr.admin.index.conditions.differential.DifferentialCondition;
 import uk.ac.ebi.atlas.solr.admin.index.conditions.differential.DifferentialConditionsBuilder;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.Collection;
@@ -45,6 +47,7 @@ import java.util.Set;
 @Named
 @Scope("singleton")
 public class DiffAnalyticsIndexerService {
+    private static final Logger LOGGER = Logger.getLogger(DiffAnalyticsIndexerService.class);
 
     private final EFOParentsLookupService efoParentsLookupService;
     private final DifferentialConditionsBuilder diffConditionsBuilder;
@@ -57,8 +60,11 @@ public class DiffAnalyticsIndexerService {
         this.diffAnalyticsDocumentStreamIndexer = diffAnalyticsDocumentStreamIndexer;
     }
 
-    public int index(DifferentialExperiment experiment) {
+    public int index(DifferentialExperiment experiment, int batchSize) {
         String experimentAccession = experiment.getAccession();
+
+        LOGGER.info("Preparing " + experimentAccession);
+
         ExperimentType experimentType = experiment.getType();
 
         ExperimentDesign experimentDesign = experiment.getExperimentDesign();
@@ -74,7 +80,7 @@ public class DiffAnalyticsIndexerService {
         Map<String, Integer> numReplicatesByContrastId = buildNumReplicatesByContrastId(experiment);
 
         return  diffAnalyticsDocumentStreamIndexer.index(experimentAccession, experimentType, factors,
-                conditionSearchTermsByContrastId, ensemblSpeciesGroupedByContrastId, numReplicatesByContrastId);
+                conditionSearchTermsByContrastId, ensemblSpeciesGroupedByContrastId, numReplicatesByContrastId, batchSize);
     }
 
     private Map<String, Integer> buildNumReplicatesByContrastId(DifferentialExperiment experiment) {

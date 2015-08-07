@@ -22,6 +22,7 @@
 
 package uk.ac.ebi.atlas.experimentimport.analyticsindex;
 
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import uk.ac.ebi.atlas.experimentimport.analyticsindex.baseline.BaselineAnalyticsIndexerService;
 import uk.ac.ebi.atlas.experimentimport.analyticsindex.differential.DiffAnalyticsIndexerService;
@@ -33,20 +34,19 @@ import uk.ac.ebi.atlas.model.differential.DifferentialExperiment;
 import uk.ac.ebi.atlas.model.differential.microarray.MicroarrayExperiment;
 import uk.ac.ebi.atlas.trader.ExperimentTrader;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 @Named
 @Scope("singleton")
 public class AnalyticsIndexerService {
+    private static final Logger LOGGER = Logger.getLogger(AnalyticsIndexerService.class);
 
     private final AnalyticsIndexDao analyticsIndexDao;
     private final BaselineAnalyticsIndexerService baselineAnalyticsIndexerService;
     private final DiffAnalyticsIndexerService diffAnalyticsIndexerService;
     private final MicroArrayDiffAnalyticsIndexerService microArrayDiffAnalyticsIndexerService;
-    private final ExperimentTrader experimentTrader;
 
     @Inject
     public AnalyticsIndexerService(AnalyticsIndexDao analyticsIndexDao, BaselineAnalyticsIndexerService baselineAnalyticsIndexerService, DiffAnalyticsIndexerService diffAnalyticsIndexerService, MicroArrayDiffAnalyticsIndexerService microArrayDiffAnalyticsIndexerService, ExperimentTrader experimentTrader) {
@@ -54,39 +54,30 @@ public class AnalyticsIndexerService {
         this.baselineAnalyticsIndexerService = baselineAnalyticsIndexerService;
         this.diffAnalyticsIndexerService = diffAnalyticsIndexerService;
         this.microArrayDiffAnalyticsIndexerService = microArrayDiffAnalyticsIndexerService;
-
-        this.experimentTrader = experimentTrader;
     }
 
-    public int index(String experimentAccession) {
-        checkNotNull(experimentAccession);
-
-        Experiment experiment = experimentTrader.getPublicExperiment(experimentAccession);
-
-        return index(experiment);
-    }
-
-    private int index(Experiment experiment) {
+    public int index(Experiment experiment, int batchSize) {
        ExperimentType experimentType = experiment.getType();
 
         if (experimentType == ExperimentType.RNASEQ_MRNA_BASELINE) {
-            return baselineAnalyticsIndexerService.index((BaselineExperiment) experiment);
+            return baselineAnalyticsIndexerService.index((BaselineExperiment) experiment, batchSize);
         } else if (experimentType == ExperimentType.PROTEOMICS_BASELINE) {
-            return baselineAnalyticsIndexerService.index((BaselineExperiment) experiment);
+            return baselineAnalyticsIndexerService.index((BaselineExperiment) experiment, batchSize);
         } else if (experimentType == ExperimentType.RNASEQ_MRNA_DIFFERENTIAL) {
-            return diffAnalyticsIndexerService.index((DifferentialExperiment) experiment);
+            return diffAnalyticsIndexerService.index((DifferentialExperiment) experiment, batchSize);
         } else if (experimentType == ExperimentType.MICROARRAY_1COLOUR_MICRORNA_DIFFERENTIAL ||
                    experimentType == ExperimentType.MICROARRAY_1COLOUR_MRNA_DIFFERENTIAL ||
                    experimentType == ExperimentType.MICROARRAY_2COLOUR_MRNA_DIFFERENTIAL) {
-            return microArrayDiffAnalyticsIndexerService.index((MicroarrayExperiment) experiment);
+            return microArrayDiffAnalyticsIndexerService.index((MicroarrayExperiment) experiment, batchSize);
         }
 
         throw new UnsupportedOperationException("No analytics loader for experiment type " + experimentType);
     }
 
-
-    public void deleteExperimentFromIndex(String accession) {
+    // synchronized necessary because analyticsIndexDao#delete does an explicit commit
+    public synchronized void deleteExperimentFromIndex(String accession) {
+        LOGGER.info("Deleting documents for " + accession);
         analyticsIndexDao.deleteDocumentsForExperiment(accession);
+        LOGGER.info("Done deleting documents for " + accession);
     }
-
 }

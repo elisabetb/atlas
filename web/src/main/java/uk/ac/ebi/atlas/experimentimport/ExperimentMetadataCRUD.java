@@ -26,11 +26,10 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSetMultimap;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
+import uk.ac.ebi.atlas.experimentimport.analyticsindex.AnalyticsIndexerManager;
 import uk.ac.ebi.atlas.experimentimport.experimentdesign.ExperimentDesignFileWriter;
 import uk.ac.ebi.atlas.experimentimport.experimentdesign.ExperimentDesignFileWriterBuilder;
-import uk.ac.ebi.atlas.experimentimport.experimentdesign.magetab.MageTabParser;
-import uk.ac.ebi.atlas.experimentimport.experimentdesign.magetab.MageTabParserFactory;
-import uk.ac.ebi.atlas.experimentimport.experimentdesign.magetab.MageTabParserOutput;
+import uk.ac.ebi.atlas.experimentimport.experimentdesign.condensedSdrf.*;
 import uk.ac.ebi.atlas.model.Experiment;
 import uk.ac.ebi.atlas.model.ExperimentConfiguration;
 import uk.ac.ebi.atlas.model.ExperimentDesign;
@@ -54,14 +53,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class ExperimentMetadataCRUD {
 
     private static final Logger LOGGER = Logger.getLogger(ExperimentMetadataCRUD.class);
-    private final MageTabParserFactory mageTabParserFactory;
-    private final ConditionsIndexTrader conditionsIndexTrader;
-    private ExperimentDesignFileWriterBuilder experimentDesignFileWriterBuilder;
-    private ExperimentDAO experimentDAO;
-    private ExperimentTrader experimentTrader;
-    private EFOParentsLookupService efoParentsLookupService;
 
+    private ExperimentDAO experimentDAO;
+    private ExperimentDesignFileWriterBuilder experimentDesignFileWriterBuilder;
+    private ExperimentTrader experimentTrader;
     private ExperimentDTOBuilder experimentDTOBuilder;
+    private final CondensedSdrfParser condensedSdrfParser;
+    private final ConditionsIndexTrader conditionsIndexTrader;
+    private EFOParentsLookupService efoParentsLookupService;
+    private final AnalyticsIndexerManager analyticsIndexerManager;
 
     //TODO: refactor this class - it has too many collaborators
     @Inject
@@ -69,33 +69,34 @@ public class ExperimentMetadataCRUD {
                                   ExperimentDesignFileWriterBuilder experimentDesignFileWriterBuilder,
                                   ExperimentTrader experimentTrader,
                                   ExperimentDTOBuilder experimentDTOBuilder,
-                                  MageTabParserFactory mageTabParserFactory,
+                                  CondensedSdrfParser condensedSdrfParser,
                                   ConditionsIndexTrader conditionsIndexTrader,
-                                  EFOParentsLookupService efoParentsLookupService) {
+                                  EFOParentsLookupService efoParentsLookupService,
+                                  AnalyticsIndexerManager analyticsIndexerManager) {
         this.experimentDAO = experimentDAO;
         this.experimentDesignFileWriterBuilder = experimentDesignFileWriterBuilder;
         this.experimentTrader = experimentTrader;
         this.experimentDTOBuilder = experimentDTOBuilder;
-        this.mageTabParserFactory = mageTabParserFactory;
+        this.condensedSdrfParser = condensedSdrfParser;
         this.conditionsIndexTrader = conditionsIndexTrader;
         this.efoParentsLookupService = efoParentsLookupService;
+        this.analyticsIndexerManager = analyticsIndexerManager;
     }
 
     public UUID importExperiment(String accession, ExperimentConfiguration experimentConfiguration, boolean isPrivate, Optional<String> accessKey) throws IOException {
         checkNotNull(accession);
         checkNotNull(experimentConfiguration);
 
-        //TODO push accession and experimentType into MageTabParserOutput
         ExperimentType experimentType = experimentConfiguration.getExperimentType();
-        MageTabParserOutput mageTabParserOutput = readMageTab(accession, experimentType);
+        CondensedSdrfParserOutput condensedSdrfParserOutput = condensedSdrfParser.parse(accession, experimentType);
 
-        ExperimentDesign experimentDesign = mageTabParserOutput.getExperimentDesign();
+        ExperimentDesign experimentDesign = condensedSdrfParserOutput.getExperimentDesign();
         writeExperimentDesignFile(accession, experimentType, experimentDesign);
 
         Set<String> assayAccessions = experimentConfiguration.getAssayAccessions();
         Set<String> species = experimentDesign.getSpeciesForAssays(assayAccessions);
 
-        ExperimentDTO experimentDTO = buildExperimentDTO(accession, experimentType, mageTabParserOutput, species, isPrivate);
+        ExperimentDTO experimentDTO = buildExperimentDTO(condensedSdrfParserOutput, species, isPrivate);
         UUID uuid = experimentDAO.addExperiment(experimentDTO, accessKey);
 
         //experiment can be indexed only after it's been added to the DB, since fetching experiment
@@ -125,17 +126,15 @@ public class ExperimentMetadataCRUD {
         return builder.build();
     }
 
-    private ExperimentDTO buildExperimentDTO(String accession, ExperimentType experimentType, MageTabParserOutput mageTabParserOutput, Set<String> species, boolean isPrivate) {
-        return experimentDTOBuilder.forExperimentAccession(accession)
-                    .withExperimentType(experimentType).withPrivate(isPrivate).withSpecies(species)
-                    .withTitle(mageTabParserOutput.getTitle())
-                    .withPubMedIds(mageTabParserOutput.getPubmedIds())
-                    .build();
-    }
-
-    MageTabParserOutput readMageTab(String accession, ExperimentType experimentType) throws IOException {
-        MageTabParser mageTabParser = mageTabParserFactory.create(experimentType);
-        return mageTabParser.parse(accession);
+    private ExperimentDTO buildExperimentDTO(CondensedSdrfParserOutput condensedSdrfParserOutput, Set<String> species, boolean isPrivate) {
+        return experimentDTOBuilder
+                .forExperimentAccession(condensedSdrfParserOutput.getExperimentAccession())
+                .withExperimentType(condensedSdrfParserOutput.getExperimentType())
+                .withPrivate(isPrivate)
+                .withSpecies(species)
+                .withTitle(condensedSdrfParserOutput.getTitle())
+                .withPubMedIds(condensedSdrfParserOutput.getPubmedIds())
+                .build();
     }
 
     void writeExperimentDesignFile(String accession, ExperimentType experimentType, ExperimentDesign experimentDesign) throws IOException {
@@ -154,6 +153,7 @@ public class ExperimentMetadataCRUD {
 
         if (!experimentDTO.isPrivate()) {
             conditionsIndexTrader.getIndex(experimentDTO.getExperimentType()).removeConditions(experimentAccession);
+            analyticsIndexerManager.deleteFromAnalyticsIndex(experimentAccession);
         }
 
         experimentTrader.removeExperimentFromCache(experimentDTO.getExperimentAccession(), experimentDTO.getExperimentType());
@@ -175,8 +175,10 @@ public class ExperimentMetadataCRUD {
 
         if (!isPrivate) {
             ExperimentDTO experimentDTO = experimentDAO.findExperiment(experimentAccession, true);
-
             updateExperimentDesign(experimentDTO);
+            experimentTrader.removeExperimentFromCache(experimentAccession, experimentDTO.getExperimentType());
+        } else {
+            analyticsIndexerManager.deleteFromAnalyticsIndex(experimentAccession);
         }
     }
 
@@ -197,12 +199,13 @@ public class ExperimentMetadataCRUD {
     void updateExperimentDesign(ExperimentDTO experimentDTO) {
         String accession = experimentDTO.getExperimentAccession();
         ExperimentType type = experimentDTO.getExperimentType();
+
         try {
             experimentTrader.removeExperimentFromCache(accession, type);
 
-            MageTabParserOutput mageTabParserOutput = readMageTab(accession, type);
-            ExperimentDesign experimentDesign = mageTabParserOutput.getExperimentDesign();
+            CondensedSdrfParserOutput condensedSdrfParserOutput = condensedSdrfParser.parse(accession, type);
 
+            ExperimentDesign experimentDesign = condensedSdrfParserOutput.getExperimentDesign();
             writeExperimentDesignFile(accession, type, experimentDesign);
 
             LOGGER.info("updated design for experiment " + accession);

@@ -17,6 +17,8 @@ import uk.ac.ebi.atlas.experimentimport.analytics.baseline.BaselineAnalyticsInpu
 import uk.ac.ebi.atlas.experimentimport.analytics.baseline.ProteomicsBaselineAnalyticsInputStreamFactory;
 import uk.ac.ebi.atlas.experimentimport.analyticsindex.AnalyticsDocument;
 import uk.ac.ebi.atlas.experimentimport.analyticsindex.AnalyticsIndexDao;
+import uk.ac.ebi.atlas.experimentimport.analyticsindex.AnalyticsIndexerManager;
+import uk.ac.ebi.atlas.experimentimport.analyticsindex.AnalyticsIndexerMonitor;
 import uk.ac.ebi.atlas.model.ExperimentType;
 import uk.ac.ebi.atlas.model.baseline.BaselineExperiment;
 import uk.ac.ebi.atlas.solr.admin.index.conditions.baseline.BaselineConditionsBuilder;
@@ -24,9 +26,11 @@ import uk.ac.ebi.atlas.trader.ExperimentTrader;
 
 import javax.inject.Inject;
 
+import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -62,7 +66,7 @@ public class BaselineAnalyticsIndexerServiceIT {
     @Before
     public void before() {
         MockitoAnnotations.initMocks(this);
-        when(analyticsIndexDaoMock.addDocuments(Matchers.<Iterable<AnalyticsDocument>>any())).thenAnswer(storeDocuments());
+        when(analyticsIndexDaoMock.addDocuments(Matchers.<Iterable<AnalyticsDocument>>any(), anyInt())).thenAnswer(storeDocuments());
         subject = new BaselineAnalyticsIndexerService(streamFactory, efoParentsLookupService, baselineAnalyticsInputStreamFactory, proteomicsBaselineAnalyticsInputStreamFactory, analyticsIndexDaoMock, baselineConditionsBuilder);
     }
 
@@ -71,6 +75,7 @@ public class BaselineAnalyticsIndexerServiceIT {
 
             @Override
             public Integer answer(InvocationOnMock invocationOnMock) throws Throwable {
+                @SuppressWarnings("unchecked")
                 Iterable<AnalyticsDocument> documentStream = (Iterable<AnalyticsDocument>) invocationOnMock.getArguments()[0];
 
                 ImmutableList.Builder<AnalyticsDocument> documentsBuilder = ImmutableList.builder();
@@ -89,7 +94,7 @@ public class BaselineAnalyticsIndexerServiceIT {
     @Test
     public void indexBaselineExperimentAnalytics() {
         BaselineExperiment experiment = (BaselineExperiment) experimentTrader.getPublicExperiment("E-MTAB-2039");
-        subject.index(experiment);
+        subject.index(experiment, 0);
         assertThat(documents, hasSize(14));
 
         AnalyticsDocument document = documents.get(0);
@@ -107,7 +112,7 @@ public class BaselineAnalyticsIndexerServiceIT {
     @Test
     public void indexMultiSpeciesBaselineExperimentAnalytics() {
         BaselineExperiment experiment = (BaselineExperiment) experimentTrader.getPublicExperiment("E-GEOD-30352");
-        subject.index(experiment);
+        subject.index(experiment, 1024);
 
         assertThat(documents, hasSize(2179));
 
@@ -137,7 +142,7 @@ public class BaselineAnalyticsIndexerServiceIT {
     @Test
     public void indexProteomicsBaselineExperimentAnalytics() {
         BaselineExperiment experiment = (BaselineExperiment) experimentTrader.getPublicExperiment("E-PROT-1");
-        subject.index(experiment);
+        subject.index(experiment, 1024);
 
         assertThat(documents, hasSize(3366));
 
