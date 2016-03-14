@@ -6,17 +6,11 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var ReactDOMServer = require('react-dom/server');
 var $ = require('jquery');
-require('jquery-ui');
-require('../css/jquery-ui.min.css');
+require('jquery-ui-bundle');
 
 //*------------------------------------------------------------------*
 
 var NumberFormat = require('number-format');
-
-//*------------------------------------------------------------------*
-
-require('../css/cell-differential.css');
-require('../css/cell-differential-tooltip.css');
 
 //*------------------------------------------------------------------*
 
@@ -51,7 +45,7 @@ var CellDifferential = React.createClass({
 
         return (
             <td style={{backgroundColor: this.props.colour, verticalAlign: "middle"}}>
-                <div style={this._getStyle()} className={this.props.displayLevels ? "gxaWebpackShowCell" : "gxaWebpackHideCell"}>
+                <div style={this._getStyle()} className={this.props.displayLevels ? "gxaShowCell" : "gxaHideCell"}>
                     {this.props.foldChange}
                 </div>
             </td>
@@ -69,13 +63,13 @@ var CellDifferential = React.createClass({
         //TODO - build this from a React component, like we do for FactorTooltip
         function buildHeatmapCellTooltip (pValue, tstatistic, foldChange) {
 
-            return "<table class='gxaWebpackTableGrid' style='margin: 0; padding: 0;'>" +
+            return "<table class='gxaTableGrid' style='margin: 0; padding: 0;'>" +
                        "<thead>" +
                            (pValue !== undefined ?
-                               "<th class='gxaWebpackHeaderCell'>Adjusted <i>p</i>-value</th>" : "") +
+                               "<th class='gxaHeaderCell'>Adjusted <i>p</i>-value</th>" : "") +
                            (tstatistic !== undefined ?
-                               "<th class='gxaWebpackHeaderCell'><i>t</i>-statistic</th>" : "") +
-                           "<th class='gxaWebpackHeaderCell'>Log<sub>2</sub>-fold change</th>" +
+                               "<th class='gxaHeaderCell'><i>t</i>-statistic</th>" : "") +
+                           "<th class='gxaHeaderCell'>Log<sub>2</sub>-fold change</th>" +
                        "</thead>" +
                        "<tbody>" +
                            "<tr>" +
@@ -96,7 +90,7 @@ var CellDifferential = React.createClass({
                 ui.tooltip.css('background', props.colour);
             },
 
-            tooltipClass:"gxaWebpackHelpTooltip gxaWebpackPvalueTooltipStyling",
+            tooltipClass:"gxaHelpTooltip gxaPValueTooltipStyling",
 
             content:function () {
                 return buildHeatmapCellTooltip(props.pValue, props.tStat, props.foldChange);

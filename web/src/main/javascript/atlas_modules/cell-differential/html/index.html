@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/jquery-ui.min.css">
+    <link rel="stylesheet" href="css/cell-differential.css">
+    <link rel="stylesheet" href="css/cell-differential-tooltip.css">
+
+    <script src="../dist/vendor.bundle.js"></script>
+    <script src="../dist/cellDifferentialDemo.bundle.js"></script>
+</head>
+<body>
+    <div id="main">
+        <table class="gxaTableGrid">
+            <thead>Table header</thead>
+            <tbody>
+                <tr id="cellDifferentialWithoutLevels"></tr>
+                <tr id="cellDifferentialWithLevels"></tr>
+                <tr id="cellDifferentialWithoutTooltips"></tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+<script>
+    cellDifferentialDemo(9, "#00F", "-4.559393", 0.88, 1.25, false, document.getElementById("cellDifferentialWithoutLevels"));
+    cellDifferentialDemo(12, "#00F", "-4.559393", 0.88, 1.25, true, document.getElementById("cellDifferentialWithLevels"));
+    cellDifferentialDemo(14, "#00F", "-4.559393", undefined, undefined, true, document.getElementById("cellDifferentialWithoutTooltips"));
+</script>
+
+</html>

@@ -1,6 +1,6 @@
 "use strict";
 
-var React = require('react');
+var React = require('react');   // React is called in the transpiled JS files in the return statements
 
 //*------------------------------------------------------------------*
 

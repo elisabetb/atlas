@@ -4,16 +4,16 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
     entry: {
-	    anatomogram: './index.js',
-        anatomogramDemo: './html/demo.js',
-        dependencies: ['react', 'react-dom', 'jquery', 'jquery-hc-sticky', 'jquery-ui-bundle', 'imports-loader?this=>window,fix=>module.exports=0!snapsvg/dist/snap.svg.js']
+        cellDifferential: './index.js',
+        cellDifferentialDemo: './html/demo.js',
+        dependencies: ['react', 'react-dom', 'jquery', 'jquery-ui-bundle']
     },
 
     output: {
         libraryTarget: 'var',
         library: '[name]',
         path: path.resolve(__dirname, 'dist'),
-	    filename: '[name].bundle.js',
+        filename: '[name].bundle.js',
         publicPath: '/dist/'
     },
 
@@ -23,7 +23,7 @@ module.exports = {
         new webpack.optimize.CommonsChunkPlugin({
             name: 'dependencies',
             filename: 'vendor.bundle.js',
-            minChunks: Infinity     // Explicit definition-based split. Don’t put shared modules between main and demo entries in vendor.bundle.js (e.g. Anatomogram.jsx)
+            minChunks: Infinity     // Explicit definition-based split. Don’t put shared modules between main and demo entries in vendor.bundle.js
         })
     ],
 

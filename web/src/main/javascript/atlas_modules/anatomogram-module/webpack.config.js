@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
+var CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -14,6 +15,7 @@ module.exports = {
     },
 
     plugins: [
+        new CleanWebpackPlugin(['dist'], {verbose: true, dry: false}),
         new webpack.optimize.DedupePlugin()
     ],
 
