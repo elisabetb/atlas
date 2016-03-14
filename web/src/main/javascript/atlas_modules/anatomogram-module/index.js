@@ -2,4 +2,4 @@
 
 //*------------------------------------------------------------------*
 
-require('./AnatomogramWithDOM.js');
+module.exports = require('./src/anatomogram-module.js');
