@@ -12,7 +12,7 @@ describe("SimpleComponent", function() {
     var subject;
 
     beforeEach(function() {
-        SimpleComponent = require('../src/SimpleComponent.jsx');
+        SimpleComponent = require('../src/jquery-ui-demo.js');
         subject = React.createElement(SimpleComponent);
     });
 

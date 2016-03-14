@@ -1,17 +1,17 @@
 webpackJsonp([0],[
 /* 0 */
 /*!**************************************************!*\
-  !*** ./anatomogram/anatomogram-builder-index.js ***!
+  !*** ./anatomogram/anatomogram-module.js ***!
   \**************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["exposed"] = __webpack_require__(/*! -!./anatomogram/anatomogram-builder-index.js */ 1);
+	/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["exposed"] = __webpack_require__(/*! -!./anatomogram/anatomogram-module.js */ 1);
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 1 */
 /*!**************************************************!*\
-  !*** ./anatomogram/anatomogram-builder-index.js ***!
+  !*** ./anatomogram/anatomogram-module.js ***!
   \**************************************************/
 /***/ function(module, exports, __webpack_require__) {
 

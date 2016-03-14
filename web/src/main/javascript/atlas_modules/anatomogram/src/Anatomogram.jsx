@@ -3,23 +3,15 @@
 //*------------------------------------------------------------------*
 
 var React = require('react');
-
 var ReactDOM = require('react-dom');
 
 var $ = require('jquery');
-var jQuery = $;
-
-require('jquery-ui');
-require('../css/jquery-ui.min.css');
-
-require('../lib/jquery.hc-sticky.js');
+require('jquery-hc-sticky');
+require('jquery-ui-bundle');
 
 var Snap = require( "imports-loader?this=>window,fix=>module.exports=0!snapsvg/dist/snap.svg.js" );
-var EventEmitter = require('wolfy87-eventemitter');
 
-//*------------------------------------------------------------------*
-
-require('../css/anatomogram.css');
+var EventEmitter = require('events');
 
 //*------------------------------------------------------------------*
 
@@ -122,6 +114,7 @@ var Anatomogram = React.createClass({
     },
 
     getInitialState: function() {
+
         var availableAnatomograms = [];
         if (this.props.anatomogramData.maleAnatomogramFile) {
             availableAnatomograms.push(
@@ -297,11 +290,11 @@ var Anatomogram = React.createClass({
                 displayOrganismPartsWithDefaultPropertiesCallback = this._displayOrganismPartsWithDefaultProperties;
             var mouseoverCallback = function(svgPathId) {
                 highlightOrganismPartsCallback(svg, svgPathId, hoverColour, 0.7);
-                eventEmitter.emitEvent('gxaAnatomogramTissueMouseEnter', [svgPathId]);
+                eventEmitter.emit('gxaAnatomogramTissueMouseEnter', [svgPathId]);
             };
             var mouseoutCallback = function(svgPathId) {
                 displayOrganismPartsWithDefaultPropertiesCallback(svg, svgPathId);
-                eventEmitter.emitEvent('gxaAnatomogramTissueMouseLeave', [svgPathId]);
+                eventEmitter.emit('gxaAnatomogramTissueMouseLeave', [svgPathId]);
             };
 
             this.props.anatomogramData.allSvgPathIds.forEach(function(svgPathId) {
