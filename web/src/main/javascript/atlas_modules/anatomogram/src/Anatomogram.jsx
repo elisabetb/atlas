@@ -9,7 +9,7 @@ var $ = require('jquery');
 require('jquery-hc-sticky');
 require('jquery-ui-bundle');
 
-var Snap = require( "imports-loader?this=>window,fix=>module.exports=0!snapsvg/dist/snap.svg.js" );
+var Snap = require('imports-loader?this=>window,fix=>module.exports=0!snapsvg/dist/snap.svg.js');
 
 var EventEmitter = require('events');
 
