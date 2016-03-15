@@ -3,22 +3,15 @@
 //*------------------------------------------------------------------*
 
 var React = require('react');
-
 var ReactDOMServer = require('react-dom/server');
 
 var $ = require('jquery');
-var jQuery = $;
-
-require('jquery-ui');
-require('../css/jquery-ui.min.css');
+require('jquery-ui-bundle');
+require('jQuery-ajaxTransport-XDomainRequest');
 
 //*------------------------------------------------------------------*
 
 var ContrastTooltip = require('./ContrastTooltip.jsx');
-
-//*------------------------------------------------------------------*
-
-require('../css/contrast-tooltips.css');
 
 //*------------------------------------------------------------------*
 
@@ -73,7 +66,7 @@ function initTooltip(contextRoot, accessKey, element, experimentAccession, contr
 
 //*------------------------------------------------------------------*
 
-exports.init = function (contextRoot, accessKey, elements, experimentAccession, contrastId) {
-    initTooltip(contextRoot, accessKey, elements, experimentAccession, contrastId);
+exports.init = function (contextRoot, accessKey, element, experimentAccession, contrastId) {
+    initTooltip(contextRoot, accessKey, element, experimentAccession, contrastId);
 };
 

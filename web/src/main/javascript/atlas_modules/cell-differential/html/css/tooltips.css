@@ -37,7 +37,7 @@
     *cursor: hand;
 }
 
-.gxaHelpTooltip {
+.gxaHelpTooltip, .gxaContrastTooltip {
     background: #fafafa;
     border: 1px solid #2777A5 !important;
     padding: 4px;
@@ -51,4 +51,17 @@
 .gxaPValueTooltipStyling {
     padding: 2px !important;
     margin: 0 !important;
+}
+
+.gxaShowCell {
+    background-color: white;
+    margin: 4px;
+    padding: 2px;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.gxaHideCell {
+    display: none;
+    visibility: hidden;
 }

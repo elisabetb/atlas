@@ -2,4 +2,4 @@
 
 //*------------------------------------------------------------------*
 
-require('./ContrastTooltipsWithDom.js');
+module.exports = require('../src/ContrastTooltipModule.js');
