@@ -3,7 +3,6 @@
 //*------------------------------------------------------------------*
 
 var React = require('react');
-
 var ReactDOM = require('react-dom');
 
 //*------------------------------------------------------------------*
@@ -11,10 +10,6 @@ var ReactDOM = require('react-dom');
 var LegendRow = require('./LegendRow.jsx');
 var NumberFormat = require('number-format');
 var HelpTooltips = require('help-tooltips');
-
-//*------------------------------------------------------------------*
-
-require('../css/legend.css');
 
 //*------------------------------------------------------------------*
 
@@ -38,7 +33,7 @@ var LegendBaseline = React.createClass({
                                lowValueColour="#C0C0C0"
                                highValueColour="#0000FF"/>
                 </div>
-                <div ref="legendHelp" data-help-loc={dataHelpLoc} className="gxaLegendHelp"/>
+                <div ref="legendHelp" data-help-loc={dataHelpLoc} className="gxaLegendHelp"></div>
             </div>
         );
     },

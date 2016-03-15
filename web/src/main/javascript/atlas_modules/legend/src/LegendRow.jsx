@@ -6,10 +6,6 @@ var React = require('react');
 
 //*------------------------------------------------------------------*
 
-require('../css/legend-row.css');
-
-//*------------------------------------------------------------------*
-
 var LegendRow = React.createClass({
 
     propTypes: {
