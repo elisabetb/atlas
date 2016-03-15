@@ -48,6 +48,39 @@
     box-shadow: 0 0 7px gray;
 }
 
+.gxaHelpTooltip .ui-button {
+    border-bottom: 1px solid #cccccc !important;
+}
+
+.gxaHelpTooltip .ui-button:hover, .gxaWebpackHelpTooltip .ui-button:active {
+    border: 1px solid #fbd850 !important;
+}
+
+/* JQuery UI overrides: end */
+
+/****  STYLING FOR BUTTONS IN GENE SET TYPE ANALYSIS PLOTS *****/
+
+.gxaHelpTooltip #reactomeButtonID.tool-item:last-child {
+    border-bottom: 1px;
+}
+
+/**** END ANALYSIS PLOTS STYLING **/
+
+/* help tooltip */
+.gxaHelpTooltip a.help-icon {
+    color: rgb(255, 82, 0) !important;
+    vertical-align: top;
+    font-size: 10px !important;
+    font-weight: bold !important;
+    font-family: Verdana, Helvetica, Arial, sans-serif !important;
+    background: rgba(250, 250, 202, 0.28);
+}
+
+
+
+
+
+
 .gxaPValueTooltipStyling {
     padding: 2px !important;
     margin: 0 !important;

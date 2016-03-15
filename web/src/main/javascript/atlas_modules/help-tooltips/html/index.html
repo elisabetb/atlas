@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/jquery-ui.min.css">
+    <link rel="stylesheet" href="css/tooltips.css">
+
+    <script src="../dist/vendor.bundle.js"></script>
+    <script src="../dist/helpTooltipsDemo.bundle.js"></script>
+</head>
+<body>
+    <div id="main">
+        <span>Text accompanied by tooltip </span><span id="tooltip" data-help-loc="#experimentalConditions"></span>
+    </div>
+</body>
+
+<script>
+    helpTooltipsDemo.init("http://www.ebi.ac.uk/gxa", "experiment", document.getElementById("tooltip"));
+</script>
+
+</html>

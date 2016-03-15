@@ -3,13 +3,8 @@
 //*------------------------------------------------------------------*
 
 var $ = require('jquery');
-var jQuery = $;
-require('jquery-ui');
-require('../lib/jquery.xdomainrequest.js');
-
-//*------------------------------------------------------------------*
-
-require('../css/help-tooltips.css');
+require('jquery-ui-bundle');
+require('jQuery-ajaxTransport-XDomainRequest');
 
 //*------------------------------------------------------------------*
 
@@ -39,7 +34,7 @@ function initTooltips(atlasBaseURL, pageName, parentElementId) {
         })
         .tooltip(
         {
-            tooltipClass: "gxaWebpackHelpTooltip",
+            tooltipClass: "gxaHelpTooltip",
             content: function (callback) {
                 var tooltipHelpHtmlId = $(this).parent().attr("data-help-loc");
 
