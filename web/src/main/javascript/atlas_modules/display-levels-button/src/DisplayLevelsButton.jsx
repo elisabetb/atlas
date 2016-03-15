@@ -4,13 +4,9 @@
 
 var React = require('react');
 var ReactDOM = require('react-dom');
+
 var $ = require('jquery');
-require('jquery-ui');
-
-//*------------------------------------------------------------------*
-
-require('../css/jquery-ui.min.css');
-require('../css/display-levels-button.css');
+require('jquery-ui-bundle');
 
 //*------------------------------------------------------------------*
 
@@ -33,7 +29,7 @@ var DisplayLevelsButton = React.createClass({
     },
 
     render: function () {
-        var className = (this.props.autoSize) ? "" : "gxaWebpackMediumButton";
+        var className = (this.props.autoSize) ? "" : "gxaMediumButton";
         return (
             <button className={className} onClick={this.props.onClickCallback}/>
         );

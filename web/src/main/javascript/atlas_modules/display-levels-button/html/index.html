@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/jquery-ui.min.css">
+    <link rel="stylesheet" href="css/display-levels-button.css">
+
+    <script src="../dist/vendor.bundle.js"></script>
+    <script src="../dist/displayLevelsButtonDemo.bundle.js"></script>
+</head>
+<body>
+    <div id="main">
+        <div id="displayLevelsButton"></div>
+    </div>
+</body>
+
+<script>
+    var displayLevels = true;
+    function toggleDisplayLevelsButton() {
+        displayLevels = !displayLevels;
+        displayLevelsButtonDemo("Hide it!", "Show it!", toggleDisplayLevelsButton, displayLevels, document.getElementById("displayLevelsButton"));
+    }
+
+    toggleDisplayLevelsButton();
+</script>
+
+</html>

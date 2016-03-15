@@ -1,17 +1,16 @@
 {
-  "name": "cell-differential",
+  "name": "display-levels-button",
   "version": "1.0.0",
-  "description": "Cells for differential expression experiments",
+  "description": "Display Levels button for Expression Atlas",
   "main": "index.js",
   "author": "Alfonso Muñoz-Pomer Fuentes <amunoz@ebi.ac.uk>",
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "jquery": "^2.2.1",
-    "jquery-ui-bundle": "^1.11.4",
-    "number-format": "file:../number-format",
     "react": "^0.14.7",
-    "react-dom": "^0.14.7"
+    "react-dom": "^0.14.7",
+    "jquery": "^2.2.1",
+    "jquery-ui-bundle": "^1.11.4"
   },
   "devDependencies": {
     "babel-core": "^6.7.0",

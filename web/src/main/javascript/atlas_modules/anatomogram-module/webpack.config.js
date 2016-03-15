@@ -4,7 +4,7 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
     entry: {
-        "anatomogramModule": './index.js'
+        anatomogramModule: './index.js'
     },
 
     output: {
