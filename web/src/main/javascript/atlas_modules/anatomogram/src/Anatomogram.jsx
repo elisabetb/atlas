@@ -290,11 +290,11 @@ var Anatomogram = React.createClass({
                 displayOrganismPartsWithDefaultPropertiesCallback = this._displayOrganismPartsWithDefaultProperties;
             var mouseoverCallback = function(svgPathId) {
                 highlightOrganismPartsCallback(svg, svgPathId, hoverColour, 0.7);
-                eventEmitter.emit('gxaAnatomogramTissueMouseEnter', [svgPathId]);
+                eventEmitter.emit('gxaAnatomogramTissueMouseEnter', svgPathId);
             };
             var mouseoutCallback = function(svgPathId) {
                 displayOrganismPartsWithDefaultPropertiesCallback(svg, svgPathId);
-                eventEmitter.emit('gxaAnatomogramTissueMouseLeave', [svgPathId]);
+                eventEmitter.emit('gxaAnatomogramTissueMouseLeave', svgPathId);
             };
 
             this.props.anatomogramData.allSvgPathIds.forEach(function(svgPathId) {

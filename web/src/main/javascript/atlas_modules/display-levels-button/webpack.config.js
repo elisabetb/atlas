@@ -23,7 +23,7 @@ module.exports = {
         new webpack.optimize.CommonsChunkPlugin({
             name: 'dependencies',
             filename: 'vendor.bundle.js',
-            minChunks: Infinity     // Explicit definition-based split. Don’t put shared modules between main and demo entries in vendor.bundle.js (e.g. Anatomogram.jsx)
+            minChunks: Infinity     // Explicit definition-based split. Don’t put shared modules between main and demo entries in vendor.bundle.js
         })
     ],
 

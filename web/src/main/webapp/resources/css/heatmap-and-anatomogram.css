@@ -60,7 +60,7 @@ span.gxaTooltip {
 
 .gxaPvalueTooltipStyling {
     padding: 2px !important;
-    margin: 0px !important;
+    margin: 0 !important;
 }
 
 #ensembl-launcher-box {

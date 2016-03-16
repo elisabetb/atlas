@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "clean-webpack-plugin": "^0.1.8",
-    "webpack": "^1.12.14"
+    "webpack": "^1.12.14",
+    "webpack-dev-server": "^1.14.1"
   }
 }

@@ -1,49 +1,40 @@
-var webpack = require("webpack");
-var path = require("path");
+var webpack = require('webpack');
+var path = require('path');
+var CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
-    context: __dirname,
-
     entry: {
-        "atlas-heatmap": "./index.js",
-        "demo": [
-            "webpack-dev-server/client?http://localhost:9000", // WebpackDevServer host and port
-            "webpack/hot/only-dev-server",
-            "./html/demo.js"
-        ],
-        "test": [
-            "webpack-dev-server/client?http://localhost:9000", // WebpackDevServer host and port
-            "webpack/hot/only-dev-server",
-            'mocha!./test/test.js'
-        ],
-        "vendor": ['react', 'jquery', 'jquery-ui-bundle']
+        heatmapAnatomogram: './index.js',
+        internalHeatmapAnatomogram: './src/internal-heatmap-anatomogram.js',
+        heatmapAnatomogramDemo: './html/demo.js',
+        dependencies: ['react', 'react-dom', 'react-radio-group',
+                       'jquery', 'jquery-ui-bundle', 'jquery.browser', 'fancybox', 'jquery-hc-sticky', 'jquery-toolbar', 'jQuery-ajaxTransport-XDomainRequest', 'jquery-hc-sticky',
+                       'urijs', 'imports-loader?this=>window,fix=>module.exports=0!snapsvg/dist/snap.svg.js', 'atlas-modernizr',
+                       'highcharts-more', 'react-highcharts',
+                       'events']
     },
 
     output: {
-        path: __dirname + "/dist",
-        filename: "[name].bundle.js",
-        publicPath: "/dev-server/"
+        libraryTarget: 'var',
+        library: '[name]',
+        path: path.resolve(__dirname, 'dist'),
+        filename: '[name].bundle.js',
+        publicPath: '/dist/'
     },
 
     plugins: [
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.optimize.CommonsChunkPlugin(/* chunkName= */"vendor", /* filename= */"vendor.bundle.js"),
+        new CleanWebpackPlugin(['dist'], {verbose: true, dry: false}),
         new webpack.optimize.DedupePlugin(),
-        new webpack.IgnorePlugin(/jsdom$/)
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'dependencies',
+            filename: 'vendor.bundle.js',
+            minChunks: Infinity     // Explicit definition-based split. Don’t put shared modules between main and demo entries in vendor.bundle.js
+        })
     ],
 
     module: {
         loaders: [
-            {test: /\.jsx?$/, loaders: ['react-hot', "jsx?harmony"], include: path.join(__dirname, "src")},
-            {test: /\.jsx$/, loader: 'babel-loader'},
-            {test: /demo.js$/, loader: 'expose?exposed'},
-            {test: /\.css$/, loader: 'style!css'},
-            {test: /\.(jpe?g|png|gif|svg)$/i,
-                loaders: [
-                    'file?hash=sha512&digest=hex&name=[hash].[ext]',
-                    'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
-                ]
-            }
+            {test: /\.jsx$/, loader: 'babel'}
         ]
     },
 

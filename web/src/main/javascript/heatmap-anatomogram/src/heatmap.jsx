@@ -8,23 +8,21 @@ var ReactDOMServer = require('react-dom/server');
 var RadioGroup = require('react-radio-group');
 
 var $ = require('jquery');
-var jQuery = $;
 
-require('jquery-ui');
-require('../css/jquery-ui.min.css');
-
+require('jquery-ui-bundle');
 require('jquery.browser');
 require('fancybox')($);
+require('jquery-hc-sticky');
+require('jquery-toolbar');
 
-require('../lib/jquery.hc-sticky.js');
-require('../lib/jquery.toolbar.js');
-
-require('../lib/modernizr.3.0.0-alpha3.js');  // Leaks Modernizr to the global window namespace
+require('atlas-modernizr');  // Leaks Modernizr to the global window namespace
 
 //*------------------------------------------------------------------*
 
 var HeatmapBaselineCellVariance = require('heatmap-baseline-cell-variance');
 var Legend = require('legend');
+var LegendBaseline = Legend.LegendBaseline;
+var LegendDifferential = Legend.LegendDifferential;
 var CellDifferential = require('cell-differential');
 var DisplayLevelsButton = require('display-levels-button');
 var NumberFormat = require('number-format');
@@ -35,11 +33,6 @@ var GenePropertiesTooltipModule = require('./gene-properties-tooltip-module.js')
 var FactorTooltipModule = require('./factor-tooltip-module.js');
 
 var StickyHeaderModule = require('./sticky-header-module.js');
-
-//*------------------------------------------------------------------*
-
-require('../css/table-grid.css');
-require('../css/jquery-ui.min.css');
 
 //*------------------------------------------------------------------*
 
@@ -54,11 +47,27 @@ var Heatmap = React.createClass({
             heatmapTooltip: React.PropTypes.string.isRequired
         }),
         heatmapConfig: React.PropTypes.object.isRequired,
-        columnHeaders: React.PropTypes.arrayOf(React.PropTypes.shape({
-            assayGroupId: React.PropTypes.string.isRequired,
-            factorValue: React.PropTypes.string.isRequired,
-            factorValueOntologyTermId: React.PropTypes.string
-        })).isRequired,
+        columnHeaders: React.PropTypes.oneOfType([
+            React.PropTypes.arrayOf(React.PropTypes.shape({
+                assayGroupId: React.PropTypes.string.isRequired,
+                factorValue: React.PropTypes.string.isRequired,
+                factorValueOntologyTermId: React.PropTypes.string
+            })),
+            React.PropTypes.arrayOf(React.PropTypes.shape({
+                id: React.PropTypes.string.isRequired,
+                referenceAssayGroup: React.PropTypes.shape({
+                    id: React.PropTypes.string.isRequired,
+                    assayAccessions: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+                    replicates: React.PropTypes.number.isRequired
+                }).isRequired,
+                testAssayGroup: React.PropTypes.shape({
+                    id: React.PropTypes.string.isRequired,
+                    assayAccessions: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+                    replicates: React.PropTypes.number.isRequired
+                }).isRequired,
+                displayName: React.PropTypes.string.isRequired
+            }))
+        ]).isRequired,
         nonExpressedColumnHeaders: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
         profiles: React.PropTypes.object.isRequired,
         geneSetProfiles: React.PropTypes.object,
@@ -87,27 +96,27 @@ var Heatmap = React.createClass({
 
     _hoverColumn: function(columnId) {
         this.setState({hoveredColumnId: columnId}, function() {
-            this.props.anatomogramEventEmitter.emitEvent('gxaHeatmapColumnHoverChange', [columnId]);
+            this.props.anatomogramEventEmitter.emit('gxaHeatmapColumnHoverChange', columnId);
         });
     },
 
     _hoverRow: function(rowId) {
         this.setState({hoveredRowId: rowId}, function() {
-            this.props.anatomogramEventEmitter.emitEvent('gxaHeatmapRowHoverChange', [rowId]);
+            this.props.anatomogramEventEmitter.emit('gxaHeatmapRowHoverChange', rowId);
         });
     },
 
     selectColumn: function (columnId) {
         var selectedColumnId = (columnId === this.state.selectedColumnId) ? null : columnId;
         this.setState({selectedColumnId: selectedColumnId}, function() {
-            this.props.ensemblEventEmitter.emitEvent('onColumnSelectionChange', [selectedColumnId]);
+            this.props.ensemblEventEmitter.emit('onColumnSelectionChange', selectedColumnId);
         });
     },
 
     selectGene: function (geneId) {
         var selectedGeneId = (geneId === this.state.selectedGeneId) ? null : geneId;
         this.setState({selectedGeneId: selectedGeneId}, function() {
-            this.props.ensemblEventEmitter.emitEvent('onGeneSelectionChange', [selectedGeneId]);
+            this.props.ensemblEventEmitter.emit('onGeneSelectionChange', selectedGeneId);
         });
     },
 
@@ -176,11 +185,11 @@ var Heatmap = React.createClass({
 
     legendType: function () {
         return (this.props.type.isBaseline || this.props.type.isMultiExperiment ?
-            <Legend.LegendBaseline atlasBaseURL={this.props.atlasBaseURL}
+            <LegendBaseline atlasBaseURL={this.props.atlasBaseURL}
                                    minExpressionLevel={this.state.profiles.minExpressionLevel.toString()}
                                    maxExpressionLevel={this.state.profiles.maxExpressionLevel.toString()}
                                    isMultiExperiment={this.props.type.isMultiExperiment ? true : false}/> :
-            <Legend.LegendDifferential atlasBaseURL={this.props.atlasBaseURL}
+            <LegendDifferential atlasBaseURL={this.props.atlasBaseURL}
                                        minDownLevel={this.state.profiles.minDownLevel.toString()}
                                        maxDownLevel={this.state.profiles.maxDownLevel.toString()}
                                        minUpLevel={this.state.profiles.minUpLevel.toString()}
@@ -624,7 +633,10 @@ var ContrastHeader = React.createClass({
             $(plotsButton).tooltip({hide: false, show: false}).button();
             $(plotsButton).toolbar({
                 content: ReactDOM.findDOMNode(this.refs.plotsToolBarContent),
-                position: 'right'
+                position: "right",
+                style: "white",
+                event: "click",
+                hideOnClick: true
             });
         }
     },
