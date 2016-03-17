@@ -29,14 +29,6 @@
     /*padding: 0 20px;*/
 }
 
-.gxaGradientLevelMin {
-    text-align: right;
-}
-
-.gxaGradientLevelMax {
-    text-align: left;
-}
-
 .gxaHeatmapMatrixTopLeftCorner {
     position: relative;
     display: table;
@@ -54,11 +46,6 @@ span.gxaTooltip {
     position: absolute;
     top: 0;
     margin: 5px;
-}
-
-.gxaPvalueTooltipStyling {
-    padding: 2px !important;
-    margin: 0 !important;
 }
 
 #ensembl-launcher-box {
