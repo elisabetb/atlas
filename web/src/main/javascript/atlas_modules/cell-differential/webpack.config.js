@@ -5,7 +5,7 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     entry: {
         cellDifferential: './index.js',
-        cellDifferentialDemo: './html/demo.js',
+        cellDifferentialRenderer: './html/cellDifferentialRenderer.js',
         dependencies: ['react', 'react-dom', 'jquery', 'jquery-ui-bundle']
     },
 
@@ -29,7 +29,8 @@ module.exports = {
 
     module: {
         loaders: [
-            {test: /\.jsx$/, loader: 'babel'}
+            {test: /\.jsx$/, loader: 'babel'},
+            {test: /\.css$/, loader: 'style-loader!css-loader'}
         ]
     },
 

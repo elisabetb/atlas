@@ -12,6 +12,9 @@ require('jquery-ui-bundle');
 
 var NumberFormat = require('number-format');
 
+require('./gxaShowHideCell.css');
+require('./gxaContrastTooltip.css');
+
 //*------------------------------------------------------------------*
 
 var CellDifferential = React.createClass({
@@ -61,39 +64,41 @@ var CellDifferential = React.createClass({
     _initTooltip: function(element) {
 
         //TODO - build this from a React component, like we do for FactorTooltip
-        function buildHeatmapCellTooltip (pValue, tstatistic, foldChange) {
+        function buildHeatmapCellTooltip (pValue, tStatistic, foldChange) {
 
-            return "<table class='gxaTableGrid' style='margin: 0; padding: 0;'>" +
+            return "<table>" +
                        "<thead>" +
                            (pValue !== undefined ?
-                               "<th class='gxaHeaderCell'>Adjusted <i>p</i>-value</th>" : "") +
-                           (tstatistic !== undefined ?
-                               "<th class='gxaHeaderCell'><i>t</i>-statistic</th>" : "") +
+                               "<th>Adjusted <em>p</em>-value</th>" : "") +
+                           (tStatistic !== undefined ?
+                               "<th><em>t</em>-statistic</th>" : "") +
                            "<th class='gxaHeaderCell'>Log<sub>2</sub>-fold change</th>" +
                        "</thead>" +
                        "<tbody>" +
                            "<tr>" +
                                (pValue !== undefined ?
-                                   "<td style='padding:6px'>" + ReactDOMServer.renderToStaticMarkup(NumberFormat.scientificNotation(pValue)) + "</td>" : "") +
-                               (tstatistic !== undefined ?
-                                   "<td style='padding:6px'>" + tstatistic + "</td>" : "") +
-                               "<td style='padding:6px'>" + foldChange + "</td>" +
+                                   "<td>" + ReactDOMServer.renderToStaticMarkup(NumberFormat.scientificNotation(pValue)) + "</td>" : "") +
+                               (tStatistic !== undefined ?
+                                   "<td>" + tStatistic + "</td>" : "") +
+                               "<td>" + foldChange + "</td>" +
                            "</tr>" +
                        "</tbody>" +
                    "</table>";
+
         }
 
-        var props = this.props;
+        // Don’t use bind, tooltip uses this internally
+        var thisProps = this.props;
 
-        $(element).attr('title', '').tooltip({
+        $(element).attr("title", "").tooltip({
             open: function (event, ui) {
-                ui.tooltip.css('background', props.colour);
+                ui.tooltip.css("background", thisProps.colour);
             },
 
-            tooltipClass:"gxaHelpTooltip gxaPValueTooltipStyling",
+            tooltipClass: "gxaContrastTooltip",
 
             content:function () {
-                return buildHeatmapCellTooltip(props.pValue, props.tStat, props.foldChange);
+                return buildHeatmapCellTooltip(thisProps.pValue, thisProps.tStat, thisProps.foldChange);
             }
         });
     }
