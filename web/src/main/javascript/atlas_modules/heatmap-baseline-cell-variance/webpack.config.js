@@ -5,7 +5,7 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     entry: {
         heatmapBaselineCellVariance: './index.js',
-        heatmapBaselineCellVarianceDemo: './html/demo.js',
+        heatmapBaselineCellVarianceRenderer: './html/heatmapBaselineCellVarianceRenderer.js',
         dependencies: ['react', 'react-dom', 'highcharts-more', 'react-highcharts']
     },
 
