@@ -6,7 +6,7 @@ module.exports = {
     entry: {
         heatmapAnatomogram: './index.js',
         internalHeatmapAnatomogram: './src/internal-heatmap-anatomogram.js',
-        heatmapAnatomogramDemo: './html/demo.js',
+        heatmapAnatomogramRenderer: './html/heatmapAnatomogramRenderer.js',
         dependencies: ['react', 'react-dom', 'react-radio-group',
                        'jquery', 'jquery-ui-bundle', 'jquery.browser', 'fancybox', 'jquery-hc-sticky', 'jquery-toolbar', 'jQuery-ajaxTransport-XDomainRequest', 'jquery-hc-sticky',
                        'urijs', 'imports-loader?this=>window,fix=>module.exports=0!snapsvg/dist/snap.svg.js', 'atlas-modernizr',
@@ -34,7 +34,15 @@ module.exports = {
 
     module: {
         loaders: [
-            {test: /\.jsx$/, loader: 'babel'}
+            {test: /\.jsx$/, loader: 'babel'},
+            {test: /\.css$/, loader: 'style-loader!css-loader'},
+            {
+                test: /\.(jpe?g|png|gif|svg)$/i,
+                loaders: [
+                    'file?hash=sha512&digest=hex&name=[hash].[ext]',
+                    'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
+                ]
+            }
         ]
     },
 
