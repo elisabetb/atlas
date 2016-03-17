@@ -15,6 +15,10 @@ var ContrastTooltip = require('./ContrastTooltip.jsx');
 
 //*------------------------------------------------------------------*
 
+require('./gxaContrastTooltip.css');
+
+//*------------------------------------------------------------------*
+
 function initTooltip(contextRoot, accessKey, element, experimentAccession, contrastId) {
 
     $(element).attr("title", "").tooltip({
@@ -66,7 +70,7 @@ function initTooltip(contextRoot, accessKey, element, experimentAccession, contr
 
 //*------------------------------------------------------------------*
 
-exports.init = function (contextRoot, accessKey, element, experimentAccession, contrastId) {
+module.exports = function (contextRoot, accessKey, element, experimentAccession, contrastId) {
     initTooltip(contextRoot, accessKey, element, experimentAccession, contrastId);
 };
 

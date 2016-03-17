@@ -54,12 +54,12 @@ var ContrastTooltip = React.createClass({
             <div>
                 <div id="contrastExperimentDescription" style={{fontWeight: "bold", color: "blue", textAlign: "center"}}>{this.props.experimentDescription}</div>
                 <div id="contrastDescription" style={{textAlign: "center"}}>{this.props.contrastDescription}</div>
-                <table className="gxaTableGrid" style={{padding: "0px", margin: "0px", width: "100%"}}>
+                <table style={{padding: "0px", margin: "0px", width: "100%"}}>
                     <thead>
                         <tr>
-                            <th className="gxaHeaderCell">Property</th>
-                            <th className="gxaHeaderCell">Test value (N={this.props.testReplicates})</th>
-                            <th className="gxaHeaderCell">Reference value (N={this.props.referenceReplicates})</th>
+                            <th>Property</th>
+                            <th>Test value (N={this.props.testReplicates})</th>
+                            <th>Reference value (N={this.props.referenceReplicates})</th>
                         </tr>
                     </thead>
                     <tbody>

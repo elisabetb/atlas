@@ -5,7 +5,6 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     entry: {
         contrastTooltips: './index.js',
-        contrastTooltipsDemo: './html/demo.js',
         dependencies: ['react', 'react-dom', 'jquery', 'jquery-ui-bundle', 'jQuery-ajaxTransport-XDomainRequest']
     },
 
@@ -29,7 +28,8 @@ module.exports = {
 
     module: {
         loaders: [
-            {test: /\.jsx$/, loader: 'babel'}
+            {test: /\.jsx$/, loader: 'babel'},
+            {test: /\.css$/, loader: 'style-loader!css-loader'}
         ]
     },
 
