@@ -12,8 +12,10 @@ require('jquery-ui-bundle');
 
 var NumberFormat = require('number-format');
 
+//*------------------------------------------------------------------*
+
 require('./gxaShowHideCell.css');
-require('./gxaContrastTooltip.css');
+require('./gxaDifferentialCellTooltip.css');
 
 //*------------------------------------------------------------------*
 
@@ -95,7 +97,7 @@ var CellDifferential = React.createClass({
                 ui.tooltip.css("background", thisProps.colour);
             },
 
-            tooltipClass: "gxaContrastTooltip",
+            tooltipClass: "gxaDifferentialCellTooltip",
 
             content:function () {
                 return buildHeatmapCellTooltip(thisProps.pValue, thisProps.tStat, thisProps.foldChange);
