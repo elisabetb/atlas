@@ -3,7 +3,7 @@
 <head lang="en">
     <meta charset="UTF-8">
     <script src="../dist/vendor.bundle.js"></script>
-    <script src="../dist/numberFormatDemo.bundle.js"></script>
+    <script src="../dist/numberFormatRenderer.bundle.js"></script>
     <title>Number Format demo</title>
 </head>
 <body>
@@ -18,12 +18,12 @@
 </body>
 
 <script>
-    numberFormatDemo.baselineExpression(3943939000, document.getElementById("baseline1"));
-    numberFormatDemo.baselineExpression(10000000000000, document.getElementById("baseline2"));
-    numberFormatDemo.baselineExpression(.00000000000001, document.getElementById("baseline3"));
-    numberFormatDemo.scientificNotation("42.0", document.getElementById("scientific1"));
-    numberFormatDemo.scientificNotation("0.00000002344", document.getElementById("scientific2"));
-    numberFormatDemo.scientificNotation("1e100", document.getElementById("scientific2"));
+    numberFormatRenderer.baselineExpression(3943939000, document.getElementById("baseline1"));
+    numberFormatRenderer.baselineExpression(10000000000000, document.getElementById("baseline2"));
+    numberFormatRenderer.baselineExpression(.00000000000001, document.getElementById("baseline3"));
+    numberFormatRenderer.scientificNotation("42.0", document.getElementById("scientific1"));
+    numberFormatRenderer.scientificNotation("0.00000002344", document.getElementById("scientific2"));
+    numberFormatRenderer.scientificNotation("1e100", document.getElementById("scientific2"));
 </script>
 
 </html>

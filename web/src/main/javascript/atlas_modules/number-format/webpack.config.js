@@ -5,7 +5,7 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     entry: {
 	    numberFormat: './index.js',
-        numberFormatDemo: './html/demo.js',
+        numberFormatRenderer: './html/numberFormatRenderer.js',
         dependencies: ['react', 'react-dom']
     },
 
