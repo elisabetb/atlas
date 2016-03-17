@@ -10,6 +10,10 @@ require('jquery-ui-bundle');
 
 //*------------------------------------------------------------------*
 
+
+
+//*------------------------------------------------------------------*
+
 var DisplayLevelsButton = React.createClass({
 
     propTypes: {
@@ -17,7 +21,7 @@ var DisplayLevelsButton = React.createClass({
         showText: React.PropTypes.string.isRequired,
         onClickCallback: React.PropTypes.func.isRequired,
         displayLevels: React.PropTypes.bool.isRequired,
-        autoSize: React.PropTypes.bool
+        width: React.PropTypes.string
     },
 
     _buttonText: function () {
@@ -29,9 +33,9 @@ var DisplayLevelsButton = React.createClass({
     },
 
     render: function () {
-        var className = (this.props.autoSize) ? "" : "gxaMediumButton";
+        var style = this.props.width ? {textAlign: "center", width: this.props.width} : {textAlign: "center"};
         return (
-            <button className={className} onClick={this.props.onClickCallback}/>
+            <button style={style} onClick={this.props.onClickCallback}/>
         );
     },
 

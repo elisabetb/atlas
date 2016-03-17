@@ -2,26 +2,34 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/jquery-ui.min.css">
-    <link rel="stylesheet" href="css/display-levels-button.css">
+    <link rel="stylesheet" href="css/jquery-ui/css/jquery-ui.min.css">
 
     <script src="../dist/vendor.bundle.js"></script>
-    <script src="../dist/displayLevelsButtonDemo.bundle.js"></script>
+    <script src="../dist/displayLevelsButtonRenderer.bundle.js"></script>
 </head>
 <body>
     <div id="main">
-        <div id="displayLevelsButton"></div>
+        <div style="margin-bottom: 10px" id="displayLevelsButton1"></div>
+        <div id="displayLevelsButton2"></div>
     </div>
 </body>
 
 <script>
-    var displayLevels = true;
-    function toggleDisplayLevelsButton() {
-        displayLevels = !displayLevels;
-        displayLevelsButtonDemo("Hide it!", "Show it!", toggleDisplayLevelsButton, displayLevels, document.getElementById("displayLevelsButton"));
+    var displayLevels1 = true;
+    function toggleDisplayLevelsButton1() {
+        displayLevels1 = !displayLevels1;
+        displayLevelsButtonRenderer("Hide it!", "Show it!", toggleDisplayLevelsButton1, displayLevels1, "", document.getElementById("displayLevelsButton1"));
     }
 
-    toggleDisplayLevelsButton();
+    var displayLevels2 = true;
+    function toggleDisplayLevelsButton2() {
+        displayLevels2 = !displayLevels2;
+        displayLevelsButtonRenderer("Hide it!", "Show it!", toggleDisplayLevelsButton2, displayLevels2, "300px", document.getElementById("displayLevelsButton2"));
+    }
+
+
+    toggleDisplayLevelsButton1();
+    toggleDisplayLevelsButton2();
 </script>
 
 </html>

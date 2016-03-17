@@ -5,7 +5,7 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     entry: {
         displayLevelsButton: './index.js',
-        displayLevelsButtonDemo: './html/demo.js',
+        displayLevelsButtonRenderer: './html/displayLevelsButtonRenderer.js',
         dependencies: ['react', 'react-dom', 'jquery', 'jquery-ui-bundle']
     },
 
