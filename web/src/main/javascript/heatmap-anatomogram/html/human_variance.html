@@ -4,15 +4,13 @@
     <meta charset="UTF-8">
 
     <title>Heatmap demo</title>
-    <link rel="stylesheet" href="css/jquery-ui/jquery-ui.min.css">
+    <link rel="stylesheet" href="css/jquery-ui/css/jquery-ui.min.css">
     <link rel="stylesheet" href="css/heatmap-and-anatomogram.css">
     <link rel="stylesheet" href="css/table-grid.css">
-    <link rel="stylesheet" href="css/legend.css">
-    <link rel="stylesheet" href="css/tooltips.css">
     <link rel="stylesheet" href="css/atlas.css">
 
     <script src="../dist/vendor.bundle.js"></script>
-    <script src="../dist/heatmapAnatomogramDemo.bundle.js"></script>
+    <script src="../dist/heatmapAnatomogramRenderer.bundle.js"></script>
 </head>
 <body>
     <div>
@@ -23,7 +21,7 @@
 </body>
 
 <script language="JavaScript" type="text/javascript">
-    heatmapAnatomogramDemo({
+    heatmapAnatomogramRenderer({
         atlasHost: "https://www.ebi.ac.uk",
         params: "geneQuery=CALCR&species=homo%20sapiens",
         isMultiExperiment: false,
