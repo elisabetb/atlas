@@ -5,7 +5,7 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     entry: {
         legend: './index.js',
-        legendDemo: './html/demo.js',
+        legendRenderer: './html/legendRenderer.js',
         // jquery and jquery-ui-bundle are included by help-tooltips
         dependencies: ['react', 'react-dom', 'jquery', 'jquery-ui-bundle']
     },
@@ -30,7 +30,8 @@ module.exports = {
 
     module: {
         loaders: [
-            {test: /\.jsx$/, loader: 'babel'}
+            {test: /\.jsx$/, loader: 'babel'},
+            {test: /\.css$/, loader: 'style-loader!css-loader'}
         ]
     },
 

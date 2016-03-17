@@ -12,6 +12,10 @@ var HelpTooltips = require('help-tooltips');
 
 //*------------------------------------------------------------------*
 
+require('./gxaLegend.css');
+
+//*------------------------------------------------------------------*
+
 var LegendDifferential = React.createClass({
 
     propTypes: {
@@ -47,7 +51,7 @@ var LegendDifferential = React.createClass({
     },
 
     componentDidMount: function () {
-        HelpTooltips.init(this.props.atlasBaseURL, "experiment", ReactDOM.findDOMNode(this.refs.legendHelp));
+        HelpTooltips(this.props.atlasBaseURL, "experiment", ReactDOM.findDOMNode(this.refs.legendHelp));
     }
 });
 

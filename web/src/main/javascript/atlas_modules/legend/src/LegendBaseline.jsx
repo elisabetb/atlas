@@ -13,6 +13,10 @@ var HelpTooltips = require('help-tooltips');
 
 //*------------------------------------------------------------------*
 
+require('./gxaLegend.css');
+
+//*------------------------------------------------------------------*
+
 var LegendBaseline = React.createClass({
 
     propTypes: {
@@ -25,6 +29,7 @@ var LegendBaseline = React.createClass({
     render: function () {
         var dataHelpLoc = this.props.isMultiExperiment ? "#gradient-base-crossexp" : "#gradient-base";
 
+        // The class gxaHeatmapLegendGradient is used for Selenium tests but isn’t styled
         return (
             <div className="gxaHeatmapLegendGradient">
                 <div style={{display: "inline-table"}}>
@@ -39,7 +44,7 @@ var LegendBaseline = React.createClass({
     },
 
     componentDidMount: function () {
-        HelpTooltips.init(this.props.atlasBaseURL, "experiment", ReactDOM.findDOMNode(this.refs.legendHelp));
+        HelpTooltips(this.props.atlasBaseURL, "experiment", ReactDOM.findDOMNode(this.refs.legendHelp));
     }
 });
 

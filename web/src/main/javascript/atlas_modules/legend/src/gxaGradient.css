@@ -1,14 +1,3 @@
-.gxaLegendHelp {
-    display: inline-block;
-    vertical-align: top;
-    padding-left: 2px;
-}
-
-.gxaLegend {
-    display: inline-block;
-    padding-left: 20px;
-}
-
 .gxaGradientColour {
     overflow: auto;
     vertical-align: middle;

@@ -6,6 +6,10 @@ var React = require('react');
 
 //*------------------------------------------------------------------*
 
+require('./gxaGradient.css');
+
+//*------------------------------------------------------------------*
+
 var LegendRow = React.createClass({
 
     propTypes: {

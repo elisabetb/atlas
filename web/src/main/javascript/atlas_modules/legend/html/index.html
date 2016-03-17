@@ -2,12 +2,10 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/jquery-ui.min.css">
-    <link rel="stylesheet" href="css/tooltips.css">
-    <link rel="stylesheet" href="css/legend.css">
+    <link rel="stylesheet" href="css/jquery-ui/css/jquery-ui.min.css">
 
     <script src="../dist/vendor.bundle.js"></script>
-    <script src="../dist/legendDemo.bundle.js"></script>
+    <script src="../dist/legendRenderer.bundle.js"></script>
 </head>
 <body>
     <div id="main">
@@ -23,8 +21,8 @@
 </body>
 
 <script>
-    legendDemo.renderBaseline("1", "100000", document.getElementById("baselineLegend"));
-    legendDemo.renderDifferential("-100000", "-1", "1", "1000000", document.getElementById("differentialLegend"));
+    legendRenderer.renderBaseline("1", "100000", document.getElementById("baselineLegend"));
+    legendRenderer.renderDifferential("-100000", "-1", "1", "1000000", document.getElementById("differentialLegend"));
 </script>
 
 </html>
