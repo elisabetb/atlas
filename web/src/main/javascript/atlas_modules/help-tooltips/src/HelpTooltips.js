@@ -8,6 +8,10 @@ require('jQuery-ajaxTransport-XDomainRequest');
 
 //*------------------------------------------------------------------*
 
+require('./gxaHelpTooltip.css');
+
+//*------------------------------------------------------------------*
+
 function buildHelpAnchor() {
     return $("<a/>", {
         class: "help-icon",
@@ -64,6 +68,6 @@ function initTooltips(atlasBaseURL, pageName, parentElementId) {
 
 //*------------------------------------------------------------------*
 
-exports.init = function (atlasBaseURL, pageName, parentElementId) {
+module.exports = function (atlasBaseURL, pageName, parentElementId) {
     initTooltips(atlasBaseURL, pageName, parentElementId);
 };

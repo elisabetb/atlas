@@ -5,7 +5,6 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     entry: {
         helpTooltips: './index.js',
-        helpTooltipsDemo: './html/demo.js',
         dependencies: ['jquery', 'jquery-ui-bundle', 'jQuery-ajaxTransport-XDomainRequest']
     },
 
@@ -26,6 +25,12 @@ module.exports = {
             minChunks: Infinity     // Explicit definition-based split. Don’t put shared modules between main and demo entries in vendor.bundle.js
         })
     ],
+
+    module: {
+        loaders: [
+            {test: /\.css$/, loader: 'style-loader!css-loader'}
+        ]
+    },
 
     devServer: {
         port: 9000

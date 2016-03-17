@@ -1,0 +1,14 @@
+.gxaHelpTooltip {
+    background: white;
+    border: 1px solid cornflowerblue !important;
+    padding: 4px;
+    color: cornflowerblue;
+    font: 10px Verdana, Helvetica, Arial, sans-serif;
+}
+
+a.help-icon {
+    color: darkorange;
+    vertical-align: top;
+    font: 10px Verdana, Helvetica, Arial, sans-serif;
+    font-weight: bold;
+}
