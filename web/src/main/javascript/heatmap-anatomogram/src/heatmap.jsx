@@ -11,11 +11,15 @@ var $ = require('jquery');
 
 require('jquery-ui-bundle');
 require('jquery.browser');
-require('fancybox')($);
 require('jquery-hc-sticky');
-require('jquery-toolbar');
-
 require('atlas-modernizr');  // Leaks Modernizr to the global window namespace
+
+require('fancybox')($);
+require('fancybox/dist/css/jquery.fancybox.css');
+
+require('jquery-toolbar');
+require('jquery-toolbar/jquery.toolbar.css');
+require('./jquery-toolbar-white.css');
 
 //*------------------------------------------------------------------*
 
@@ -33,6 +37,7 @@ var GenePropertiesTooltipModule = require('./gene-properties-tooltip-module.js')
 var FactorTooltipModule = require('./factor-tooltip-module.js');
 
 var StickyHeaderModule = require('./sticky-header-module.js');
+require('./gxaStickyHeader.css');
 
 //*------------------------------------------------------------------*
 
@@ -461,25 +466,6 @@ function restrictLabelSize(label, maxSize) {
 function renderFactorHeaders(heatmapConfig, atlasBaseURL, mainHeaderNames, type, assayGroupFactors, nonExpressedGroupFactors, experimentAccession, selectColumn,
                              selectedColumnId, hoverColumnCallback, anatomogramEventEmitter) {
 
-    //var factorHeaders =
-    //    assayGroupFactors.filter(function(assayGroupFactor) {
-    //        return (nonExpressedGroupFactors.indexOf(assayGroupFactor.factorValue) == -1)
-    //    })
-    //    .map(function (assayGroupFactor) {
-    //        return <FactorHeader key={mainHeaderNames + assayGroupFactor.factorValue}
-    //                             type={type}
-    //                             heatmapConfig={heatmapConfig}
-    //                             factorName={assayGroupFactor.factorValue}
-    //                             svgPathId={assayGroupFactor.factorValueOntologyTermId}
-    //                             assayGroupId={assayGroupFactor.assayGroupId}
-    //                             experimentAccession={experimentAccession}
-    //                             selectColumn={selectColumn}
-    //                             selected={assayGroupFactor.assayGroupId === selectedColumnId}
-    //                             hoverColumnCallback={hoverColumnCallback}
-    //                             anatomogramEventEmitter={anatomogramEventEmitter}
-    //                             atlasBaseURL={atlasBaseURL} />;
-    //});
-
     return assayGroupFactors.map(function (assayGroupFactor) {
         return <FactorHeader key={mainHeaderNames + assayGroupFactor.factorValue}
                              type={type}
@@ -624,7 +610,7 @@ var ContrastHeader = React.createClass({
     },
 
     componentDidMount: function () {
-        ContrastTooltips.init(this.props.atlasBaseURL, this.props.heatmapConfig.accessKey, ReactDOM.findDOMNode(this), this.props.experimentAccession, this.props.contrastId);
+        ContrastTooltips(this.props.atlasBaseURL, this.props.heatmapConfig.accessKey, ReactDOM.findDOMNode(this), this.props.experimentAccession, this.props.contrastId);
 
         if (this.showPlotsButton()) {
             this.renderToolBarContent(ReactDOM.findDOMNode(this.refs.plotsToolBarContent));
@@ -736,16 +722,14 @@ var TopLeftCorner = React.createClass({
             );
         } else if (this.props.type.isBaseline || this.props.type.isMultiExperiment) {
             return (
-                    <DisplayLevelsButton autoSize={true}
-                                         hideText='Hide levels'
+                    <DisplayLevelsButton hideText='Hide levels'
                                          showText='Display levels'
                                          onClickCallback={this.props.toggleDisplayLevels}
                                          displayLevels={this.props.displayLevels}/>
             );
         } else {
             return (
-                    <DisplayLevelsButton autoSize={true}
-                                         hideText='Hide log<sub>2</sub>-fold change'
+                    <DisplayLevelsButton hideText='Hide log<sub>2</sub>-fold change'
                                          showText='Display log<sub>2</sub>-fold change'
                                          onClickCallback={this.props.toggleDisplayLevels}
                                          displayLevels={this.props.displayLevels}/>
@@ -765,7 +749,7 @@ var TopLeftCorner = React.createClass({
     },
 
     componentDidMount: function () {
-        HelpTooltips.init(this.props.atlasBaseURL, 'experiment', ReactDOM.findDOMNode(this.refs.tooltipSpan));
+        HelpTooltips(this.props.atlasBaseURL, 'experiment', ReactDOM.findDOMNode(this.refs.tooltipSpan));
     }
 
 });
@@ -1069,7 +1053,7 @@ var CellBaseline = React.createClass({
         }
 
         if (this._isUnknownExpression() && !hasQuestionMark(ReactDOM.findDOMNode(this.refs.unknownCell))) {
-            HelpTooltips.init(this.props.atlasBaseURL, 'experiment', ReactDOM.findDOMNode(this.refs.unknownCell));
+            HelpTooltips(this.props.atlasBaseURL, 'experiment', ReactDOM.findDOMNode(this.refs.unknownCell));
         }
     },
 
