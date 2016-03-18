@@ -21,7 +21,8 @@ var DisplayLevelsButton = React.createClass({
         showText: React.PropTypes.string.isRequired,
         onClickCallback: React.PropTypes.func.isRequired,
         displayLevels: React.PropTypes.bool.isRequired,
-        width: React.PropTypes.string
+        width: React.PropTypes.string,
+        fontSize: React.PropTypes.string
     },
 
     _buttonText: function () {
@@ -33,7 +34,16 @@ var DisplayLevelsButton = React.createClass({
     },
 
     render: function () {
-        var style = this.props.width ? {textAlign: "center", width: this.props.width} : {textAlign: "center"};
+        var style = {
+            textAlign: "center"
+        };
+        if (this.props.width) {
+            style.width = this.props.width;
+        }
+        if (this.props.fontSize) {
+            style.fontSize = this.props.fontSize;
+        }
+
         return (
             <button style={style} onClick={this.props.onClickCallback}/>
         );
