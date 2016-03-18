@@ -12,10 +12,10 @@ var Anatomogram = require('anatomogram');
 
 function AnatomogramBuilder(domNode, anatomogramData, profileRows, expressedColour, hoverColour, eventEmitter, jQueryUITheme) {
 
-    if (jQueryUITheme) {
+    if (jQueryUITheme !== "") {
 
-        var href = jQueryUITheme === "atlas" ?
-            window.location.protocol + "//" + window.location.host + "/gxa/resources/css/jquery-ui/jquery-ui-min.css" :
+        var href = jQueryUITheme === "atlas" || typeof jQueryUITheme === "undefined" ?
+            window.location.protocol + "//" + window.location.host + "/gxa/resources/css/jquery-ui-1.11.4.custom/css/jquery-ui-min.css" :
             "https://code.jquery.com/ui/1.11.1/themes/" + jQueryUITheme + "/jquery-ui.css";
 
         var cssDoc = document.createElement("link");
