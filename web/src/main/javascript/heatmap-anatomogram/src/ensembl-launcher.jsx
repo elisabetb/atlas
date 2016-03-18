@@ -6,10 +6,15 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 var $ = require('jquery');
+require('jquery-ui-bundle');
 
 //*------------------------------------------------------------------*
 
 var ensemblUtils = require('./ensembl-utils.js');
+
+//*------------------------------------------------------------------*
+
+require('./ensembl-launcher.css');
 
 //*------------------------------------------------------------------*
 
@@ -109,13 +114,13 @@ var EnsemblLauncher = React.createClass({
             <div id="ensembl-launcher-box" style={{width: "245px"}}>
                 <div id="ensembl-launcher-box-ensembl">
                     <label>Ensembl Genome Browser</label>
-                    <img src="/gxa/resources/images/ensembl.gif" style={{padding: "0px 5px"}}></img>
+                    <img src="/gxa/resources/images/ensembl.gif" style={{padding: "0px 5px"}}/>
                     <button ref="ensemblButton" onClick={this._openEnsemblWindow.bind(this, ensemblHost)}>Open</button>
                 </div>
                 { this.props.ensemblDB == "plants" ?
                     <div id="ensembl-launcher-box-gramene" >
                         <label>Gramene Genome Browser</label>
-                        <img src="/gxa/resources/images/gramene.png" style={{padding: "0px 5px"}}></img>
+                        <img src="/gxa/resources/images/gramene.png" style={{padding: "0px 5px"}}/>
                         <button ref="grameneButton" onClick={this._openEnsemblWindow.bind(this, grameneHost)}>Open</button>
                     </div>
                     : null

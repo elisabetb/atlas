@@ -14,6 +14,10 @@ var FactorTooltip = require('./factor-tooltip.jsx');
 
 //*------------------------------------------------------------------*
 
+require('./factor-tooltip-module.css');
+
+//*------------------------------------------------------------------*
+
 /**
  * @param {Object} options
  * @param {string} options.contextRoot
@@ -30,7 +34,7 @@ function initTooltip(options) {
 
         show:false,
 
-        tooltipClass: "gxaHelpTooltip gxaPvalueTooltipStyling gxaFactorTooltip",
+        tooltipClass: "gxaFactorTooltip",
 
         close: function() {
             $(".gxaFactorTooltip").remove();

@@ -20,6 +20,10 @@ var ExperimentTypes = require('./experiment-types.js');
 
 //*------------------------------------------------------------------*
 
+require('./internal-heatmap-anatomogram-container.css');
+
+//*------------------------------------------------------------------*
+
 var InternalHeatmapAnatomogramContainer = React.createClass({
     propTypes: {
         anatomogram: React.PropTypes.object,

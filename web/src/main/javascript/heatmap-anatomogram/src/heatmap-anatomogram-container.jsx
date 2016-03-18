@@ -22,6 +22,10 @@ var ExperimentTypes = require('./experiment-types.js');
 
 //*------------------------------------------------------------------*
 
+require('./heatmap-anatomogram-container.css');
+
+//*------------------------------------------------------------------*
+
 var ExperimentDescription = React.createClass({
     propTypes: {
         linksAtlasBaseURL: React.PropTypes.string.isRequired,

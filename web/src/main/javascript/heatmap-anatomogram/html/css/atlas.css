@@ -1,43 +1,3 @@
-.ui-button {
-    border-bottom: 1px solid #cccccc !important;
-}
-
-/* TODO: This class is used in jQuery UI - move out to a separate css file */
-#download-profiles-link .ui-button-text,
-.gxaVerticalHeaderCell .ui-button-text,
-.gxaVerticalHeaderCell-selected .ui-button-text,
-#gene-distribution-button .ui-button-text {
-    padding: 0 !important;
-}
-
-.ui-button:hover, .ui-button:active {
-    border: 1px solid #fbd850 !important;
-}
-
-/* JQuery UI overrides: end */
-
-.gxaThickLink {
-    font-weight: bold;
-}
-
-#download-profiles {
-    background: transparent url('images/download_blue_small.png');
-}
-
-.gxaButtonImage {
-    /*background: no-repeat center;*/
-    cursor: pointer;
-    padding: 2px !important;
-
-}
-
-/* selected link */
-
-div.gxaDoubleClickNoSelection {
-    -webkit-user-select: none;
-    -ms-user-select: none;
-}
-
 /* Sensible minimum heights for small and large screens */
 @media screen and (min-height: 600px) {
     div#wrapper {
@@ -51,30 +11,6 @@ div.gxaDoubleClickNoSelection {
     }
 }
 
-a.ext, a.ext:link {
-    padding-left: 13px;
-    background: url(images/ico_ext_link.png) no-repeat 0 2px;
-}
 
-a.ext:hover, a.ext:active, a.ext:focus {
-    background: url(images/ico_ext_link_on.png) no-repeat 0 2px;
-}
-
-span.gxaGenePropertyLabel {
-    color: brown;
-    font-weight: bold;
-    display: inline-block;
-    text-align: left;
-}
-
-.gxaPropertyValueMarkup {
-    text-align: center;
-    background-color: rgb(223, 213, 213);
-
-}
-
-.gxaGeneNameTooltip {
-    text-align: justify;
-}
 
 

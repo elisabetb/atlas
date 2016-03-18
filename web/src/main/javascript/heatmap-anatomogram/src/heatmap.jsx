@@ -37,7 +37,11 @@ var GenePropertiesTooltipModule = require('./gene-properties-tooltip-module.js')
 var FactorTooltipModule = require('./factor-tooltip-module.js');
 
 var StickyHeaderModule = require('./sticky-header-module.js');
-require('./gxaStickyHeader.css');
+require('./sticky-header-module.css');
+
+//*------------------------------------------------------------------*
+
+require('./heatmap.css');
 
 //*------------------------------------------------------------------*
 
@@ -374,9 +378,9 @@ var DownloadProfilesButton = React.createClass({
         var downloadImgSrcURL = this.props.atlasBaseURL + "/resources/images/download_blue_small.png";
 
         return (
-            <a id="download-profiles-link" ref="downloadProfilesLink"
+            <a id="download-profiles-link" ref="downloadProfilesLink" class="gxaNoTextButton"
                title="Download all results"
-               href={downloadURL} className="gxaButtonImage" target="_blank">
+               href={downloadURL} target="_blank">
                <img id="download-profiles" alt="Download query results" style={{width: "20px"}} src={downloadImgSrcURL}/>
             </a>
         );
@@ -384,8 +388,11 @@ var DownloadProfilesButton = React.createClass({
 
     componentDidMount: function () {
         var $downloadProfilesLink = $(ReactDOM.findDOMNode(this.refs.downloadProfilesLink));
-        $downloadProfilesLink.tooltip();
+        $downloadProfilesLink.tooltip({
+            tooltipClass: "gxaHelpTooltip"
+        });
         $downloadProfilesLink.button();
+        $downloadProfilesLink.addClass("gxaNoTextButton");
     }
 });
 
@@ -615,15 +622,20 @@ var ContrastHeader = React.createClass({
         if (this.showPlotsButton()) {
             this.renderToolBarContent(ReactDOM.findDOMNode(this.refs.plotsToolBarContent));
 
-            var plotsButton = ReactDOM.findDOMNode(this.refs.plotsButton);
-            $(plotsButton).tooltip({hide: false, show: false}).button();
-            $(plotsButton).toolbar({
+            var $plotsButton = $(ReactDOM.findDOMNode(this.refs.plotsButton));
+            $plotsButton.tooltip({
+                hide: false,
+                show: false,
+                tooltipClass: "gxaHelpTooltip"
+            }).button();
+            $plotsButton.toolbar({
                 content: ReactDOM.findDOMNode(this.refs.plotsToolBarContent),
                 position: "right",
                 style: "white",
                 event: "click",
                 hideOnClick: true
             });
+            $plotsButton.addClass("gxaNoTextButton");
         }
     },
 
@@ -656,7 +668,9 @@ var ContrastHeader = React.createClass({
         // duplicate data-reactids
         $contentNode.html(ReactDOMServer.renderToStaticMarkup(content));
 
-        $contentNode.find('a').tooltip();
+        $contentNode.find('a').tooltip({
+            tooltipClass: "gxaHelpTooltip"
+        });
 
         //need to use each here otherwise we get a fancybox error
         $contentNode.find('a').each(function (index, button) {
@@ -685,7 +699,7 @@ var ContrastHeader = React.createClass({
 
         var plotsButton = (
             <div style={{textAlign: "right", paddingRight: "3px"}} >
-                <a href="#" ref="plotsButton" onClick={this.clickButton} className="gxaButtonImage" title="Click to view plots"><img src={plotsImgSrcURL}/></a>
+                <a href="#" ref="plotsButton" onClick={this.clickButton} title="Click to view plots"><img src={plotsImgSrcURL}/></a>
             </div>
         );
 
@@ -722,17 +736,19 @@ var TopLeftCorner = React.createClass({
             );
         } else if (this.props.type.isBaseline || this.props.type.isMultiExperiment) {
             return (
-                    <DisplayLevelsButton hideText='Hide levels'
-                                         showText='Display levels'
+                    <DisplayLevelsButton hideText="Hide levels"
+                                         showText="Display levels"
                                          onClickCallback={this.props.toggleDisplayLevels}
-                                         displayLevels={this.props.displayLevels}/>
+                                         displayLevels={this.props.displayLevels}
+                                         width="150px" fontSize="14px"/>
             );
         } else {
             return (
-                    <DisplayLevelsButton hideText='Hide log<sub>2</sub>-fold change'
-                                         showText='Display log<sub>2</sub>-fold change'
+                    <DisplayLevelsButton hideText="Hide log<sub>2</sub>-fold change"
+                                         showText="Display log<sub>2</sub>-fold change"
                                          onClickCallback={this.props.toggleDisplayLevels}
-                                         displayLevels={this.props.displayLevels}/>
+                                         displayLevels={this.props.displayLevels}
+                                         width="200px" fontSize="14px"/>
             );
         }
     },
@@ -740,7 +756,7 @@ var TopLeftCorner = React.createClass({
     render: function () {
         return (
             <div className="gxaHeatmapMatrixTopLeftCorner">
-                <span className="gxaTooltip" data-help-loc={this.props.type.heatmapTooltip} ref="tooltipSpan"/>
+                <span data-help-loc={this.props.type.heatmapTooltip} ref="tooltipSpan"/>
                 <div style={{display: "table-cell", verticalAlign: "middle", textAlign: "center"}}>
                     {this.displayLevelsBaseline()}
                 </div>
