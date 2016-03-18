@@ -45,7 +45,7 @@ var CellDifferential = React.createClass({
 
     render: function () {
         if (!this._hasValue()) {
-            return (<td></td>);
+            return (<td/>);
         }
 
         return (
