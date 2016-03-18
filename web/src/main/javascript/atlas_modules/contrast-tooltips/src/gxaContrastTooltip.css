@@ -3,7 +3,7 @@
     color: darkslategray;
     padding: 2px;
     font: 10px Verdana, Helvetica, Arial, sans-serif;
-    min-width: 400px
+    max-width: 500px;
 }
 
 .gxaContrastTooltip table {
