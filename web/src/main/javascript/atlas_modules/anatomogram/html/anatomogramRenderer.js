@@ -21,7 +21,7 @@ module.exports = function(anatomogramData, expressedTissueColour, hoveredTissueC
             hoveredTissueColour: "indigo",
             profileRows: profileRows,
             eventEmitter: new EventEmitter(),
-            atlasBaseURL: "https://www.ebi.ac.uk/gxa"
+            atlasBaseURL: "http://localhost:8080/gxa"
         }), mountNode
     );
 };
