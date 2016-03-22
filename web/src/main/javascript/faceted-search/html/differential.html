@@ -5,8 +5,8 @@
 
     <title>Differential faceted search results demos</title>
 
-    <script src="/dev-server/vendor.bundle.js"></script>
-    <script src="/dev-server/demo.bundle.js"></script>
+    <script src="../dist/facetedSearch.bundle.js"></script>
+    <script src="../dist/vendor.bundle.js"></script>
 </head>
 
 <body>
@@ -50,9 +50,7 @@
     };
 
     var diffResultsData = [];
-    var facetedSearcher = window.exposed;
-    facetedSearcher.differential("facets", "results", facetsData, "localhost:8080");
-
+    facetedSearch.differential("facets", "results", facetsData, "localhost:8080");
 </script>
 
 </html>

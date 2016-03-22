@@ -10,13 +10,14 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "heatmap-anatomogram": "file:../atlas_modules/heatmap-anatomogram",
-    "display-levels-button": "file:../atlas_modules/display-levels-button",
-    "contrast-tooltips": "file:../atlas_modules/contrast-tooltips",
-    "legend": "file:../atlas_modules/legend",
     "cell-differential": "file:../atlas_modules/cell-differential",
+    "contrast-tooltips": "file:../atlas_modules/contrast-tooltips",
+    "display-levels-button": "file:../atlas_modules/display-levels-button",
+    "heatmap-anatomogram": "file:../heatmap-anatomogram",
     "jquery": "^2.2.1",
+    "jquery-ui-bundle": "^1.11.4",
     "jquery.browser": "0.0.8",
+    "legend": "file:../atlas_modules/legend",
     "query-string": "^2.3.0",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
@@ -27,6 +28,13 @@
     "babel-loader": "^6.2.4",
     "babel-plugin-transform-react-display-name": "^6.5.0",
     "babel-plugin-transform-react-jsx": "^6.6.5",
-    "webpack": "^1.12.14"
+    "clean-webpack-plugin": "^0.1.8",
+    "css-loader": "^0.23.1",
+    "file-loader": "^0.8.5",
+    "image-webpack-loader": "^1.6.3",
+    "imports-loader": "^0.6.5",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.14",
+    "webpack-dev-server": "^1.14.1"
   }
 }

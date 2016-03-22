@@ -5,8 +5,7 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     entry: {
         facetedSearch: './index.js',
-        facetedSearchDemo: './html/demo.js',
-        dependencies: ['react', 'react-dom', 'jquery', 'jquery.browser', 'query-string', 'urijs']
+        dependencies: ['react', 'react-dom', 'jquery', 'jquery.browser', 'jquery-ui-bundle', 'query-string', 'urijs']
     },
 
     output: {
@@ -29,7 +28,14 @@ module.exports = {
 
     module: {
         loaders: [
-            {test: /\.jsx$/, loader: 'babel'}
+            {test: /\.jsx$/, loader: 'babel'},
+            {test: /\.css$/, loader: 'style-loader!css-loader'},
+            {test: /\.(jpe?g|png|gif|svg)$/i,
+                loaders: [
+                    'file?hash=sha512&digest=hex&name=[hash].[ext]',
+                    'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
+                ]
+            }
         ]
     },
 

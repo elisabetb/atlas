@@ -2,8 +2,10 @@
 
 //*------------------------------------------------------------------*
 
-var React = require('react');
+var $ = require('jquery');
+require('jquery-ui-bundle');
 
+var React = require('react');
 var ReactDOM = require('react-dom');
 
 //*------------------------------------------------------------------*
