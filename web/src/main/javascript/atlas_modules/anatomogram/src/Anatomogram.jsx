@@ -249,7 +249,7 @@ var Anatomogram = React.createClass({
                 var heightTranslate = $svgCanvas.height() - 15;
                 //var widthTranslate = $svgCanvas.width() / 2 - 40;
                 var widthTranslate = 0;
-                img.transform("t"+widthTranslate+","+heightTranslate);
+                //img.transform("t"+widthTranslate+","+heightTranslate);
                 svgCanvas.append(img);
             }
         );
