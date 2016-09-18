@@ -27,7 +27,7 @@
     </div>
 
 
-    <h3>Baseline experiments</h3>
+    <h3 style="text-align: center">Baseline experiments</h3>
     <div class="grid_24 species-nav" style="padding-bottom: 20px">
 
         <c:forEach items="${baselineExperimentAccessionsBySpecies.keySet()}" var="species">
@@ -90,7 +90,7 @@
     </div>
 
 
-    <h3>Differential experiments</h3>
+    <h3 style="text-align: center">Differential experiments</h3>
     <div class="grid_24 species-nav">
 
         <c:forEach items="${numDifferentialExperimentsBySpecies.keySet()}" var="species">

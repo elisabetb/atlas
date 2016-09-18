@@ -140,9 +140,7 @@ const BaselineRouter = React.createClass({
     },
 
     _organismPartInQuerySelect (querySelect = this.state.querySelect) {
-        //return Object.keys(querySelect).some(species => querySelect[species].includes("ORGANISM_PART"));
-        return Object.keys(querySelect).some(
-            species => querySelect[species].indexOf("ORGANISM_PART") > -1);
+        return Object.keys(querySelect).some(species => querySelect[species].includes("ORGANISM_PART"));
     },
 
     // Also syncs this.state.facetsTreeData with querySelect
@@ -154,9 +152,7 @@ const BaselineRouter = React.createClass({
                     return {
                         name: facetItem.name,
                         value: facetItem.value,
-                        checked: querySelect[facetName] ?
-                            querySelect[facetName].indexOf(facetItem.name) > -1
-                            : false
+                        checked: querySelect[facetName] ? querySelect[facetName].includes(facetItem.name) : false
                     }
                 })
             };
@@ -179,7 +175,7 @@ const BaselineRouter = React.createClass({
         // We iterate over facetsTreeData instead of over querySelect to get the heatmaps in the same order as the facets tree
         this.state.facetsTreeData.forEach(facet => {
             facet.facetItems.forEach(facetItem => {
-                if (this.state.querySelect[facet.facetName] && this.state.querySelect[facet.facetName].indexOf(facetItem.name) > -1) {
+                if (this.state.querySelect[facet.facetName] && this.state.querySelect[facet.facetName].includes(facetItem.name)) {
                     heatmaps.push({
                         species: facet.facetName,
                         factor: facetItem
