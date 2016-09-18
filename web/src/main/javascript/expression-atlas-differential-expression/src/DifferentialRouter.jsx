@@ -103,7 +103,8 @@ const DifferentialRouter = React.createClass({
     _equalsToOrIncludes (obj, value) {
         if (!!obj) {
             if (obj.constructor === Array) {
-                return obj.includes(value);
+                //return obj.includes(value);
+                return obj.indexOf(value) > -1;
             }
             else {
                 return obj === value;
