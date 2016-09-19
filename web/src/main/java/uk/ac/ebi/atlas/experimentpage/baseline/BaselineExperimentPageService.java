@@ -1,10 +1,12 @@
 package uk.ac.ebi.atlas.experimentpage.baseline;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Throwables;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.stream.MalformedJsonException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -18,7 +20,6 @@ import uk.ac.ebi.atlas.model.baseline.Factor;
 import uk.ac.ebi.atlas.profiles.baseline.viewmodel.AssayGroupFactorViewModel;
 import uk.ac.ebi.atlas.search.SemanticQuery;
 import uk.ac.ebi.atlas.tracks.TracksUtil;
-import uk.ac.ebi.atlas.trader.SpeciesKingdomTrader;
 import uk.ac.ebi.atlas.web.*;
 import uk.ac.ebi.atlas.widget.HeatmapWidgetController;
 
@@ -53,13 +54,15 @@ public class BaselineExperimentPageService {
 
     public void prepareRequestPreferencesAndHeaderData(BaselineExperiment experiment, BaselineRequestPreferences preferences, Model model,
                                                        HttpServletRequest request, boolean isWidget) {
-        if (isWidget) {
-            // possibly we could always do this - investigate if it matters for not-a-widget
-            //TODO: hacky work around to support clients using the geneQuery=A1A4S6+Q13177 syntax
-            // ideally we should move queryStringToTags to javascript, and keep the former space separated syntax
-            // instead of the current tab separated syntax for geneQuery
-            preferences.setGeneQuery(SemanticQuery.fromJson((String) request.getAttribute(HeatmapWidgetController.ORIGINAL_GENEQUERY)));
+        try {
+            if (isWidget) {
+                // possibly we could always do this - investigate if it matters for not-a-widget
+                preferences.setGeneQuery(SemanticQuery.fromUrlEncodedJson((String) request.getAttribute(HeatmapWidgetController.ORIGINAL_GENEQUERY)));
+            }
+        } catch (MalformedJsonException | UnsupportedEncodingException e) {
+            Throwables.propagate(e);
         }
+
         PreferencesForBaselineExperiments.setPreferenceDefaults(preferences, experiment);
         BaselineRequestContext requestContext = BaselineRequestContext.createFor(experiment, preferences);
 
