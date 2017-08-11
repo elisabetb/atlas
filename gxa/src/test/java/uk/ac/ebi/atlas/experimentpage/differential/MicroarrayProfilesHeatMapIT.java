@@ -20,11 +20,9 @@ import uk.ac.ebi.atlas.web.MicroarrayRequestPreferences;
 
 import javax.inject.Inject;
 import java.util.Collection;
-import java.util.Collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -118,37 +116,24 @@ public class MicroarrayProfilesHeatMapIT {
 
         DifferentialProfilesList profilesUp = subject.fetch(requestContext);
 
-        assertThat(profilesAll.size()==50 || profilesAll.extractGeneNames().containsAll(profilesUp.extractGeneNames()),
+        assertThat(
+                profilesAll.size() == 50 || profilesAll.extractGeneNames().containsAll(profilesUp.extractGeneNames()),
                 is(true));
-
-        for(Object o: profilesUp) {
-            MicroarrayProfile profile = (MicroarrayProfile) o;
-            for(Contrast contrast: profile.getConditions()){
-                assertThat(profile.getExpression(contrast).isOverExpressed(), is(true));
-                assertThat(profile.getExpression(contrast).isUnderExpressed(), is(false));
-            }
-        }
 
         requestPreferences.setRegulation(Regulation.DOWN);
         requestContext = populateRequestContext(accession);
 
         DifferentialProfilesList profilesDown = subject.fetch(requestContext);
-        assertThat(profilesAll.size()==50 ||
-                        profilesAll.extractGeneNames().containsAll(profilesDown.extractGeneNames()),
+        assertThat(
+                profilesAll.size() == 50 || profilesAll.extractGeneNames().containsAll(profilesDown.extractGeneNames()),
                 is(true));
-        for(Object o: profilesDown) {
-            MicroarrayProfile profile = (MicroarrayProfile) o;
-            for(Contrast contrast: profile.getConditions()){
-                assertThat(profile.getExpression(contrast).isOverExpressed(), is(false));
-                assertThat(profile.getExpression(contrast).isUnderExpressed(), is(true));
-            }
-        }
 
         setUp();
         requestContext = populateRequestContext(accession);
 
         DifferentialProfilesList profilesQueryFactorValues = subject.fetch(requestContext);
-        assertThat(profilesAll.size() ==50 ||
+        assertThat(
+                profilesAll.size() == 50 ||
                         profilesAll.extractGeneNames().containsAll(profilesQueryFactorValues.extractGeneNames()),
                 is(true));
         assertAbout(requestContext.getExperiment(), profilesQueryFactorValues);
@@ -168,17 +153,7 @@ public class MicroarrayProfilesHeatMapIT {
 
         for(Object o: profiles){
             MicroarrayProfile profile = (MicroarrayProfile) o;
-
-            assertThat(experiment.getDataColumnDescriptors().containsAll(profile.getConditions()), is(true));
-            for(Contrast contrast: profile.getConditions()){
-                assertThat(profile.isExpressedOnAnyOf(Collections.singleton(contrast)), is(true));
-
-                DifferentialExpression expression = profile.getExpression(contrast);
-                assertThat(expression.getPValue(), greaterThan(0d));
-                assertThat(expression.getPValue(), lessThanOrEqualTo(1d));
-                assertThat(expression.getAbsoluteFoldChange(), greaterThan(0d));
-            }
-
+            assertThat(profile.isExpressedOnAnyOf(experiment.getDataColumnDescriptors()), is(true));
             assertThat(profile.getId().isEmpty(), is(false));
             assertThat(profile.getName().isEmpty(), is(false));
         }
