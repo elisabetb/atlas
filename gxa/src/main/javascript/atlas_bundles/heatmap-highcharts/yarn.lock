@@ -250,8 +250,8 @@ expression-atlas-disclaimers@latest:
     urijs "^1.18.10"
 
 expression-atlas-heatmap-highcharts@latest:
-  version "3.5.11"
-  resolved "https://registry.yarnpkg.com/expression-atlas-heatmap-highcharts/-/expression-atlas-heatmap-highcharts-3.5.11.tgz#3b9c50fe13b35f4f9ddc25f90d250b7afc20f910"
+  version "3.5.12"
+  resolved "https://registry.yarnpkg.com/expression-atlas-heatmap-highcharts/-/expression-atlas-heatmap-highcharts-3.5.12.tgz#0c724c4c7c91d9eb7d646f45574a6afabfee6973"
   dependencies:
     anatomogram latest
     color "^2.0.0"

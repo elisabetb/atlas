@@ -3947,7 +3947,7 @@ function(t,e,n){var r=n(/*! !../../../../css-loader!./GradientHeatmapLegend.css 
   \********************************************************************************************************************************************/
 /*! no static exports found */
 /*! all exports used */
-function(t,e,n){e=t.exports=n(/*! ../../../../css-loader/lib/css-base.js */16)(void 0),e.push([t.i,".gxaGradientLegend{font-size:12px;padding-top:10px;margin-left:10px;text-align:center;display:inline-block}.gxaGradientColour{overflow:auto;height:15px;margin:2px 6px;vertical-align:middle;width:200px;display:inline-block}.gxaGradientLevel{white-space:nowrap;font-size:10px;vertical-align:middle;display:table-cell}.gxaGradientLevelMin{text-align:right}.gxaGradientLevelMax{text-align:left}",""])},/*!************************************************************************************************************!*\
+function(t,e,n){e=t.exports=n(/*! ../../../../css-loader/lib/css-base.js */16)(void 0),e.push([t.i,".gxaGradientLegend{font-size:12px;padding:12px 0;margin-left:10px;text-align:center;display:inline-block}.gxaGradientColour{overflow:auto;height:15px;margin:2px 6px;vertical-align:middle;width:200px;display:inline-block}.gxaGradientLevel{white-space:nowrap;font-size:10px;vertical-align:middle;display:table-cell}.gxaGradientLevelMin{text-align:right}.gxaGradientLevelMax{text-align:left}",""])},/*!************************************************************************************************************!*\
   !*** ./node_modules/expression-atlas-heatmap-highcharts/lib/manipulate/coexpression/CoexpressionOption.js ***!
   \************************************************************************************************************/
 /*! no static exports found */
